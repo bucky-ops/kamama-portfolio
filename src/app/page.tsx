@@ -1,0 +1,73 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { GithubDataProvider } from "@/components/portfolio/github-data";
+import { Header } from "@/components/portfolio/header";
+import { Footer } from "@/components/portfolio/footer";
+import { HomeView } from "@/components/portfolio/home-view";
+import { WorkView } from "@/components/portfolio/work-view";
+import { AboutView } from "@/components/portfolio/about-view";
+import { ContactView } from "@/components/portfolio/contact-view";
+import type { TabId } from "@/components/portfolio/shared";
+
+const VALID_TABS: TabId[] = ["home", "projects", "about", "contact"];
+
+function readTabFromUrl(): TabId | null {
+  if (typeof window === "undefined") return null;
+  const tab = new URLSearchParams(window.location.search).get("tab");
+  return VALID_TABS.includes(tab as TabId) ? (tab as TabId) : null;
+}
+
+export default function Page() {
+  const [tab, setTab] = useState<TabId>("home");
+
+  // Deep-link support: /?tab=contact opens the Contact view.
+  // Deferred one tick so the initial paint matches SSR (no cascading render).
+  useEffect(() => {
+    const fromUrl = readTabFromUrl();
+    if (!fromUrl) return;
+    const id = window.setTimeout(() => setTab(fromUrl), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const navigate = useCallback((next: TabId) => {
+    setTab(next);
+    if (typeof window !== "undefined") {
+      const url = next === "home" ? "/" : `/?tab=${next}`;
+      window.history.replaceState(null, "", url);
+    }
+  }, []);
+
+  // Scroll to top on every tab switch.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [tab]);
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <GithubDataProvider>
+        <div className="flex min-h-screen flex-col bg-[#0D1117] text-[#E6EDF3]">
+          <Header active={tab} onNavigate={navigate} />
+          <main className="flex-1">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                {tab === "home" && <HomeView onNavigate={navigate} />}
+                {tab === "projects" && <WorkView />}
+                {tab === "about" && <AboutView />}
+                {tab === "contact" && <ContactView />}
+              </motion.div>
+            </AnimatePresence>
+          </main>
+          <Footer />
+        </div>
+      </GithubDataProvider>
+    </MotionConfig>
+  );
+}

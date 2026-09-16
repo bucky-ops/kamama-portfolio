@@ -1,0 +1,99 @@
+"use client";
+
+import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { ProjectCluster } from "@/lib/profile-data";
+
+export type TabId = "home" | "projects" | "about" | "contact";
+
+/** Amber → dark gradient initials block used as the photo placeholder. */
+export function InitialsAvatar() {
+  return (
+    <div
+      className="flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] shadow-lg shadow-primary/20 ring-1 ring-[#F0B232]/40 md:h-28 md:w-28"
+      aria-hidden="true"
+    >
+      <span className="font-mono text-4xl font-bold tracking-tight text-[#161206] md:text-5xl">
+        CK
+      </span>
+    </div>
+  );
+}
+
+const clusterStyles: Record<ProjectCluster, string> = {
+  "Enterprise Blockchain":
+    "border-[#E3B341]/40 bg-[#E3B341]/10 text-[#E3B341]",
+  "AI & Analytics": "border-[#3FB950]/40 bg-[#3FB950]/10 text-[#3FB950]",
+  "Climate & Civic": "border-[#F0883E]/40 bg-[#F0883E]/10 text-[#F0883E]",
+  Infrastructure: "border-border bg-secondary/60 text-muted-foreground",
+};
+
+export function ClusterBadge({
+  cluster,
+  className,
+}: {
+  cluster: ProjectCluster;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-medium tracking-wide",
+        clusterStyles[cluster],
+        className
+      )}
+    >
+      {cluster}
+    </span>
+  );
+}
+
+export function TagChip({ tag }: { tag: string }) {
+  return (
+    <span className="rounded-md border border-border bg-secondary/40 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+      {tag}
+    </span>
+  );
+}
+
+/** Live GitHub stars chip — renders only when the repo responded (live=true). */
+export function StarsChip({
+  stars,
+  className,
+}: {
+  stars: number | undefined;
+  className?: string;
+}) {
+  if (stars === undefined) return null;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full border border-border bg-secondary/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground",
+        className
+      )}
+    >
+      <Star className="size-3 text-primary" aria-hidden="true" />
+      {stars.toLocaleString()}
+      <span className="sr-only">GitHub stars</span>
+    </span>
+  );
+}
+
+export function SectionHeading({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+        {title}
+      </h2>
+      {subtitle ? (
+        <p className="max-w-2xl text-sm text-muted-foreground">{subtitle}</p>
+      ) : null}
+    </div>
+  );
+}

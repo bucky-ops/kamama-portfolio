@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Inbound leads from the Contact form (qualifies: project type + budget)
+model ContactMessage {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  organization String?
+  projectType  String
+  budgetRange  String?
+  message      String
+  status       String   @default("new") // new | read | replied
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Release log — mirrors git tags + GitHub Releases so every update is accounted for
+model ReleaseLog {
+  id          String   @id @default(cuid())
+  version     String   @unique // e.g. v1.0.0
+  title       String
+  notes       String // markdown changelog entry
+  commitSha   String?
+  platform    String   @default("github") // github | vercel
+  deployedAt  DateTime @default(now())
+
+  @@index([deployedAt])
+}
