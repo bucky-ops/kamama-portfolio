@@ -69,6 +69,20 @@ export function TagChip({ tag }: { tag: string }) {
   );
 }
 
+/**
+ * Shimmer placeholder for the live GitHub chips while the repos API is in
+ * flight — renders in exactly the slot the real chips will occupy, so the
+ * card doesn't jump when data lands.
+ */
+export function RepoChipsSkeleton() {
+  return (
+    <span className="inline-flex items-center gap-1.5" aria-hidden="true">
+      <span className="h-5 w-16 animate-pulse rounded-full border border-border/60 bg-secondary/40" />
+      <span className="h-5 w-10 animate-pulse rounded-full border border-border/60 bg-secondary/40" />
+    </span>
+  );
+}
+
 /** Live GitHub stars chip — renders only when the repo responded (live=true). */
 export function StarsChip({
   stars,

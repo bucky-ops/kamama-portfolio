@@ -10,6 +10,8 @@ import {
   FileText,
   ListTree,
   PenLine,
+  Search,
+  SearchX,
 } from "lucide-react";
 import { formatDateLong, notes, type Note } from "@/lib/notes-data";
 import { Reveal } from "./reveal";
@@ -24,7 +26,46 @@ import { cn } from "@/lib/utils";
  */
 export function NotesView() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const current = notes.find((n) => n.slug === openSlug) ?? null;
+
+  // All tags across notes, alphabetically — powers the filter chips.
+  const allTags = [...new Set(notes.flatMap((n) => n.tags))].sort();
+
+  const filtered = notes.filter((note) => {
+    const q = query.trim().toLowerCase();
+    const matchesQuery =
+      q === "" ||
+      note.title.toLowerCase().includes(q) ||
+      note.excerpt.toLowerCase().includes(q) ||
+      note.tags.some((t) => t.toLowerCase().includes(q));
+    const matchesTag = !activeTag || note.tags.includes(activeTag);
+    return matchesQuery && matchesTag;
+  });
+
+  // Press "/" to jump into search (ignored while typing in any field).
+  useEffect(() => {
+    if (current) return; // reader open — no list search visible
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      e.preventDefault();
+      searchRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [current]);
 
   // Deep-link support: /?tab=notes&n=<slug> opens a specific note.
   // Deferred one tick so the initial paint matches SSR (list view).
@@ -79,8 +120,89 @@ export function NotesView() {
               title="Notes"
               subtitle="Short, practical write-ups from systems I actually ship — databases, RAG, and data-for-development pipelines."
             />
+
+            {/* Search + tag filters */}
+            <div className="space-y-3">
+              <div className="relative">
+                <Search
+                  className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
+                <input
+                  ref={searchRef}
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search notes — try “PostgreSQL” or “RAG”…"
+                  aria-label="Search notes by title, excerpt, or tag"
+                  className="min-h-11 w-full rounded-xl border border-border bg-card pl-10 pr-14 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                />
+                <kbd className="pointer-events-none absolute right-3.5 top-1/2 hidden -translate-y-1/2 rounded-md border border-border bg-secondary/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:block">
+                  /
+                </kbd>
+              </div>
+              <div
+                className="flex flex-wrap items-center gap-1.5"
+                role="group"
+                aria-label="Filter notes by tag"
+              >
+                <button
+                  type="button"
+                  onClick={() => setActiveTag(null)}
+                  aria-pressed={activeTag === null}
+                  className={cn(
+                    "inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+                    activeTag === null
+                      ? "border-primary/50 bg-primary/10 font-medium text-primary"
+                      : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                  )}
+                >
+                  All
+                  <span className="ml-1 opacity-60">{notes.length}</span>
+                </button>
+                {allTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                    aria-pressed={activeTag === tag}
+                    className={cn(
+                      "inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+                      activeTag === tag
+                        ? "border-primary/50 bg-primary/10 font-medium text-primary"
+                        : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    )}
+                  >
+                    {tag}
+                  </button>
+                ))}
+                <span className="ml-auto font-mono text-[11px] text-muted-foreground">
+                  {filtered.length} of {notes.length} notes
+                </span>
+              </div>
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-border bg-card/50 px-6 py-12 text-center">
+                <SearchX className="mx-auto size-8 text-muted-foreground/60" aria-hidden="true" />
+                <p className="mt-3 text-sm font-medium text-foreground">No notes match</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Try a different keyword or clear the filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setActiveTag(null);
+                  }}
+                  className="mt-4 inline-flex min-h-9 items-center rounded-full border border-border px-4 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                >
+                  Clear search & filters
+                </button>
+              </div>
+            ) : (
             <div className="space-y-4">
-              {notes.map((note, i) => (
+              {filtered.map((note, i) => (
                 <Reveal key={note.slug} delay={i * 0.06}>
                   <button
                     type="button"
@@ -119,6 +241,7 @@ export function NotesView() {
                 </Reveal>
               ))}
             </div>
+            )}
           </motion.section>
         )}
       </AnimatePresence>

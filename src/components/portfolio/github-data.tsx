@@ -33,11 +33,14 @@ interface GithubData {
   /** repo slug → live stats; only repos that responded with live=true are useful */
   repoStats: Record<string, GithubRepoStat>;
   release: GithubRelease | null;
+  /** True until the first repos fetch settles — drives chip shimmer skeletons. */
+  loading: boolean;
 }
 
 const GithubDataContext = createContext<GithubData>({
   repoStats: {},
   release: null,
+  loading: true,
 });
 
 interface RawReposResponse {
@@ -71,6 +74,7 @@ interface RawReleasesResponse {
 export function GithubDataProvider({ children }: { children: ReactNode }) {
   const [repoStats, setRepoStats] = useState<Record<string, GithubRepoStat>>({});
   const [release, setRelease] = useState<GithubRelease | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,6 +103,8 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
         setRepoStats(map);
       } catch {
         /* neutral — stars simply stay hidden */
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     })();
 
@@ -127,7 +133,7 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo(() => ({ repoStats, release }), [repoStats, release]);
+  const value = useMemo(() => ({ repoStats, release, loading }), [repoStats, release, loading]);
 
   return (
     <GithubDataContext.Provider value={value}>

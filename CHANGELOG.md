@@ -7,6 +7,41 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] — 2026-09-16
+
+### Added
+- **Contact prefill funnel**: "Discuss this system" in any case-study dialog now jumps
+  to Contact with the form pre-filled from that system — a natural opening message
+  ("Hi Collins — I'd like to discuss your work on …"), the matching project type
+  (cluster → type mapping), and a dismissible amber "Pre-filled from …" hint chip.
+  Deep-linkable via `/?tab=contact&topic=<system title>`; clearing the chip (or sending
+  the message) drops the param so a refresh starts clean.
+- **Notes search + tag filters**: the Notes list gained a live search box (title,
+  excerpt, tags — try "PostgreSQL" or "RAG"), alphabetical tag-filter chips with an
+  "All n" pill, a "n of m notes" result counter, and a styled empty state with a
+  one-tap "Clear search & filters" reset. Press `/` anywhere on the list to jump into
+  search (form-field safe, desktop hint kbd inside the input).
+- **Admin inbox search**: leads can now be searched by name, email, organization, or
+  message content — combined with the existing status pills — so the founder can find
+  a lead in seconds as the inbox grows. Search-aware empty state included.
+
+### Changed
+- **Skill tiles spotlight hover**: a soft amber radial glow now follows the cursor
+  across each Home skill pillar (direct CSS-variable writes — zero re-renders,
+  hover-only so touch devices are unaffected).
+- **Live repo chips shimmer**: while the GitHub repos API is in flight, project cards
+  render pulse-skeleton chips in the exact slot the live `language · updated` and
+  star chips will occupy — no layout jump when data lands (cards + case-study dialog).
+
+### Verified
+- E2E: discuss-CTA → `?tab=contact&topic=…` seeds message + project type; chip dismiss
+  reverts fields and URL; success clears the funnel. Notes `/` shortcut focuses search;
+  "rag" → 1 of 3; empty state + clear works; RAG tag chip filters with aria-pressed.
+  Admin: "Grace" → 1 lead, "zzz" → search-aware empty state. Spotlight CSS vars track
+  the cursor. Mobile 390 renders the search + chips cleanly.
+- Founder email `muchiri.collin@aol.com` still featured first in Contact.
+- ESLint clean, `tsc --noEmit` clean (src), zero console errors.
+
 ## [1.5.0] — 2026-09-16
 
 ### Added
@@ -175,7 +210,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.6.0
 [1.5.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.5.0
 [1.4.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.4.0
 [1.3.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.3.0

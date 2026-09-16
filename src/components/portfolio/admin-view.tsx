@@ -13,6 +13,7 @@ import {
   LogOut,
   Mail,
   RefreshCw,
+  Search,
   Trash2,
 } from "lucide-react";
 import {
@@ -124,6 +125,7 @@ export function AdminView() {
   const [warning, setWarning] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Lead | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Lead | null>(null);
   const bootstrapped = useRef(false);
@@ -253,10 +255,19 @@ export function AdminView() {
 
   /* --------------------------------- render -------------------------------- */
 
-  const filtered = useMemo(
-    () => (statusFilter === "all" ? leads : leads.filter((l) => l.status === statusFilter)),
-    [leads, statusFilter]
-  );
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return leads.filter((l) => {
+      const matchesStatus = statusFilter === "all" || l.status === statusFilter;
+      const matchesSearch =
+        q === "" ||
+        l.name.toLowerCase().includes(q) ||
+        l.email.toLowerCase().includes(q) ||
+        (l.organization ?? "").toLowerCase().includes(q) ||
+        l.message.toLowerCase().includes(q);
+      return matchesStatus && matchesSearch;
+    });
+  }, [leads, statusFilter, search]);
 
   if (!adminKey) {
     return (
@@ -364,8 +375,23 @@ export function AdminView() {
           ))}
         </div>
 
-        {/* Status filter pills */}
-        <div role="tablist" aria-label="Filter leads by status" className="flex flex-wrap gap-2">
+        {/* Search + status filter pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative min-w-56 flex-1">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search leads — name, email, org, message…"
+              aria-label="Search leads"
+              className="min-h-9 w-full rounded-full border border-border bg-card py-1.5 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground/70 transition-colors hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/40"
+            />
+          </div>
+          <div role="tablist" aria-label="Filter leads by status" className="flex flex-wrap gap-2">
           {(["all", "new", "read", "replied"] as StatusFilter[]).map((f) => {
             const isActive = statusFilter === f;
             const count = f === "all" ? leads.length : leads.filter((l) => l.status === f).length;
@@ -388,6 +414,7 @@ export function AdminView() {
               </button>
             );
           })}
+          </div>
         </div>
 
         {/* Leads list */}
@@ -445,7 +472,9 @@ export function AdminView() {
               <p className="text-sm text-muted-foreground">
                 {leads.length === 0
                   ? "No leads yet — the inbox fills up as people submit the contact form."
-                  : "No leads match this status filter."}
+                  : search.trim()
+                    ? "No leads match your search or filter."
+                    : "No leads match this status filter."}
               </p>
             </div>
           ) : null}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -17,7 +17,9 @@ import {
   Phone,
   Send,
   Shield,
+  Sparkles,
   Twitter,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,7 +42,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { availability, budgetRanges, profile, projectTypes } from "@/lib/profile-data";
+import { availability, budgetRanges, profile, projectTypes, projects } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./reveal";
 
@@ -125,6 +127,23 @@ function CopyButton({ value }: { value: string }) {
   );
 }
 
+/** Cluster → contact-form "project type" mapping for the prefill funnel. */
+const CLUSTER_TO_TYPE: Record<string, string> = {
+  "Enterprise Blockchain": "Blockchain",
+  "AI & Analytics": "AI / RAG",
+  "Climate & Civic": "M&E Dashboard",
+  "Infrastructure": "Enterprise System",
+  "Web & Creative": "Consulting",
+};
+
+function projectTypeForCluster(cluster?: string): string {
+  return (cluster && CLUSTER_TO_TYPE[cluster]) || "Enterprise System";
+}
+
+function prefillMessage(title: string): string {
+  return `Hi Collins — I'd like to discuss your work on "${title}". We have a similar challenge and would like to scope a solution.`;
+}
+
 export function ContactView() {
   const { toast } = useToast();
   const [status, setStatus] = useState<SubmitStatus>("idle");
@@ -145,6 +164,35 @@ export function ContactView() {
       website: "",
     },
   });
+
+  // ── Prefill funnel: /?tab=contact&topic=<system title> ─────────
+  // Set by the "Discuss this system" CTA in case-study dialogs — seeds the
+  // message + project type so the visitor starts from context, not a blank form.
+  const [topic, setTopic] = useState<string | null>(null);
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get("topic");
+    const title = raw?.trim().slice(0, 120);
+    if (!title) return;
+    const id = window.setTimeout(() => {
+      setTopic(title);
+      const project = projects.find((p) => p.title === title);
+      form.setValue("projectType", projectTypeForCluster(project?.cluster), {
+        shouldValidate: false,
+      });
+      form.setValue("message", prefillMessage(title), { shouldValidate: false });
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [form]);
+
+  /** Drop the prefill: clear chip + URL param + revert the seeded fields. */
+  const clearTopic = () => {
+    setTopic(null);
+    form.setValue("message", "");
+    form.setValue("projectType", "");
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "/?tab=contact");
+    }
+  };
 
   const onSubmit = async (values: ContactValues) => {
     setStatus("sending");
@@ -170,6 +218,11 @@ export function ContactView() {
         setStatus("success");
         setErrorHint(null);
         form.reset();
+        // Funnel complete — drop the topic param so a refresh starts clean.
+        setTopic(null);
+        if (typeof window !== "undefined") {
+          window.history.replaceState(null, "", "/?tab=contact");
+        }
         toast({
           title: "Message sent",
           description: "Thanks — expect a scoped reply within 24 hours.",
@@ -206,6 +259,28 @@ export function ContactView() {
               Tell me about the system you need — I reply with architecture, not
               a sales pitch.
             </p>
+
+            {topic ? (
+              <div
+                className="mt-4 flex items-start gap-2.5 rounded-xl border border-primary/30 bg-primary/10 px-3.5 py-2.5"
+                role="status"
+              >
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+                <p className="text-xs leading-relaxed text-foreground/90">
+                  Pre-filled from{" "}
+                  <span className="font-semibold text-primary">{topic}</span> —
+                  tweak the message below as you like.
+                </p>
+                <button
+                  type="button"
+                  onClick={clearTopic}
+                  aria-label="Clear pre-filled message"
+                  className="ml-auto rounded-md p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                >
+                  <X className="size-3.5" aria-hidden="true" />
+                </button>
+              </div>
+            ) : null}
 
             {status === "success" ? (
               <div className="mt-6 rounded-xl border border-[#3FB950]/40 bg-[#3FB950]/10 p-5 text-center">

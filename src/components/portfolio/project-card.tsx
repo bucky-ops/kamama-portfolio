@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import { ArchitectureDiagram } from "./architecture-diagram";
-import { ClusterBadge, RepoMetaChip, StarsChip, TagChip } from "./shared";
+import { ClusterBadge, RepoChipsSkeleton, RepoMetaChip, StarsChip, TagChip } from "./shared";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
 
@@ -16,7 +16,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
-  const { repoStats } = useGithubData();
+  const { repoStats, loading } = useGithubData();
   const stat = repoStats[project.repo];
   const hasRepo = project.repo !== "";
   const repoUrl = `${GITHUB_BASE}/${project.repo}`;
@@ -40,11 +40,17 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
             ) : null}
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
-            <RepoMetaChip
-              language={hasRepo && stat?.live ? stat.language : null}
-              pushedAt={hasRepo && stat?.live ? stat.pushedAt : null}
-            />
-            <StarsChip stars={hasRepo && stat?.live ? stat.stars : undefined} />
+            {hasRepo && loading ? (
+              <RepoChipsSkeleton />
+            ) : (
+              <>
+                <RepoMetaChip
+                  language={hasRepo && stat?.live ? stat.language : null}
+                  pushedAt={hasRepo && stat?.live ? stat.pushedAt : null}
+                />
+                <StarsChip stars={hasRepo && stat?.live ? stat.stars : undefined} />
+              </>
+            )}
           </div>
         </div>
 

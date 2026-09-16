@@ -22,7 +22,7 @@ import {
 import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import { ArchitectureDiagram } from "./architecture-diagram";
-import { ClusterBadge, RepoMetaChip, StarsChip, TagChip } from "./shared";
+import { ClusterBadge, RepoChipsSkeleton, RepoMetaChip, StarsChip, TagChip } from "./shared";
 import { CaseStudyPrint } from "./case-study-print";
 import { ShareButton } from "./share-button";
 
@@ -46,7 +46,7 @@ export function ProjectDialog({
   onOpenChange,
   onDiscuss,
 }: ProjectDialogProps) {
-  const { repoStats } = useGithubData();
+  const { repoStats, loading } = useGithubData();
   const stat = project ? repoStats[project.repo] : undefined;
   const hasRepo = Boolean(project?.repo);
   const repoUrl = `${GITHUB_BASE}/${project?.repo ?? ""}`;
@@ -85,6 +85,8 @@ export function ProjectDialog({
                 <RepoMetaChip language={stat.language} pushedAt={stat.pushedAt} />
                 <StarsChip stars={stat.stars} />
               </>
+            ) : hasRepo && loading ? (
+              <RepoChipsSkeleton />
             ) : null}
           </div>
           <DialogTitle className="text-xl font-bold leading-snug tracking-tight text-foreground md:text-2xl">

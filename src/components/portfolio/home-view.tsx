@@ -50,7 +50,13 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 };
 
-export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
+interface HomeViewProps {
+  onNavigate: (tab: TabId) => void;
+  /** Fired by the featured-card dialog CTA ("Discuss this system"). */
+  onDiscuss?: (project: Project) => void;
+}
+
+export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
   const featured = projects.filter((p) => p.featured);
   const [caseStudy, setCaseStudy] = useState<Project | null>(null);
   const [headlineBefore, headlineAfter] = profile.headline.split(
@@ -223,8 +229,27 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
             const Icon = skillIcons[skill.icon] ?? Code2;
             return (
               <Reveal key={skill.title} delay={i * 0.07} className="h-full">
-                <Card className="h-full rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
-                  <CardContent className="flex h-full flex-col gap-3 p-5">
+                <Card
+                  className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]"
+                  onMouseMove={(e) => {
+                    // Cursor spotlight — CSS vars drive the radial overlay
+                    // (direct DOM write, no re-render, touch-safe: overlay is
+                    // hover-only).
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    e.currentTarget.style.setProperty("--spot-x", `${e.clientX - rect.left}px`);
+                    e.currentTarget.style.setProperty("--spot-y", `${e.clientY - rect.top}px`);
+                  }}
+                >
+                  {/* Spotlight overlay — lights up under the cursor on hover */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/skill:opacity-100"
+                    style={{
+                      background:
+                        "radial-gradient(220px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(227,179,65,0.12), transparent 60%)",
+                    }}
+                  />
+                  <CardContent className="relative flex h-full flex-col gap-3 p-5">
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
@@ -369,10 +394,12 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
         onOpenChange={(open) => {
           if (!open) setCaseStudy(null);
         }}
-        onDiscuss={(project) => {
-          setCaseStudy(null);
-          onNavigate("contact");
-        }}
+        onDiscuss={
+          onDiscuss ??
+          (() => {
+            onNavigate("contact");
+          })
+        }
       />
     </div>
   );

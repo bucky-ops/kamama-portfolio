@@ -67,6 +67,22 @@ export default function Page() {
     []
   );
 
+  // "Discuss this system" → Contact view with the system pre-filled
+  // (ContactView reads ?topic= on mount and seeds the form).
+  const discussProject = useCallback(
+    (project: Project) => {
+      navigate("contact");
+      if (typeof window !== "undefined") {
+        window.history.replaceState(
+          null,
+          "",
+          `/?tab=contact&topic=${encodeURIComponent(project.title)}`
+        );
+      }
+    },
+    [navigate]
+  );
+
   const consumeFocus = useCallback(() => setFocusProjectTitle(null), []);
 
   // Scroll to top on every tab switch.
@@ -124,15 +140,14 @@ export default function Page() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                {tab === "home" && <HomeView onNavigate={navigate} />}
+                {tab === "home" && (
+                  <HomeView onNavigate={navigate} onDiscuss={discussProject} />
+                )}
                 {tab === "projects" && (
                   <WorkView
                     focusProjectTitle={focusProjectTitle}
                     onConsumeFocus={consumeFocus}
-                    onDiscuss={(project) => {
-                      void project;
-                      navigate("contact");
-                    }}
+                    onDiscuss={discussProject}
                   />
                 )}
                 {tab === "notes" && <NotesView />}
