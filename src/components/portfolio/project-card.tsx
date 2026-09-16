@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ExternalLink, FileText, Github, Layers, Lock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Project } from "@/lib/profile-data";
@@ -23,8 +24,25 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
   const hasCaseStudy = Boolean(project.caseStudy) && hasRepo;
 
   return (
-    <Card className="flex h-full flex-col rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
-      <CardContent className="flex h-full flex-col gap-3.5 p-5 md:p-6">
+    <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
+      {/* Brand watermark - logo spec: icon at 7% opacity on project cards */}
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-9 -right-9 z-0 select-none">
+        <Image
+          src="/brand/kamama-icon-light.png"
+          alt=""
+          width={512}
+          height={512}
+          className="hidden size-28 opacity-[0.07] dark:block"
+        />
+        <Image
+          src="/brand/kamama-icon-dark.png"
+          alt=""
+          width={512}
+          height={512}
+          className="size-28 opacity-[0.07] dark:hidden"
+        />
+      </div>
+      <CardContent className="relative flex h-full flex-col gap-3.5 p-5 md:p-6">
         {/* Top row: cluster + flagship + stars */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -54,8 +72,8 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Title */}
-        <h3 className="text-lg font-semibold leading-snug text-foreground">
+        {/* Title - logo/type spec: card title 20px / 600 */}
+        <h3 className="text-xl font-semibold leading-snug text-foreground">
           {project.title}
         </h3>
 

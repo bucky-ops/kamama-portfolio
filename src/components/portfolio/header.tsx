@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTheme } from "next-themes";
 import { ArrowUpRight, Github, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { nav, profile } from "@/lib/profile-data";
@@ -16,14 +15,16 @@ interface HeaderProps {
   onOpenPalette?: () => void;
 }
 
-/* Brand wordmarks - light version on the dark header (primary), dark version on light */
+/* Brand wordmarks - light version on the dark header (primary), dark version
+   on light. Swapped via CSS (`dark:` variants) instead of useTheme(): the html
+   class is applied pre-paint by next-themes' blocking script, so fresh loads
+   with a stored light theme get the correct mark with zero flash and no
+   hydration timing dependency. */
 const LOGO_LIGHT = "/brand/kamama-wordmark-light-horizontal.png";
 const LOGO_DARK = "/brand/kamama-logo-dark-horizontal.png";
 
 export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
-  const { resolvedTheme } = useTheme();
-  const logoSrc = resolvedTheme === "light" ? LOGO_DARK : LOGO_LIGHT;
 
   // Elevation shadow once the page scrolls - gives the glass bar depth.
   useEffect(() => {
@@ -44,10 +45,10 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
         onClick={() => go(item.id)}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "whitespace-nowrap rounded-full px-4 py-1.5 text-[13px] font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+          "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
           extra,
           isActive
-            ? "bg-primary font-semibold text-primary-foreground shadow-sm"
+            ? "bg-foreground font-semibold text-background shadow-sm"
             : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
         )}
       >
@@ -74,37 +75,37 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
             aria-label="Kamama Portfolio - go to Home"
           >
             <Image
-              src={logoSrc}
+              src={LOGO_LIGHT}
               alt="KAMAMA logo"
-              width={1064}
+              width={1059}
               height={128}
               priority
-              className="h-6 w-auto shrink-0 md:h-8"
+              className="hidden h-6 w-auto shrink-0 md:h-8 dark:block"
+            />
+            <Image
+              src={LOGO_DARK}
+              alt="KAMAMA logo"
+              width={384}
+              height={128}
+              priority
+              className="block h-6 w-auto shrink-0 md:h-8 dark:hidden"
             />
           </button>
-          <span className="hidden whitespace-nowrap rounded-full border border-border px-2.5 py-1 font-mono text-[11px] tracking-widest text-muted-foreground xl:inline">
+          <span className="hidden whitespace-nowrap rounded-full border border-border px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] text-muted-foreground xl:inline">
             SYSTEMS • BLOCKCHAIN • AI
           </span>
         </div>
 
-        {/* Desktop pill nav */}
+        {/* Desktop pill nav - xl+ only: 6 pills + brand only fit at the full
+            1280px grid; smaller widths use the scrollable strip below */}
         <nav
           aria-label="Primary"
-          className="hidden items-center gap-1 rounded-full border border-border bg-card p-1 md:flex"
+          className="hidden items-center gap-1 rounded-full border border-border bg-card p-1 xl:flex"
         >
           {nav.map((item) => navPill(item))}
         </nav>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Availability status - emerald pulse, wireframe spec */}
-          <span className="hidden items-center gap-2 whitespace-nowrap text-[11px] text-muted-foreground xl:flex">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success-fg opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-success-fg" />
-            </span>
-            Available for ICA &amp; remote
-          </span>
-
           <a
             href={profile.socials.github}
             target="_blank"
@@ -115,32 +116,19 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
             <Github className="size-4" aria-hidden="true" />
           </a>
 
-          {/* Command palette trigger - full pill on desktop, icon on mobile */}
+          {/* Command palette trigger - compact icon (palette itself is ⌘K) */}
           {onOpenPalette ? (
-            <>
-              <button
-                type="button"
-                onClick={onOpenPalette}
-                aria-label="Open command palette (Control+K)"
-                className="hidden min-h-9 items-center gap-2 rounded-full border border-border bg-secondary/40 px-3.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 lg:inline-flex"
-              >
-                <Search className="size-3.5" aria-hidden="true" />
-                Search
-                <kbd className="rounded border border-border bg-secondary/70 px-1.5 py-0.5 font-mono text-[10px]" aria-hidden="true">
-                  ⌘K
-                </kbd>
-              </button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={onOpenPalette}
-                aria-label="Open command palette (Control+K)"
-                className="size-11 shrink-0 rounded-full border-border bg-transparent lg:hidden"
-              >
-                <Search className="size-4" aria-hidden="true" />
-              </Button>
-            </>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={onOpenPalette}
+              aria-label="Open command palette (Control+K)"
+              title="Search (Control+K)"
+              className="size-9 shrink-0 rounded-full border-border bg-transparent"
+            >
+              <Search className="size-4" aria-hidden="true" />
+            </Button>
           ) : null}
 
           <ThemeToggle />
@@ -156,10 +144,10 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
         </div>
       </div>
 
-      {/* Mobile tab strip - horizontally scrollable pill row (wireframe pattern) */}
+      {/* Scrollable pill tab strip - md to xl (desktop nav takes over at 1280+) */}
       <nav
         aria-label="Mobile"
-        className="flex gap-2 overflow-x-auto border-t border-border bg-background px-3 py-2 md:hidden"
+        className="flex gap-2 overflow-x-auto border-t border-border bg-background px-3 py-2 xl:hidden"
       >
         {nav.map((item) => {
           const isActive = active === item.id;
@@ -172,7 +160,7 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
               className={cn(
                 "h-9 whitespace-nowrap rounded-full border px-4 text-[13px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
                 isActive
-                  ? "border-primary bg-primary font-semibold text-primary-foreground"
+                  ? "border-foreground bg-foreground font-semibold text-background"
                   : "border-border bg-card text-muted-foreground hover:text-foreground"
               )}
             >

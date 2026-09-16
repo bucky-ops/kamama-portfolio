@@ -4,7 +4,15 @@ import { History, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProjectCluster } from "@/lib/profile-data";
 
-export type TabId = "home" | "projects" | "notes" | "about" | "contact" | "changelog" | "admin";
+export type TabId =
+  | "home"
+  | "projects"
+  | "notes"
+  | "about"
+  | "brand"
+  | "contact"
+  | "changelog"
+  | "admin";
 
 /** Compact relative time for repo activity: "3d", "2w", "5mo", "1y+". */
 function relativeShort(iso: string | null): string | null {
@@ -156,7 +164,7 @@ export function SectionHeading({
           {kicker}
         </p>
       ) : null}
-      <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+      <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-[32px]">
         {title}
       </h2>
       {subtitle ? (

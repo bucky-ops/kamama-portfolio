@@ -46,6 +46,7 @@ export const nav = [
   { id: "projects", label: "Work" },
   { id: "notes", label: "Notes" },
   { id: "about", label: "About" },
+  { id: "brand", label: "Brand" },
   { id: "contact", label: "Contact" },
 ] as const;
 

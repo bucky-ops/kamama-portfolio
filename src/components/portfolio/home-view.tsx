@@ -77,7 +77,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
             </p>
 
             <div className="space-y-4">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-5xl md:leading-[1.15]">
+              <h1 className="text-3xl font-extrabold leading-[1.05] tracking-[-0.02em] text-foreground md:text-[56px] md:leading-[0.98] md:tracking-[-0.03em]">
                 {headlineBefore}
                 <span className="text-primary">{HEADLINE_HIGHLIGHT}</span>
                 {headlineAfter}

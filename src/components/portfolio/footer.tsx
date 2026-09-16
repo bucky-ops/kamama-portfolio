@@ -1,9 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { Github, Linkedin, Lock, Tag, Twitter } from "lucide-react";
 import { profile } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import type { TabId } from "./shared";
+
+/* Brand wordmarks - mirror the header rule: light mark on dark, dark on light.
+   CSS-driven swap (see header.tsx) - no hydration timing dependency. */
+const LOGO_LIGHT = "/brand/kamama-wordmark-light-horizontal.png";
+const LOGO_DARK = "/brand/kamama-logo-dark-horizontal.png";
 
 export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
   const { release } = useGithubData();
@@ -19,10 +25,26 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
   return (
     <footer className="mt-auto border-t border-border bg-background pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center justify-between gap-4 px-5 py-6 text-xs text-muted-foreground md:px-8 md:flex-row">
-        {/* Zone 1 - copyright */}
-        <p>
-          © 2026 Collins Kamama · Kamama Consulting Solutions
-        </p>
+        {/* Zone 1 - brand mark (logo spec: footer 24px) + copyright */}
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
+          <Image
+            src={LOGO_LIGHT}
+            alt="KAMAMA logo"
+            width={1059}
+            height={128}
+            className="hidden h-6 w-auto shrink-0 dark:block"
+          />
+          <Image
+            src={LOGO_DARK}
+            alt="KAMAMA logo"
+            width={384}
+            height={128}
+            className="block h-6 w-auto shrink-0 dark:hidden"
+          />
+          <p>
+            © 2026 Collins Kamama · Kamama Consulting Solutions
+          </p>
+        </div>
 
         {/* Zone 2 - release badge */}
         <div className="flex items-center gap-2">
@@ -31,13 +53,23 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
             {tag}
           </span>
           {onNavigate ? (
-            <button
-              type="button"
-              onClick={() => onNavigate("changelog")}
-              className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-            >
-              Changelog
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => onNavigate("brand")}
+                className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+              >
+                Brand
+              </button>
+              <span aria-hidden="true" className="opacity-30">·</span>
+              <button
+                type="button"
+                onClick={() => onNavigate("changelog")}
+                className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+              >
+                Changelog
+              </button>
+            </>
           ) : (
             <a
               href="https://github.com/bucky-ops/kamama-portfolio/releases"

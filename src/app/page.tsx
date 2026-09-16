@@ -11,6 +11,7 @@ import { AboutView } from "@/components/portfolio/about-view";
 import { ContactView } from "@/components/portfolio/contact-view";
 import { ChangelogView } from "@/components/portfolio/changelog-view";
 import { NotesView } from "@/components/portfolio/notes-view";
+import { BrandView } from "@/components/portfolio/brand-view";
 import { AdminView } from "@/components/portfolio/admin-view";
 import { CommandPalette } from "@/components/portfolio/command-palette";
 import { BackToTop } from "@/components/portfolio/back-to-top";
@@ -23,6 +24,7 @@ const VALID_TABS: TabId[] = [
   "projects",
   "notes",
   "about",
+  "brand",
   "contact",
   "changelog",
   "admin",
@@ -39,6 +41,10 @@ const TAB_ALIASES: Record<string, TabId> = {
   projects: "projects",
   blog: "notes",
   references: "about",
+  brand: "brand",
+  design: "brand",
+  "design-system": "brand",
+  logo: "brand",
   hire: "contact",
 };
 
@@ -177,6 +183,7 @@ export default function Page() {
                   )}
                   {tab === "notes" && <NotesView />}
                   {tab === "about" && <AboutView />}
+                  {tab === "brand" && <BrandView />}
                   {tab === "contact" && <ContactView />}
                   {tab === "changelog" && <ChangelogView />}
                   {tab === "admin" && <AdminView />}

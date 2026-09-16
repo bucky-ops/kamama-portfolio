@@ -7,6 +7,58 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.11.0] - 2026-09-16
+
+### Added
+- **Brand tab (design system showcase)**: a new "Brand" view presents the
+  whole design system "in words", rebuilt 1:1 from the production wireframes:
+  the 8-token color palette (Background #0D1117, Card #161B22, Border
+  #21262D, Text Primary #C9D1D9, Text Muted #8B949E, Accent #F9B872, Accent
+  Hover #FFC985, Success #238636) as swatch cards with one-click hex copy,
+  the real Tailwind class-mapping chips, typography specimens (Display
+  48-56px/800, Section 32px/700, Card Title 20px/600, Body 16-18px/400,
+  JetBrains Mono badges), the 8pt spacing scale with proportional amber
+  bars, the bento rationale, and the header spec callout.
+- **Logo System section (Brand tab)**: all three variants (light wordmark
+  primary, dark wordmark for light bg on an elevated #C9D1D9 card, icon-only
+  1:1), the DO'S / DON'TS usage rules, and three live mockups - business
+  card, favicon/social tile and the actual header bar.
+- **Icon watermark on project cards**: the KAMAMA network emblem now sits in
+  the bottom-right corner of every project card at 7% opacity per the logo
+  usage spec (theme-aware light/dark asset pair, pointer-events-none).
+- **Footer brand mark**: the wordmark joins the footer at the spec's 24px
+  size, plus a "Brand" quick link next to Changelog.
+
+### Changed
+- **Header per wireframe spec**: active nav pill is now #C9D1D9 with #0D1117
+  text (theme-aware foreground/background tokens) instead of amber - amber
+  stays reserved for CTAs per the accent budget; the desktop pill nav moves
+  to xl+ (the 1280px grid is the only width where 6 pills + brand fit) with
+  the scrollable pill strip covering md-lg; the search pill becomes a compact
+  icon button (the palette itself stays on Control+K); the "Available for
+  ICA" text yields its header slot (it already lives in the hero and
+  Contact).
+- **Fresh-load logo swap fix**: wordmark theming switched from useTheme()
+  state to CSS `dark:` variants in header and footer. Fresh loads with a
+  stored light theme previously kept the white wordmark (invisible on cream)
+  because the post-hydration re-render never landed - the CSS swap is
+  pre-paint and cannot race.
+- **Typography parity**: hero H1 to the Display spec (56px / 800 /
+  -0.03em / tight leading), section headings to 32px/700, project card
+  titles to 20px/600.
+- Deep links `?tab=design`, `?tab=design-system` and `?tab=logo` resolve to
+  the Brand view; the command palette gains a Brand entry.
+
+### Verified
+- E2E (agent-browser): Brand view renders desktop + 390px, both themes -
+  palette, typography, spacing, bento logic, logo variants, DO/DON'T and all
+  three mockups; header overlap measured and eliminated (logo ends x=297,
+  nav starts x=545 at 1280); watermark computes 112px @ opacity 0.07 across
+  16 card nodes; fresh light + dark loads both show the correct wordmark;
+  footer wordmark + Brand link; command palette Brand entry; founder email
+  still first mailto; zero em dashes in rendered content; zero console
+  errors; ESLint + tsc clean.
+
 ## [1.10.0] - 2026-09-16
 
 ### Added
@@ -371,7 +423,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.11.0
 [1.10.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.10.0
 [1.9.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.9.0
 [1.8.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.8.0
