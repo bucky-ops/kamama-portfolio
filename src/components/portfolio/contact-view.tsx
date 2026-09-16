@@ -8,6 +8,7 @@ import {
   Check,
   CheckCircle2,
   Copy,
+  Download,
   Github,
   Linkedin,
   Loader2,
@@ -41,6 +42,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { availability, budgetRanges, profile, projectTypes } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { Reveal } from "./reveal";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name is required").max(120),
@@ -55,6 +57,42 @@ const contactSchema = z.object({
 
 type ContactValues = z.infer<typeof contactSchema>;
 type SubmitStatus = "idle" | "sending" | "success" | "error";
+
+/**
+ * Builds a vCard 3.0 string so prospects can save Collins to their address
+ * book with one tap. Pure client-side — no dependencies, no network call.
+ */
+function buildVCard(): string {
+  const lines = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    `N:Kamama;Muchiri Collins;;;`,
+    `FN:${profile.name}`,
+    `ORG:Kamama Consulting Solutions`,
+    `TITLE:${profile.role}`,
+    `EMAIL;TYPE=WORK,INTERNET,PRIMARY:${profile.emails.founder}`,
+    `EMAIL;TYPE=HOME,INTERNET:${profile.emails.personal}`,
+    `EMAIL;TYPE=HOME,INTERNET:${profile.emails.secure}`,
+    `TEL;TYPE=CELL:${profile.phone.replace(/\s/g, "")}`,
+    `URL:https://kamama-portfolio.vercel.app`,
+    `ADR;TYPE=WORK:;;Nairobi;;;Kenya;`,
+    `NOTE:Production-grade blockchain, AI & data platforms. Open for remote ICA contracts.`,
+    "END:VCARD",
+  ];
+  return lines.join("\r\n");
+}
+
+function downloadVCard() {
+  const blob = new Blob([buildVCard()], { type: "text/vcard;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Collins-Kamama.vcf";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
@@ -149,6 +187,7 @@ export function ContactView() {
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 md:py-12">
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Left: conversation form ──────────────────────────────── */}
+        <Reveal>
         <Card className="rounded-2xl border-border bg-[#161B22]">
           <CardContent className="p-6 md:p-8">
             <h2 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
@@ -381,9 +420,11 @@ export function ContactView() {
             )}
           </CardContent>
         </Card>
+        </Reveal>
 
         {/* ── Right: contact details ───────────────────────────────── */}
         <div className="space-y-6">
+          <Reveal delay={0.08}>
           <Card className="rounded-2xl border-border bg-[#161B22]">
             <CardContent className="space-y-5 p-6">
               <h2 className="text-lg font-semibold text-foreground">
@@ -475,10 +516,32 @@ export function ContactView() {
                   </a>
                 ))}
               </div>
+
+              <Separator className="bg-border" />
+
+              {/* Save contact — one-tap vCard download */}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  downloadVCard();
+                  toast({
+                    title: "Contact card downloaded",
+                    description:
+                      "Collins-Kamama.vcf — open it to add all direct lines to your address book.",
+                  });
+                }}
+                className="min-h-11 w-full rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-secondary/50"
+              >
+                <Download className="size-4 text-primary" aria-hidden="true" />
+                Save contact card (.vcf)
+              </Button>
             </CardContent>
           </Card>
+          </Reveal>
 
           {/* Availability */}
+          <Reveal delay={0.14}>
           <Card className="rounded-2xl border-border bg-[#161B22]">
             <CardContent className="space-y-3 p-6">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -504,8 +567,10 @@ export function ContactView() {
               </ul>
             </CardContent>
           </Card>
+          </Reveal>
 
           {/* Map placeholder */}
+          <Reveal delay={0.2}>
           <div
             className={cn(
               "grid-pattern flex items-center gap-3 rounded-2xl border border-dashed border-border p-6"
@@ -521,6 +586,7 @@ export function ContactView() {
               </p>
             </div>
           </div>
+          </Reveal>
         </div>
       </div>
     </div>

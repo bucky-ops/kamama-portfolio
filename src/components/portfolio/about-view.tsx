@@ -16,6 +16,7 @@ import {
   timeline,
 } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { Reveal } from "./reveal";
 
 function CertChip({ status }: { status: string }) {
   const complete = status === "Complete";
@@ -62,20 +63,24 @@ export function AboutView() {
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 md:py-12">
       <div className="grid gap-6 lg:grid-cols-5">
         {/* ── Career timeline ──────────────────────────────────────── */}
+        <Reveal className="lg:col-span-3">
         <section
           aria-label="Career timeline"
-          className="lg:col-span-3"
+          className="h-full"
         >
           <Card className="h-full rounded-2xl border-border bg-[#161B22]">
             <CardContent className="p-6 md:p-8">
               <h2 className="mb-6 text-xl font-bold tracking-tight text-foreground md:text-2xl">
                 Career Timeline
               </h2>
-              <ol className="ml-1 space-y-8 border-l border-[#30363D] pl-6">
+              <ol className="ml-1 space-y-2 border-l border-[#30363D] pl-6">
                 {timeline.map((entry) => (
-                  <li key={`${entry.period}-${entry.org}`} className="relative">
+                  <li
+                    key={`${entry.period}-${entry.org}`}
+                    className="group relative -mx-3 rounded-xl border border-transparent px-3 py-3 transition-all duration-200 hover:border-primary/25 hover:bg-secondary/30"
+                  >
                     <span
-                      className="absolute -left-[27px] top-1.5 size-2.5 rounded-full bg-primary ring-4 ring-primary/15"
+                      className="absolute -left-[39px] top-[19px] size-2.5 rounded-full bg-primary ring-4 ring-primary/15 transition-all duration-200 group-hover:scale-125 group-hover:ring-primary/30"
                       aria-hidden="true"
                     />
                     <div className="flex flex-wrap items-center gap-2">
@@ -110,10 +115,12 @@ export function AboutView() {
             </CardContent>
           </Card>
         </section>
+        </Reveal>
 
         {/* ── Stacked side cards ───────────────────────────────────── */}
         <div className="space-y-6 lg:col-span-2">
           {/* Education */}
+          <Reveal>
           <section aria-label="Education">
             <AboutCard title="Education" icon={GraduationCap}>
               <div className="space-y-4">
@@ -134,8 +141,10 @@ export function AboutView() {
               </div>
             </AboutCard>
           </section>
+          </Reveal>
 
           {/* Certifications */}
+          <Reveal delay={0.06}>
           <section aria-label="Certifications">
             <AboutCard title="Certifications" icon={Award}>
               <div className="max-h-72 space-y-3 overflow-y-auto pr-2">
@@ -158,8 +167,10 @@ export function AboutView() {
               </div>
             </AboutCard>
           </section>
+          </Reveal>
 
           {/* Interests */}
+          <Reveal delay={0.12}>
           <section aria-label="Interests">
             <AboutCard title="Interests" icon={Sparkles}>
               <div className="flex flex-wrap gap-1.5">
@@ -174,8 +185,10 @@ export function AboutView() {
               </div>
             </AboutCard>
           </section>
+          </Reveal>
 
           {/* Testimonials */}
+          <Reveal delay={0.18}>
           <section aria-label="References and recommendations">
             <AboutCard
               title="References & Recommendations"
@@ -227,6 +240,7 @@ export function AboutView() {
               </div>
             </AboutCard>
           </section>
+          </Reveal>
         </div>
       </div>
     </div>

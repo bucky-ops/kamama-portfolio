@@ -7,6 +7,39 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-09-16
+
+### Added
+- **Testimonials on the landing view**: a "What partners say" section on Home brings
+  social proof above the fold journey's end — three abridged reference cards
+  (Alice Ndungu, James Ndegwa, Victor Rotich) with amber initial avatars, green
+  "On file" verified chips, clamped quotes, and a "Read full references in About"
+  hand-off link.
+- **One-tap vCard download** in Contact: "Save contact card (.vcf)" builds a vCard 3.0
+  client-side (all three email lines, phone, org, title, site URL, Nairobi address) and
+  downloads `Collins-Kamama.vcf` — prospects can add Collins to their address book with
+  one tap. Pure client-side, no dependencies, confirmed by toast.
+- **Reading progress bar + scroll-spy TOC in Notes**: the article reader now shows an
+  amber gradient progress bar pinned under the sticky header (with a live `%` readout in
+  the meta row) and an "On this page" chip navigation — numbered chips smooth-scroll to
+  sections, and the chip for the section currently in the reader's middle band
+  highlights automatically (IntersectionObserver). Notes reset scroll to top when opened.
+- **RSS feed** at `/feed.xml`: statically generated RSS 2.0 for the Notes blog (titles,
+  dates, categories, full content) and declared via `<link rel="alternate">` in the
+  document head so readers/apps can subscribe.
+
+### Changed
+- **Scroll-reveal choreography site-wide**: new `Reveal` component (fade + rise on first
+  viewport entry, staggered delays, honors `prefers-reduced-motion`) applied to Home
+  (trust bar, skill tiles, featured systems, testimonials), About (timeline + side
+  cards), Contact (form, direct lines, availability, map), and Notes list cards.
+- **Skill depth meters**: each Home skill pillar now carries an animated amber gradient
+  depth bar (fills on scroll into view) with a `depth n/100` mono readout and an
+  accessible `aria-label`; depth values live in `profile-data.ts`.
+- **Career timeline hover polish**: timeline entries highlight as a card on hover
+  (border + tint), and their amber node scales up — matching the site-wide hover
+  language.
+
 ## [1.3.0] — 2026-09-16
 
 ### Added
@@ -102,7 +135,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.4.0
 [1.3.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.3.0
 [1.2.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.2.0
 [1.1.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.1.0

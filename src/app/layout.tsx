@@ -32,7 +32,10 @@ export const metadata: Metadata = {
     "Nairobi",
   ],
   authors: [{ name: "Muchiri Collins Kamama" }],
-  alternates: { canonical: SITE_URL },
+  alternates: {
+    canonical: SITE_URL,
+    types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
+  },
   openGraph: {
     title: "Collins Kamama — Production-Grade Systems",
     description:

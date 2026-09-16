@@ -14,6 +14,8 @@ import {
   Globe,
   Landmark,
   type LucideIcon,
+  Quote,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,12 +24,14 @@ import {
   profile,
   projects,
   skillCards,
+  testimonials,
   trustLogos,
   type Project,
 } from "@/lib/profile-data";
 import { AnimatedStat } from "./animated-stat";
 import { ProjectCard } from "./project-card";
 import { ProjectDialog } from "./project-dialog";
+import { Reveal } from "./reveal";
 import { InitialsAvatar, SectionHeading, TagChip, type TabId } from "./shared";
 
 const HEADLINE_HIGHLIGHT = "operate, not just demo";
@@ -182,30 +186,30 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
       </section>
 
       {/* ── Trust bar ──────────────────────────────────────────────── */}
-      <motion.section
-        aria-label="Trusted by"
-        {...fadeUp}
-        transition={{ duration: 0.3 }}
-        className="rounded-2xl border border-border bg-[#161B22] px-5 py-4 md:px-6"
-      >
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-            Trusted across
-          </span>
-          {trustLogos.map((org, i) => {
-            const Icon = trustIcons[i % trustIcons.length];
-            return (
-              <span
-                key={org}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground"
-              >
-                <Icon className="size-3.5 text-primary/70" aria-hidden="true" />
-                {org}
-              </span>
-            );
-          })}
-        </div>
-      </motion.section>
+      <Reveal>
+        <section
+          aria-label="Trusted by"
+          className="rounded-2xl border border-border bg-[#161B22] px-5 py-4 md:px-6"
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              Trusted across
+            </span>
+            {trustLogos.map((org, i) => {
+              const Icon = trustIcons[i % trustIcons.length];
+              return (
+                <span
+                  key={org}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground"
+                >
+                  <Icon className="size-3.5 text-primary/70" aria-hidden="true" />
+                  {org}
+                </span>
+              );
+            })}
+          </div>
+        </section>
+      </Reveal>
 
       {/* ── Skills bento ───────────────────────────────────────────── */}
       <section aria-label="Skills" className="space-y-4">
@@ -218,11 +222,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
           {skillCards.map((skill, i) => {
             const Icon = skillIcons[skill.icon] ?? Code2;
             return (
-              <motion.div
-                key={skill.title}
-                {...fadeUp}
-                transition={{ duration: 0.3, delay: i * 0.06 }}
-              >
+              <Reveal key={skill.title} delay={i * 0.07} className="h-full">
                 <Card className="h-full rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
                   <CardContent className="flex h-full flex-col gap-3 p-5">
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -239,6 +239,29 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
                         {skill.metricNote}
                       </p>
                     </div>
+                    {/* Depth meter — animated amber fill on scroll into view */}
+                    <div
+                      role="img"
+                      aria-label={`${skill.title} depth: ${skill.depth} out of 100`}
+                    >
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F0B232]"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.depth}%` }}
+                          viewport={{ once: true, margin: "0px 0px -32px 0px" }}
+                          transition={{
+                            duration: 0.9,
+                            delay: 0.15 + i * 0.07,
+                            ease: "easeOut",
+                          }}
+                        />
+                      </div>
+                      <div className="mt-1 flex items-center justify-between font-mono text-[10px] text-muted-foreground">
+                        <span>depth</span>
+                        <span className="text-primary/80">{skill.depth}/100</span>
+                      </div>
+                    </div>
                     <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
                       {skill.tags.map((tag) => (
                         <TagChip key={tag} tag={tag} />
@@ -246,7 +269,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </Reveal>
             );
           })}
         </div>
@@ -261,16 +284,11 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
         />
         <div className="grid gap-4 md:grid-cols-3">
           {featured.map((project, i) => (
-            <motion.div
-              key={project.title}
-              {...fadeUp}
-              transition={{ duration: 0.3, delay: i * 0.06 }}
-              className="flex"
-            >
+            <Reveal key={project.title} delay={i * 0.07} className="flex">
               <div className="w-full">
                 <ProjectCard project={project} onCaseStudy={setCaseStudy} />
               </div>
-            </motion.div>
+            </Reveal>
           ))}
         </div>
         <div className="flex justify-center pt-2">
@@ -283,6 +301,64 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
             All Systems
             <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
+        </div>
+      </section>
+
+      {/* ── Testimonials strip ────────────────────────────────────────── */}
+      <section aria-label="What partners say" className="space-y-4">
+        <SectionHeading
+          kicker="Social proof"
+          title="What partners say"
+          subtitle="Abridged from written professional references — originals available on request."
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.07} className="h-full">
+              <figure className="group flex h-full flex-col rounded-2xl border border-border bg-[#161B22] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
+                <div className="flex items-start justify-between gap-2">
+                  <Quote
+                    className="size-4 shrink-0 text-primary/70 transition-colors group-hover:text-primary"
+                    aria-hidden="true"
+                  />
+                  <span
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#3FB950]/30 bg-[#3FB950]/10 px-2 py-0.5 font-mono text-[10px] text-[#3FB950]"
+                    title="Professional reference held on file"
+                  >
+                    <ShieldCheck className="size-3" aria-hidden="true" />
+                    On file
+                  </span>
+                </div>
+                <blockquote className="mb-4 mt-3 line-clamp-4 text-sm italic leading-relaxed text-muted-foreground">
+                  “{t.quote}”
+                </blockquote>
+                <figcaption className="mt-auto flex items-center gap-3 border-t border-border/60 pt-3">
+                  <span
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F0B232]/40"
+                    aria-hidden="true"
+                  >
+                    {t.initials}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-foreground">{t.name}</p>
+                    <p className="truncate text-xs text-muted-foreground">{t.title}</p>
+                  </div>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+        <div className="flex justify-center pt-1">
+          <button
+            type="button"
+            onClick={() => onNavigate("about")}
+            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-medium text-primary transition-colors hover:text-[#F0B232] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+          >
+            Read full references in About
+            <ArrowRight
+              className="size-4 transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </button>
         </div>
       </section>
 

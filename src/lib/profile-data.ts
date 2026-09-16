@@ -79,6 +79,7 @@ export const skillCards = [
   {
     icon: "code",
     title: "Full-Stack Development",
+    depth: 95,
     metric: "10+ cloud-native apps shipped",
     metricNote: "AWS · Vercel · Heroku",
     tags: ["Node.js", "TypeScript", "React", "Next.js", "Express", "Flask", "REST/GraphQL"],
@@ -86,6 +87,7 @@ export const skillCards = [
   {
     icon: "brain",
     title: "Data Science & AI",
+    depth: 88,
     metric: "85% predictive accuracy",
     metricNote: "NLP · RAG · LangChain · Llama 3.1",
     tags: ["Python", "Pandas", "NumPy", "scikit-learn", "Power BI", "Tableau"],
@@ -93,6 +95,7 @@ export const skillCards = [
   {
     icon: "database",
     title: "Database Engineering",
+    depth: 92,
     metric: "99.9% uptime @ 500K+ daily tx",
     metricNote: "Tier 3 PostgreSQL HA",
     tags: ["PostgreSQL HA", "Replication", "Query Tuning", "MySQL", "MongoDB", "ETL"],
@@ -100,6 +103,7 @@ export const skillCards = [
   {
     icon: "cloud",
     title: "Cloud & DevOps",
+    depth: 86,
     metric: "35% infra cost reduction",
     metricNote: "Optimization + IaC",
     tags: ["AWS EC2/S3/Lambda/RDS", "Docker", "CI/CD", "GitHub Actions", "IaC", "Linux"],
