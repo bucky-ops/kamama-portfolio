@@ -7,6 +7,17 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] — 2026-09-16
+
+### Changed
+- Vercel project pinned to the `nextjs` framework (project-level) and connected to the
+  GitHub repo `bucky-ops/kamama-portfolio` — every push to `main` now auto-deploys to
+  production, every tag can be traced to a deployment.
+- Old project link to legacy `kamama-digital-canvas` repo detached.
+
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.1
+
 ## [Unreleased]
 
 ### Planned
@@ -46,5 +57,4 @@ versioning follows [Semantic Versioning](https://semver.org/).
   submission persisted to database, live GitHub star data, zero console errors.
 - ESLint clean; TypeScript strict, no `any`.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.0
