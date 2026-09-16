@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
 
 /**
  * Admin leads inbox API — key-gated.
  * Auth: every request must carry `x-admin-key` matching the ADMIN_KEY env var.
  * The key lives server-side only (Vercel env + local .env.local); never shipped to the client bundle.
+ * Abuse protection: per-IP sliding window (blocks ADMIN_KEY brute force).
  */
 
 export const ADMIN_KEY_HEADER = "x-admin-key";
+
+/** 40 requests / 10 min per IP — far above real admin usage, far below brute-force viable. */
+const RATE_MAX = 40;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
 
 const ALLOWED_STATUSES = ["new", "read", "replied"] as const;
 
@@ -26,9 +32,25 @@ function unauthorized() {
   );
 }
 
+function rateLimited(retryAfterSec: number) {
+  return NextResponse.json(
+    { ok: false, error: "Too many requests — slow down and try again shortly." },
+    { status: 429, headers: { "Retry-After": String(retryAfterSec) } }
+  );
+}
+
+/** Gate shared by all methods: rate limit first, then key auth. */
+function guard(req: NextRequest): NextResponse | null {
+  const limiter = checkRateLimit(`admin:${clientIpFrom(req)}`, RATE_MAX, RATE_WINDOW_MS);
+  if (!limiter.allowed) return rateLimited(limiter.retryAfterSec);
+  if (!isAuthorized(req)) return unauthorized();
+  return null;
+}
+
 /** GET /api/admin/leads → leads + aggregate stats */
 export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) return unauthorized();
+  const blocked = guard(req);
+  if (blocked) return blocked;
 
   try {
     const [leads, total, countNew, countRead, countReplied] = await Promise.all([
@@ -68,7 +90,8 @@ const patchSchema = z.object({
 
 /** PATCH /api/admin/leads → update a lead's status (new | read | replied) */
 export async function PATCH(req: NextRequest) {
-  if (!isAuthorized(req)) return unauthorized();
+  const blocked = guard(req);
+  if (blocked) return blocked;
 
   try {
     const parsed = patchSchema.safeParse(await req.json());
@@ -95,7 +118,8 @@ export async function PATCH(req: NextRequest) {
 
 /** DELETE /api/admin/leads?id=... → remove a lead */
 export async function DELETE(req: NextRequest) {
-  if (!isAuthorized(req)) return unauthorized();
+  const blocked = guard(req);
+  if (blocked) return blocked;
 
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {

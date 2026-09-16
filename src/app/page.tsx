@@ -13,6 +13,7 @@ import { ChangelogView } from "@/components/portfolio/changelog-view";
 import { NotesView } from "@/components/portfolio/notes-view";
 import { AdminView } from "@/components/portfolio/admin-view";
 import { CommandPalette } from "@/components/portfolio/command-palette";
+import { BackToTop } from "@/components/portfolio/back-to-top";
 import type { Project } from "@/lib/profile-data";
 import type { TabId } from "@/components/portfolio/shared";
 
@@ -102,7 +103,7 @@ export default function Page() {
   return (
     <MotionConfig reducedMotion="user">
       <GithubDataProvider>
-        <div className="flex min-h-screen flex-col bg-[#0D1117] text-[#E6EDF3]">
+        <div className="flex min-h-screen flex-col bg-[#0D1117] text-[#E6EDF3] print:hidden">
           <a
             href="#main-content"
             className="skip-link rounded-full border border-primary/50 bg-[#161B22] px-4 py-2 text-xs font-medium text-primary shadow-lg focus-visible:outline-none"
@@ -143,6 +144,7 @@ export default function Page() {
             </AnimatePresence>
           </main>
           <Footer onNavigate={navigate} />
+          <BackToTop />
           <CommandPalette
             open={paletteOpen}
             onOpenChange={setPaletteOpen}

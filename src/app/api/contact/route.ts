@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
+
+/** Per-IP sliding window: 5 messages per 10 minutes is generous for humans. */
+const RATE_MAX = 5;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name is required").max(120),
@@ -30,6 +35,20 @@ function botSuccess(): NextResponse {
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Rate limit gate (abuse protection, before any parsing) ───
+    const limiter = checkRateLimit(`contact:${clientIpFrom(req)}`, RATE_MAX, RATE_WINDOW_MS);
+    if (!limiter.allowed) {
+      console.warn("[contact] Rate limit hit —", clientIpFrom(req));
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "Too many messages from this connection. Please wait a few minutes and try again — or email me directly.",
+        },
+        { status: 429, headers: { "Retry-After": String(limiter.retryAfterSec) } }
+      );
+    }
+
     const body = await req.json();
     const parsed = contactSchema.safeParse(body);
 

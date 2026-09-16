@@ -14,6 +14,7 @@ import {
 import { formatDateLong, notes, type Note } from "@/lib/notes-data";
 import { Reveal } from "./reveal";
 import { SectionHeading, TagChip } from "./shared";
+import { ShareButton } from "./share-button";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,6 +25,23 @@ import { cn } from "@/lib/utils";
 export function NotesView() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const current = notes.find((n) => n.slug === openSlug) ?? null;
+
+  // Deep-link support: /?tab=notes&n=<slug> opens a specific note.
+  // Deferred one tick so the initial paint matches SSR (list view).
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("n");
+    if (slug && notes.some((n) => n.slug === slug)) {
+      const id = window.setTimeout(() => setOpenSlug(slug), 0);
+      return () => window.clearTimeout(id);
+    }
+  }, []);
+
+  // Keep the URL in sync so any note is shareable/linkable.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = openSlug ? `/?tab=notes&n=${openSlug}` : "/?tab=notes";
+    window.history.replaceState(null, "", url);
+  }, [openSlug]);
 
   const open = (slug: string) => {
     setOpenSlug(slug);
@@ -214,14 +232,23 @@ function NoteReader({ note, onBack, onNext, nextTitle }: NoteReaderProps) {
 
       {/* Reader header */}
       <div className="space-y-4">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-        >
-          <ArrowLeft className="size-3.5" aria-hidden="true" />
-          All notes
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+          >
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
+            All notes
+          </button>
+          <ShareButton
+            title={`${note.title} — Collins Kamama`}
+            text={`${note.title} — field note by Collins Kamama`}
+            path={`/?tab=notes&n=${note.slug}`}
+            label="Share note"
+            className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 print:hidden"
+          />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {note.tags.map((t) => (
             <TagChip key={t} tag={t} />

@@ -128,6 +128,8 @@ function CopyButton({ value }: { value: string }) {
 export function ContactView() {
   const { toast } = useToast();
   const [status, setStatus] = useState<SubmitStatus>("idle");
+  /** Server-provided error detail (e.g. rate-limit copy) shown in the error panel. */
+  const [errorHint, setErrorHint] = useState<string | null>(null);
   // Anti-spam: form mount timestamp — submissions faster than human speed are dropped server-side.
   const startedAtRef = useRef<number>(Date.now());
 
@@ -161,18 +163,25 @@ export function ContactView() {
           startedAt: startedAtRef.current, // timing check
         }),
       });
-      const json = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+      const json = (await res.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
       if (res.ok && json?.ok) {
         setStatus("success");
+        setErrorHint(null);
         form.reset();
         toast({
           title: "Message sent",
           description: "Thanks — expect a scoped reply within 24 hours.",
         });
       } else {
+        setErrorHint(
+          typeof json?.error === "string" && json.error ? json.error : null
+        );
         setStatus("error");
       }
     } catch {
+      setErrorHint(null);
       setStatus("error");
     }
   };
@@ -378,6 +387,9 @@ export function ContactView() {
                       <p className="font-medium text-destructive">
                         Something went wrong sending your message.
                       </p>
+                      {errorHint ? (
+                        <p className="mt-1 text-muted-foreground">{errorHint}</p>
+                      ) : null}
                       <p className="mt-1 text-muted-foreground">
                         Please email me directly at{" "}
                         <a

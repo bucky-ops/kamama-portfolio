@@ -207,3 +207,181 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Print: case-study one-pager ──────────────────────────────
+   The .print-sheet subtree (rendered inside the case-study dialog) is the
+   only thing that survives printing. App chrome is display:none'd (so it
+   cannot push content down the print flow), the dialog's translate/position
+   are neutralized (Tailwind 4 uses the `translate` property, not transform),
+   and the sheet prints black-on-white with amber accent bars. */
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  html,
+  body {
+    overflow: visible !important;
+    height: auto !important;
+    background: white !important;
+  }
+
+  /* App chrome out of the print flow entirely */
+  main,
+  header,
+  footer,
+  .skip-link,
+  [role="progressbar"],
+  [data-slot="dialog-overlay"],
+  [data-radix-popper-content-wrapper] {
+    display: none !important;
+  }
+
+  /* Neutralize dialog positioning chrome (translate, fixed, max-height).
+     NB: Tailwind 4's translate utilities emit the standalone `translate`
+     property fed by --tw-translate-x/y; Lightning CSS strips plain
+     `translate: none` declarations, so we reset via the custom props. */
+  [role="dialog"] {
+    --tw-translate-x: 0% !important;
+    --tw-translate-y: 0% !important;
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    max-height: none !important;
+    max-width: none !important;
+    overflow: visible !important;
+    background: white !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide everything inside the dialog except the print sheet itself */
+  [role="dialog"] > *:not(.print-sheet) {
+    display: none !important;
+  }
+
+  .print-sheet {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    color: #111 !important;
+    background: white !important;
+    font-size: 11.5pt !important;
+    line-height: 1.55 !important;
+  }
+
+  .print-sheet * {
+    visibility: visible !important;
+    color: #111 !important;
+    border-color: #bbb !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-sheet-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    gap: 12pt;
+    border-bottom: 2pt solid #E3B341 !important;
+    padding-bottom: 8pt;
+    margin-bottom: 14pt;
+  }
+
+  .print-sheet-brand {
+    font-size: 15pt !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.18em !important;
+  }
+
+  .print-sheet-dot {
+    color: #E3B341 !important;
+    margin-left: 3pt;
+  }
+
+  .print-sheet-brand-meta {
+    font-size: 8.5pt !important;
+    text-align: right !important;
+    color: #444 !important;
+    line-height: 1.5 !important;
+  }
+
+  .print-sheet-title {
+    font-size: 20pt !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    margin: 0 0 4pt !important;
+  }
+
+  .print-sheet-meta {
+    font-size: 9pt !important;
+    color: #555 !important;
+    margin: 0 0 14pt !important;
+  }
+
+  .print-sheet-section {
+    margin-bottom: 12pt !important;
+    break-inside: avoid;
+  }
+
+  .print-sheet-section h2 {
+    font-size: 9pt !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.14em !important;
+    color: #8a6d1d !important;
+    border-left: 3pt solid #E3B341 !important;
+    padding-left: 6pt !important;
+    margin: 0 0 5pt !important;
+    font-weight: 700 !important;
+  }
+
+  .print-sheet-section p {
+    margin: 0 !important;
+  }
+
+  .print-sheet-mono {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace !important;
+    font-size: 9.5pt !important;
+  }
+
+  .print-sheet-stages {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-sheet-stages li {
+    display: flex !important;
+    gap: 6pt;
+    margin-bottom: 4pt !important;
+    font-size: 9.5pt !important;
+  }
+
+  .print-sheet-stage-num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace !important;
+    color: #8a6d1d !important;
+    font-weight: 700 !important;
+  }
+
+  .print-sheet-metric {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace !important;
+    font-weight: 700 !important;
+    border-left: 3pt solid #E3B341 !important;
+    padding-left: 8pt !important;
+    background: #faf3dd !important;
+    padding-top: 5pt !important;
+    padding-bottom: 5pt !important;
+  }
+
+  .print-sheet-footer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6pt 14pt;
+    border-top: 1pt solid #ccc !important;
+    padding-top: 8pt;
+    margin-top: 16pt !important;
+    font-size: 8.5pt !important;
+    color: #555 !important;
+  }
+}

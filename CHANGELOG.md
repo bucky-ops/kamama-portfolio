@@ -7,6 +7,46 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] — 2026-09-16
+
+### Added
+- **Print / Save-PDF case-study one-pager**: every case-study dialog now has a
+  "Print / PDF" button that opens the browser print dialog over a dedicated print-only
+  rendering — a clean, black-on-white branded one-pager (KAMAMA letterhead, problem →
+  architecture → stage-by-stage flow → stack → outcome, amber accent bars, contact
+  footer with `muchiri.collin@aol.com`). Implemented with a `@media print` stylesheet
+  that hides the app chrome, neutralizes the dialog (fixed/translate/max-height) and
+  reveals only the sheet — no dependencies, works from any browser's Ctrl/Cmd+P too.
+- **Share buttons (Web Share API + clipboard fallback)**: case-study dialogs share the
+  site with system context; Notes readers get "Share note" with shareable deep links —
+  every note is now linkable via `/?tab=notes&n=<slug>` (URL syncs live as you open
+  notes, deferred read keeps SSR paint consistent). Fallback copies the link with a
+  "Link copied" toast; denial degrades to a clear "Couldn't share" toast.
+- **Back-to-top control with scroll-progress ring**: floating bottom-right button
+  appears after ~500 px of scroll, shows page scroll progress as an animated amber SVG
+  ring, announces progress to screen readers (`aria-label`), smooth-scrolls to top
+  (instant under `prefers-reduced-motion`), and is excluded from print output.
+- **API rate limiting**: new `src/lib/rate-limit.ts` in-memory sliding-window limiter.
+  `POST /api/contact` allows 5 messages / 10 min per IP (429 + `Retry-After`, friendly
+  error copy surfaced in the form's error panel); `/api/admin/leads` allows 40 req /
+  10 min per IP across all methods — ADMIN_KEY brute force is no longer viable. Buckets
+  self-clean lazily to keep memory bounded.
+
+### Changed
+- Contact form error panel now surfaces the server's specific error message (e.g. the
+  rate-limit copy) above the direct-email fallback line.
+- Print hardening: app root hidden in print flow, reading-progress bar and share/print
+  buttons excluded from print output, `@page` margins set.
+
+### Verified
+- agent-browser `pdf` render of the print one-pager (Blockchain Inventory System):
+  single clean page with letterhead, 4-stage flow, amber outcome bar and contact footer.
+- Rate limit E2E: 5/5 contact POSTs accepted, 6th → 429 `retry-after: 598`; admin loop
+  40× 401 → 429. Test rows removed afterwards.
+- Notes deep link `/?tab=notes&n=rag-for-sdg-evidence` opens the reader with Share note.
+- Back-to-top: hidden at top, appears at 22% scroll with live ring, returns to top.
+- ESLint clean, `tsc --noEmit` clean (src), zero console errors.
+
 ## [1.4.0] — 2026-09-16
 
 ### Added
@@ -135,7 +175,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.5.0
 [1.4.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.4.0
 [1.3.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.3.0
 [1.2.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.2.0

@@ -7,6 +7,7 @@ import {
   Layers,
   Lock,
   MessageSquare,
+  Printer,
   Target,
   TrendingUp,
 } from "lucide-react";
@@ -22,6 +23,8 @@ import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import { ArchitectureDiagram } from "./architecture-diagram";
 import { ClusterBadge, RepoMetaChip, StarsChip, TagChip } from "./shared";
+import { CaseStudyPrint } from "./case-study-print";
+import { ShareButton } from "./share-button";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
 
@@ -180,7 +183,32 @@ export function ProjectDialog({
               Private client deployment
             </span>
           )}
+
+          {/* Print / Save as PDF — renders the branded one-pager via print CSS */}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => window.print()}
+            aria-label={`Print or save ${project.title} case study as PDF`}
+            title="Opens the print dialog — save as PDF to share a one-pager"
+            className="min-h-11 flex-1 rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-secondary/50 sm:flex-none sm:px-6"
+          >
+            <Printer className="size-4" aria-hidden="true" />
+            Print / PDF
+          </Button>
+
+          {/* Share — Web Share API with clipboard fallback */}
+          <ShareButton
+            title={`${project.title} — Collins Kamama`}
+            text={`${project.title} — case study by Collins Kamama (Kamama Consulting Solutions)`}
+            path="/?tab=projects"
+            label="Share"
+            className="min-h-11 flex-1 rounded-full border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-secondary/50 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 sm:flex-none sm:px-6 print:hidden"
+          />
         </div>
+
+        {/* Print-only branded one-pager (invisible on screen) */}
+        <CaseStudyPrint project={project} />
       </DialogContent>
     </Dialog>
   );
