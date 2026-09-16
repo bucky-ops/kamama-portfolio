@@ -7,6 +7,27 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-09-16
+
+### Added
+- **Notes (engineering blog)** — new tab in the main nav (`/?tab=notes`): three first-person
+  write-ups grounded in real project work — Tier 3 PostgreSQL HA at 500K+ daily tx, building
+  the UN-Habitat SDG 11 RAG system, and the ODK/KoboToolbox → Power BI M&E pipeline. List +
+  in-app article reader with numbered sections, reading time, tags and next-note navigation.
+  Content lives in `src/lib/notes-data.ts` for easy editing.
+- **Live repo meta on project cards**: the GitHub API payload (language + last push) is now
+  surfaced through the client context and rendered as a chip — e.g. `TypeScript · 7mo` — so
+  employers can see systems are maintained at a glance. Chips render only when the API
+  responds live.
+- **Keyboard navigation**: keys `1–5` switch views (Home, Work, Notes, About, Contact);
+  ignored while typing in form fields; hint surfaced in the footer.
+- **PWA basics + SEO extras**: `manifest.webmanifest` (dark theme color, amber K icon),
+  `theme_color` viewport export, and a generated `sitemap.xml`.
+
+### Changed
+- Project cards group the live stars chip with the new repo-meta chip; footer shows a
+  keyboard-hint kbd chip.
+
 ## [1.1.0] — 2026-09-16
 
 ### Added
@@ -46,7 +67,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.2.0
 [1.1.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.1.0
 [1.0.1]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.1
 

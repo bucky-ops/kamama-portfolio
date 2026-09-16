@@ -40,6 +40,7 @@ export const profile = {
 export const nav = [
   { id: "home", label: "Home" },
   { id: "projects", label: "Work" },
+  { id: "notes", label: "Notes" },
   { id: "about", label: "About" },
   { id: "contact", label: "Contact" },
 ] as const;

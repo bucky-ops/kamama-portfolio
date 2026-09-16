@@ -52,7 +52,12 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
 
         {/* Zone 3 — stack + socials */}
         <div className="flex items-center gap-3">
-          <p className="hidden sm:block">Built with Next.js 16 · Deployed on Vercel</p>
+          <p className="hidden items-center gap-1.5 sm:flex">
+            <kbd className="rounded border border-border bg-secondary/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground" aria-hidden="true">1–5</kbd>
+            <span className="text-muted-foreground">to switch views</span>
+            <span aria-hidden="true" className="opacity-30">·</span>
+            <span>Next.js 16 · Vercel</span>
+          </p>
           <div className="flex items-center gap-1.5">
             {onNavigate ? (
               <button

@@ -10,10 +10,19 @@ import { WorkView } from "@/components/portfolio/work-view";
 import { AboutView } from "@/components/portfolio/about-view";
 import { ContactView } from "@/components/portfolio/contact-view";
 import { ChangelogView } from "@/components/portfolio/changelog-view";
+import { NotesView } from "@/components/portfolio/notes-view";
 import { AdminView } from "@/components/portfolio/admin-view";
 import type { TabId } from "@/components/portfolio/shared";
 
-const VALID_TABS: TabId[] = ["home", "projects", "about", "contact", "changelog", "admin"];
+const VALID_TABS: TabId[] = [
+  "home",
+  "projects",
+  "notes",
+  "about",
+  "contact",
+  "changelog",
+  "admin",
+];
 
 function readTabFromUrl(): TabId | null {
   if (typeof window === "undefined") return null;
@@ -46,6 +55,32 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [tab]);
 
+  // Keyboard shortcuts: 1-5 switch tabs (nav order). Ignored while typing.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      const order: TabId[] = ["home", "projects", "notes", "about", "contact"];
+      const idx = Number(e.key) - 1;
+      if (idx >= 0 && idx < order.length) {
+        setTab(order[idx]);
+        const url = order[idx] === "home" ? "/" : `/?tab=${order[idx]}`;
+        window.history.replaceState(null, "", url);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <MotionConfig reducedMotion="user">
       <GithubDataProvider>
@@ -68,6 +103,7 @@ export default function Page() {
               >
                 {tab === "home" && <HomeView onNavigate={navigate} />}
                 {tab === "projects" && <WorkView />}
+                {tab === "notes" && <NotesView />}
                 {tab === "about" && <AboutView />}
                 {tab === "contact" && <ContactView />}
                 {tab === "changelog" && <ChangelogView />}

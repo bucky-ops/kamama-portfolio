@@ -46,6 +46,9 @@ interface RawReposResponse {
     repo?: string;
     stars?: number;
     live?: boolean;
+    language?: string | null;
+    pushedAt?: string | null;
+    forks?: number;
   }[];
 }
 
@@ -86,9 +89,9 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
             title: r.repo,
             cluster: "",
             stars: typeof r.stars === "number" ? r.stars : 0,
-            forks: 0,
-            language: null,
-            pushedAt: null,
+            forks: typeof r.forks === "number" ? r.forks : 0,
+            language: typeof r.language === "string" ? r.language : null,
+            pushedAt: typeof r.pushedAt === "string" ? r.pushedAt : null,
             url: `https://github.com/bucky-ops/${r.repo}`,
             live: Boolean(r.live),
           };

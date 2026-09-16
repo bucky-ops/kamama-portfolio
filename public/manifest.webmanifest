@@ -1,0 +1,17 @@
+{
+  "name": "Kamama Portfolio — Collins Kamama",
+  "short_name": "Kamama",
+  "description": "Production-grade systems portfolio — blockchain, AI/RAG and data platforms for UN, NGO, government and enterprise.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D1117",
+  "theme_color": "#0D1117",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

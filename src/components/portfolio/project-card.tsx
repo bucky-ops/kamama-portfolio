@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import { ArchitectureDiagram } from "./architecture-diagram";
-import { ClusterBadge, StarsChip, TagChip } from "./shared";
+import { ClusterBadge, RepoMetaChip, StarsChip, TagChip } from "./shared";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
 
@@ -33,7 +33,13 @@ export function ProjectCard({ project }: { project: Project }) {
               </span>
             ) : null}
           </div>
-          <StarsChip stars={hasRepo && stat?.live ? stat.stars : undefined} />
+          <div className="flex flex-wrap items-center gap-1.5">
+            <RepoMetaChip
+              language={hasRepo && stat?.live ? stat.language : null}
+              pushedAt={hasRepo && stat?.live ? stat.pushedAt : null}
+            />
+            <StarsChip stars={hasRepo && stat?.live ? stat.stars : undefined} />
+          </div>
         </div>
 
         {/* Title */}
