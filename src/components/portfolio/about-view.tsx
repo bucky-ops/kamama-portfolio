@@ -25,7 +25,7 @@ function CertChip({ status }: { status: string }) {
       className={cn(
         "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium",
         complete
-          ? "border-[#3FB950]/40 bg-[#3FB950]/10 text-[#3FB950]"
+          ? "border-success/40 bg-success/10 text-success"
           : "border-primary/40 bg-primary/10 text-primary"
       )}
     >
@@ -44,7 +44,7 @@ function AboutCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="rounded-2xl border-border bg-[#161B22]">
+    <Card className="rounded-2xl border-border bg-card">
       <CardContent className="space-y-3 p-5">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -68,12 +68,12 @@ export function AboutView() {
           aria-label="Career timeline"
           className="h-full"
         >
-          <Card className="h-full rounded-2xl border-border bg-[#161B22]">
+          <Card className="h-full rounded-2xl border-border bg-card">
             <CardContent className="p-6 md:p-8">
               <h2 className="mb-6 text-xl font-bold tracking-tight text-foreground md:text-2xl">
                 Career Timeline
               </h2>
-              <ol className="ml-1 space-y-2 border-l border-[#30363D] pl-6">
+              <ol className="ml-1 space-y-2 border-l border-border pl-6">
                 {timeline.map((entry) => (
                   <li
                     key={`${entry.period}-${entry.org}`}
@@ -206,7 +206,7 @@ export function AboutView() {
                         aria-hidden="true"
                       />
                       <span
-                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#3FB950]/30 bg-[#3FB950]/10 px-2 py-0.5 font-mono text-[10px] text-[#3FB950]"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success"
                         title="Professional reference held on file"
                       >
                         <ShieldCheck className="size-3" aria-hidden="true" />

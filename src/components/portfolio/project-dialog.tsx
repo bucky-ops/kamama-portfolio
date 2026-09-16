@@ -65,7 +65,7 @@ export function ProjectDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-h-[85vh] gap-0 overflow-y-auto rounded-2xl border-border bg-[#161B22] p-0 sm:max-w-2xl"
+        className="max-h-[85vh] gap-0 overflow-y-auto rounded-2xl border-border bg-card p-0 sm:max-w-2xl"
         aria-describedby={undefined}
       >
         <DialogHeader className="space-y-3 border-b border-border/70 p-6 text-left">
@@ -157,7 +157,7 @@ export function ProjectDialog({
             <Button
               type="button"
               onClick={() => onDiscuss(project)}
-              className="min-h-11 flex-1 rounded-full bg-primary font-semibold text-primary-foreground hover:bg-[#F0B232] sm:flex-none sm:px-6"
+              className="min-h-11 flex-1 rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90 sm:flex-none sm:px-6"
             >
               <MessageSquare className="size-4" aria-hidden="true" />
               Discuss this system

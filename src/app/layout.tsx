@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -70,7 +71,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0D1117",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0D1117" },
+    { media: "(prefers-color-scheme: light)", color: "#FBF7EE" },
+  ],
 };
 
 /** Structured data — helps employers/search engines parse the profile correctly. */
@@ -113,13 +117,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <script
-          type="application/ld+json"
-          // Static, developer-authored JSON — no user input is interpolated.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-        />
-        {children}
-        <Toaster />
+        <ThemeProvider>
+          <script
+            type="application/ld+json"
+            // Static, developer-authored JSON — no user input is interpolated.
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          />
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

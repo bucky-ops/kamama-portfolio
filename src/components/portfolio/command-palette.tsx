@@ -13,10 +13,13 @@ import {
   Lock,
   Mail,
   MessageSquare,
+  Moon,
   NotebookPen,
+  Sun,
   User,
   Wrench,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useToast } from "@/hooks/use-toast";
 import {
   CommandDialog,
@@ -61,6 +64,8 @@ export function CommandPalette({
   onSelectProject,
 }: CommandPaletteProps) {
   const { toast } = useToast();
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
 
   // Global shortcut — toggle with ⌘K / Ctrl+K.
   useEffect(() => {
@@ -100,7 +105,7 @@ export function CommandPalette({
       onOpenChange={onOpenChange}
       title="Command palette"
       description="Search views, systems, notes and quick actions"
-      className="rounded-2xl border-border bg-[#161B22] [&_[cmdk-group-heading]]:text-primary/70 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_svg]:text-primary/70"
+      className="rounded-2xl border-border bg-popover [&_[cmdk-group-heading]]:text-primary/70 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_svg]:text-primary/70"
     >
       <CommandInput placeholder="Search views, systems, notes, actions…" />
       <CommandList>
@@ -161,6 +166,20 @@ export function CommandPalette({
         <CommandSeparator />
 
         <CommandGroup heading="Quick actions">
+          <CommandItem
+            value="theme light dark appearance mode toggle"
+            onSelect={() =>
+              run(() => setTheme(isDark ? "light" : "dark"))
+            }
+            className="gap-2.5 rounded-lg data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary"
+          >
+            {isDark ? (
+              <Sun className="size-4" aria-hidden="true" />
+            ) : (
+              <Moon className="size-4" aria-hidden="true" />
+            )}
+            Switch to {isDark ? "light" : "dark"} theme
+          </CommandItem>
           <CommandItem
             value="copy founder email collins"
             onSelect={copyEmail}

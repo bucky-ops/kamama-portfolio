@@ -64,7 +64,7 @@ export function BackToTop() {
           cy="24"
           r={RING_R}
           fill="none"
-          stroke="#30363D"
+          className="stroke-border"
           strokeWidth="2"
         />
         {/* progress */}
@@ -73,12 +73,12 @@ export function BackToTop() {
           cy="24"
           r={RING_R}
           fill="none"
-          stroke="#E3B341"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray={RING_C}
           strokeDashoffset={RING_C * (1 - progress)}
           style={{ transition: "stroke-dashoffset 120ms linear" }}
+          className="stroke-primary"
         />
       </svg>
       <ArrowUp className="size-4 text-primary" aria-hidden="true" />
@@ -90,7 +90,7 @@ export function BackToTop() {
 function cnPrint(visible: boolean): string {
   return [
     "fixed bottom-5 right-5 z-40 grid size-11 place-items-center rounded-full",
-    "border border-border bg-[#161B22]/90 shadow-lg backdrop-blur print:hidden",
+    "border border-border bg-card/90 shadow-lg backdrop-blur print:hidden",
     "transition-all duration-200 hover:border-primary/50 hover:shadow-[0_0_18px_rgba(227,179,65,0.25)]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
     "md:bottom-8 md:right-8",

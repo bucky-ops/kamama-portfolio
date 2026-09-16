@@ -14,6 +14,7 @@ import { NotesView } from "@/components/portfolio/notes-view";
 import { AdminView } from "@/components/portfolio/admin-view";
 import { CommandPalette } from "@/components/portfolio/command-palette";
 import { BackToTop } from "@/components/portfolio/back-to-top";
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Project } from "@/lib/profile-data";
 import type { TabId } from "@/components/portfolio/shared";
 
@@ -117,57 +118,59 @@ export default function Page() {
   }, []);
 
   return (
-    <MotionConfig reducedMotion="user">
-      <GithubDataProvider>
-        <div className="flex min-h-screen flex-col bg-[#0D1117] text-[#E6EDF3] print:hidden">
-          <a
-            href="#main-content"
-            className="skip-link rounded-full border border-primary/50 bg-[#161B22] px-4 py-2 text-xs font-medium text-primary shadow-lg focus-visible:outline-none"
-          >
-            Skip to content
-          </a>
-          <Header
-            active={tab}
-            onNavigate={navigate}
-            onOpenPalette={() => setPaletteOpen(true)}
-          />
-          <main className="flex-1" id="main-content">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={tab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-              >
-                {tab === "home" && (
-                  <HomeView onNavigate={navigate} onDiscuss={discussProject} />
-                )}
-                {tab === "projects" && (
-                  <WorkView
-                    focusProjectTitle={focusProjectTitle}
-                    onConsumeFocus={consumeFocus}
-                    onDiscuss={discussProject}
-                  />
-                )}
-                {tab === "notes" && <NotesView />}
-                {tab === "about" && <AboutView />}
-                {tab === "contact" && <ContactView />}
-                {tab === "changelog" && <ChangelogView />}
-                {tab === "admin" && <AdminView />}
-              </motion.div>
-            </AnimatePresence>
-          </main>
-          <Footer onNavigate={navigate} />
-          <BackToTop />
-          <CommandPalette
-            open={paletteOpen}
-            onOpenChange={setPaletteOpen}
-            onNavigate={navigate}
-            onSelectProject={openProject}
-          />
-        </div>
-      </GithubDataProvider>
-    </MotionConfig>
+    <ThemeProvider>
+      <MotionConfig reducedMotion="user">
+        <GithubDataProvider>
+          <div className="flex min-h-screen flex-col bg-background text-foreground">
+            <a
+              href="#main-content"
+              className="skip-link rounded-full border border-primary/50 bg-card px-4 py-2 text-xs font-medium text-primary shadow-lg focus-visible:outline-none"
+            >
+              Skip to content
+            </a>
+            <Header
+              active={tab}
+              onNavigate={navigate}
+              onOpenPalette={() => setPaletteOpen(true)}
+            />
+            <main className="flex-1" id="main-content">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  {tab === "home" && (
+                    <HomeView onNavigate={navigate} onDiscuss={discussProject} />
+                  )}
+                  {tab === "projects" && (
+                    <WorkView
+                      focusProjectTitle={focusProjectTitle}
+                      onConsumeFocus={consumeFocus}
+                      onDiscuss={discussProject}
+                    />
+                  )}
+                  {tab === "notes" && <NotesView />}
+                  {tab === "about" && <AboutView />}
+                  {tab === "contact" && <ContactView />}
+                  {tab === "changelog" && <ChangelogView />}
+                  {tab === "admin" && <AdminView />}
+                </motion.div>
+              </AnimatePresence>
+            </main>
+            <Footer onNavigate={navigate} />
+            <BackToTop />
+            <CommandPalette
+              open={paletteOpen}
+              onOpenChange={setPaletteOpen}
+              onNavigate={navigate}
+              onSelectProject={openProject}
+            />
+          </div>
+        </GithubDataProvider>
+      </MotionConfig>
+    </ThemeProvider>
   );
 }

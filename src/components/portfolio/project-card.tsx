@@ -23,7 +23,7 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
   const hasCaseStudy = Boolean(project.caseStudy) && hasRepo;
 
   return (
-    <Card className="flex h-full flex-col rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
+    <Card className="flex h-full flex-col rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
       <CardContent className="flex h-full flex-col gap-3.5 p-5 md:p-6">
         {/* Top row: cluster + flagship + stars */}
         <div className="flex flex-wrap items-center justify-between gap-2">

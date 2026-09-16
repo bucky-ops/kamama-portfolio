@@ -35,9 +35,9 @@ export function InitialsAvatar() {
 
 const clusterStyles: Record<ProjectCluster, string> = {
   "Enterprise Blockchain":
-    "border-[#E3B341]/40 bg-[#E3B341]/10 text-[#E3B341]",
-  "AI & Analytics": "border-[#3FB950]/40 bg-[#3FB950]/10 text-[#3FB950]",
-  "Climate & Civic": "border-[#F0883E]/40 bg-[#F0883E]/10 text-[#F0883E]",
+    "border-primary/40 bg-primary/10 text-primary",
+  "AI & Analytics": "border-success/40 bg-success/10 text-success",
+  "Climate & Civic": "border-warn/40 bg-warn/10 text-warn",
   Infrastructure: "border-border bg-secondary/60 text-muted-foreground",
 };
 

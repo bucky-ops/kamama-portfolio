@@ -66,15 +66,15 @@ type StatusFilter = "all" | "new" | "read" | "replied";
 const STORAGE_KEY = "kamama.admin.key";
 
 const STATUS_STYLES: Record<string, string> = {
-  new: "border-[#3FB950]/40 bg-[#3FB950]/10 text-[#3FB950]",
+  new: "border-success/40 bg-success/10 text-success",
   read: "border-border bg-secondary/60 text-muted-foreground",
-  replied: "border-[#E3B341]/40 bg-[#E3B341]/10 text-[#E3B341]",
+  replied: "border-primary/40 bg-primary/10 text-primary",
 };
 
 const STATUS_DOT: Record<string, string> = {
-  new: "bg-[#3FB950]",
+  new: "bg-success",
   read: "bg-muted-foreground",
-  replied: "bg-[#E3B341]",
+  replied: "bg-primary",
 };
 
 /* -------------------------------- helpers --------------------------------- */
@@ -278,8 +278,8 @@ export function AdminView() {
           transition={{ duration: 0.3 }}
           className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg"
         >
-          <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl border border-[#E3B341]/30 bg-[#E3B341]/10">
-            <Lock className="size-6 text-[#E3B341]" aria-hidden="true" />
+          <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10">
+            <Lock className="size-6 text-primary" aria-hidden="true" />
           </div>
           <h1 className="text-xl font-bold tracking-tight">Lead Inbox</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -302,7 +302,7 @@ export function AdminView() {
               className="font-mono"
             />
             {unlockError ? (
-              <p role="alert" className="text-left text-xs text-[#F0883E]">
+              <p role="alert" className="text-left text-xs text-warn">
                 {unlockError}
               </p>
             ) : null}
@@ -320,8 +320,8 @@ export function AdminView() {
 
   const statCards: { label: string; value: number; accent?: string }[] = [
     { label: "Total leads", value: stats?.total ?? 0 },
-    { label: "New", value: stats?.new ?? 0, accent: "text-[#3FB950]" },
-    { label: "Replied", value: stats?.replied ?? 0, accent: "text-[#E3B341]" },
+    { label: "New", value: stats?.new ?? 0, accent: "text-success" },
+    { label: "Replied", value: stats?.replied ?? 0, accent: "text-primary" },
     { label: "This week", value: stats?.last7Days ?? 0 },
   ];
 
@@ -356,7 +356,7 @@ export function AdminView() {
         </div>
 
         {warning ? (
-          <div className="flex items-start gap-2.5 rounded-xl border border-[#F0883E]/40 bg-[#F0883E]/10 px-4 py-3 text-sm text-[#F0883E]">
+          <div className="flex items-start gap-2.5 rounded-xl border border-warn/40 bg-warn/10 px-4 py-3 text-sm text-warn">
             <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p>{warning} Leads submitted on serverless are not persisted — check the deployment logs / email fallback.</p>
           </div>
@@ -432,7 +432,7 @@ export function AdminView() {
                 onClick={() => setSelected(lead)}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-left transition-colors hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:outline-none",
-                  lead.status === "new" && "border-l-2 border-l-[#3FB950]"
+                  lead.status === "new" && "border-l-2 border-l-success"
                 )}
                 aria-label={`Open lead from ${lead.name}`}
               >
@@ -539,7 +539,7 @@ export function AdminView() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setPendingDelete(selected)}
-                  className="ml-auto gap-1.5 text-[#F85149] hover:text-[#F85149]"
+                  className="ml-auto gap-1.5 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="size-3.5" aria-hidden="true" />
                   Delete
@@ -563,7 +563,7 @@ export function AdminView() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => void confirmDelete()}
-              className="bg-[#F85149] text-white hover:bg-[#F85149]/85"
+              className="bg-destructive text-white hover:bg-destructive/85"
             >
               Delete
             </AlertDialogAction>

@@ -60,7 +60,7 @@ export function ArchitectureDiagram({
                     <ul className="mt-1.5 space-y-1">
                       {stage.items.map((item) => (
                         <li key={item} className="flex items-start gap-1.5 text-[11px] leading-snug text-foreground/90">
-                          <span className="mt-1 size-1 shrink-0 rounded-full bg-[#E3B341]/70" aria-hidden="true" />
+                          <span className="mt-1 size-1 shrink-0 rounded-full bg-primary/70" aria-hidden="true" />
                           {item}
                         </li>
                       ))}

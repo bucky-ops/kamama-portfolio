@@ -120,17 +120,17 @@ export function ChangelogView() {
               >
                 {/* timeline node */}
                 <span
-                  className="absolute -left-[31px] top-1 flex size-2.5 items-center justify-center rounded-full bg-[#E3B341] ring-4 ring-[#0D1117]"
+                  className="absolute -left-[31px] top-1 flex size-2.5 items-center justify-center rounded-full bg-primary ring-4 ring-background"
                   aria-hidden="true"
                 />
                 <div className="rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary/30">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E3B341]/40 bg-[#E3B341]/10 px-2.5 py-0.5 font-mono text-xs font-semibold text-[#E3B341]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 font-mono text-xs font-semibold text-primary">
                       <Tag className="size-3" aria-hidden="true" />
                       {r.tag}
                     </span>
                     {r.prerelease ? (
-                      <span className="rounded-full border border-[#F0883E]/40 bg-[#F0883E]/10 px-2 py-0.5 font-mono text-[10px] text-[#F0883E]">
+                      <span className="rounded-full border border-warn/40 bg-warn/10 px-2 py-0.5 font-mono text-[10px] text-warn">
                         pre-release
                       </span>
                     ) : null}

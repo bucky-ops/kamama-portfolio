@@ -119,7 +119,7 @@ function CopyButton({ value }: { value: string }) {
       className="size-9 shrink-0 text-muted-foreground hover:text-primary"
     >
       {copied ? (
-        <Check className="size-4 text-[#3FB950]" aria-hidden="true" />
+        <Check className="size-4 text-success" aria-hidden="true" />
       ) : (
         <Copy className="size-4" aria-hidden="true" />
       )}
@@ -250,7 +250,7 @@ export function ContactView() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Left: conversation form ──────────────────────────────── */}
         <Reveal>
-        <Card className="rounded-2xl border-border bg-[#161B22]">
+        <Card className="rounded-2xl border-border bg-card">
           <CardContent className="p-6 md:p-8">
             <h2 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
               Start a conversation
@@ -283,9 +283,9 @@ export function ContactView() {
             ) : null}
 
             {status === "success" ? (
-              <div className="mt-6 rounded-xl border border-[#3FB950]/40 bg-[#3FB950]/10 p-5 text-center">
+              <div className="mt-6 rounded-xl border border-success/40 bg-success/10 p-5 text-center">
                 <CheckCircle2
-                  className="mx-auto size-10 text-[#3FB950]"
+                  className="mx-auto size-10 text-success"
                   aria-hidden="true"
                 />
                 <p className="mt-3 font-semibold text-foreground">
@@ -381,7 +381,7 @@ export function ContactView() {
                                 <SelectValue placeholder="Select project type" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent className="border-border bg-[#161B22]">
+                            <SelectContent className="border-border bg-card">
                               {projectTypes.map((t) => (
                                 <SelectItem key={t} value={t}>
                                   {t}
@@ -410,7 +410,7 @@ export function ContactView() {
                               <SelectValue placeholder="Select budget range (optional)" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="border-border bg-[#161B22]">
+                          <SelectContent className="border-border bg-card">
                             {budgetRanges.map((b) => (
                               <SelectItem key={b} value={b}>
                                 {b}
@@ -480,7 +480,7 @@ export function ContactView() {
                   <Button
                     type="submit"
                     disabled={status === "sending"}
-                    className="min-h-11 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-[#F0B232] sm:w-auto sm:px-8"
+                    className="min-h-11 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90 sm:w-auto sm:px-8"
                   >
                     {status === "sending" ? (
                       <>
@@ -512,7 +512,7 @@ export function ContactView() {
         {/* ── Right: contact details ───────────────────────────────── */}
         <div className="space-y-6">
           <Reveal delay={0.08}>
-          <Card className="rounded-2xl border-border bg-[#161B22]">
+          <Card className="rounded-2xl border-border bg-card">
             <CardContent className="space-y-5 p-6">
               <h2 className="text-lg font-semibold text-foreground">
                 Direct lines
@@ -629,12 +629,12 @@ export function ContactView() {
 
           {/* Availability */}
           <Reveal delay={0.14}>
-          <Card className="rounded-2xl border-border bg-[#161B22]">
+          <Card className="rounded-2xl border-border bg-card">
             <CardContent className="space-y-3 p-6">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <span className="relative flex size-2.5" aria-hidden="true">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3FB950] opacity-60" />
-                  <span className="relative inline-flex size-2.5 rounded-full bg-[#3FB950]" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                  <span className="relative inline-flex size-2.5 rounded-full bg-success" />
                 </span>
                 Availability
               </h2>
@@ -645,7 +645,7 @@ export function ContactView() {
                     className="flex items-start gap-2 text-sm text-muted-foreground"
                   >
                     <span
-                      className="mt-[7px] size-1 shrink-0 rounded-full bg-[#3FB950]"
+                      className="mt-[7px] size-1 shrink-0 rounded-full bg-success"
                       aria-hidden="true"
                     />
                     {item}

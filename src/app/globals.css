@@ -46,48 +46,53 @@
 }
 
 /*
- * Kamama Portfolio — dark "gruvbox" theme (brand continuity with GitHub dark).
- * Hardcoded dark tokens in :root — the site is dark-only, no light mode.
+ * Kamama Portfolio — dual theme (gruvbox identity in both modes).
+ * :root = light "warm paper" (cream bg, ink text, amber darkened to #A16207
+ * for AA contrast on white cards). .dark = the original GitHub-dark gruvbox
+ * (brand default — next-themes applies .dark on first visit).
  * Amber #E3B341 / #F0B232 primary, green #3FB950 success, orange #F0883E warn.
  */
 :root {
   --radius: 0.625rem;
-  --background: #0d1117;
-  --foreground: #e6edf3;
-  --card: #161b22;
-  --card-foreground: #e6edf3;
-  --popover: #161b22;
-  --popover-foreground: #e6edf3;
-  --primary: #e3b341;
-  --primary-foreground: #161206;
-  --secondary: #21262d;
-  --secondary-foreground: #e6edf3;
-  --muted: #21262d;
-  --muted-foreground: #8b949e;
-  --accent: #21262d;
-  --accent-foreground: #e6edf3;
-  --destructive: #f85149;
-  --success: #3fb950;
-  --warn: #f0883e;
-  --border: #30363d;
-  --input: #30363d;
-  --ring: #e3b341;
-  --chart-1: #e3b341;
-  --chart-2: #3fb950;
-  --chart-3: #f0883e;
-  --chart-4: #d29922;
-  --chart-5: #bc4c00;
-  --sidebar: #161b22;
-  --sidebar-foreground: #e6edf3;
-  --sidebar-primary: #e3b341;
-  --sidebar-primary-foreground: #161206;
-  --sidebar-accent: #21262d;
-  --sidebar-accent-foreground: #e6edf3;
-  --sidebar-border: #30363d;
-  --sidebar-ring: #e3b341;
+  --background: #fbf7ee;
+  --foreground: #1f2328;
+  --card: #ffffff;
+  --card-foreground: #1f2328;
+  --popover: #ffffff;
+  --popover-foreground: #1f2328;
+  --primary: #a16207;
+  --primary-foreground: #ffffff;
+  --secondary: #f1eada;
+  --secondary-foreground: #3b3222;
+  --muted: #f1eada;
+  --muted-foreground: #6e6553;
+  --accent: #f5eedc;
+  --accent-foreground: #3b3222;
+  --destructive: #cf222e;
+  --success: #1a7f37;
+  --warn: #bc4c00;
+  --border: #e5dcc8;
+  --input: #dcd2bc;
+  --ring: #a16207;
+  --chart-1: #a16207;
+  --chart-2: #1a7f37;
+  --chart-3: #bc4c00;
+  --chart-4: #8a6d1d;
+  --chart-5: #9a3412;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2328;
+  --sidebar-primary: #a16207;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1eada;
+  --sidebar-accent-foreground: #3b3222;
+  --sidebar-border: #e5dcc8;
+  --sidebar-ring: #a16207;
+  --grid-line: rgba(31, 35, 40, 0.055);
+  --scrollbar-thumb: #d8cfba;
+  --scrollbar-thumb-hover: #c3b89e;
+  color-scheme: light;
 }
 
-/* Dark-only site: .dark mirrors :root so shadcn dark: variants stay coherent. */
 .dark {
   --background: #0d1117;
   --foreground: #e6edf3;
@@ -122,6 +127,10 @@
   --sidebar-accent-foreground: #e6edf3;
   --sidebar-border: #30363d;
   --sidebar-ring: #e3b341;
+  --grid-line: rgba(230, 237, 243, 0.045);
+  --scrollbar-thumb: #30363d;
+  --scrollbar-thumb-hover: #3d444d;
+  color-scheme: dark;
 }
 
 @layer base {
@@ -129,7 +138,6 @@
     @apply border-border outline-ring/50;
   }
   html {
-    color-scheme: dark;
     scrollbar-gutter: stable;
   }
   body {
@@ -141,8 +149,8 @@
     text-wrap: balance;
   }
   ::selection {
-    background: rgba(227, 179, 65, 0.28);
-    color: #e6edf3;
+    background: rgba(224, 161, 32, 0.3);
+    color: inherit;
   }
 }
 
@@ -155,22 +163,22 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--scrollbar-thumb);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3d444d;
+  background: var(--scrollbar-thumb-hover);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: #30363d transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-/* Subtle grid pattern for photo/map placeholder blocks */
+/* Subtle grid pattern for photo/map placeholder blocks (theme-aware lines) */
 .grid-pattern {
   background-image:
-    linear-gradient(to right, rgba(230, 237, 243, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(230, 237, 243, 0.045) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 

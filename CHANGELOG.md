@@ -7,6 +7,43 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.7.0] — 2026-09-16
+
+### Added
+- **Light/dark theme toggle (brand dual-theme)**: the site now ships two complete
+  themes — the original gruvbox dark (brand default for every first visit) and a new
+  light "warm paper" theme (cream `#FBF7EE` canvas, ink text, amber darkened to
+  `#A16207` for AA contrast on white cards). Header sun/moon switch on every
+  breakpoint (crossfade + rotate micro-interaction, View Transition crossfade when
+  supported, reduced-motion safe), a "Switch to light/dark theme" command-palette
+  action, `localStorage` persistence (`kamama-theme`), no-flash first paint via
+  next-themes, and live `<meta name="theme-color">` sync so mobile browser chrome
+  matches both modes.
+- **Notes reading history**: reading progress is recorded per note in
+  `localStorage` (milestone-throttled, final position saved on close — purely local,
+  nothing tracked server-side). The Notes list gains a "Continue reading" strip with
+  per-note amber progress bars that reopens a note at the exact position (35%-viewport
+  reading-line anchor — stored % and on-screen % agree, so repeated resumes never
+  inflate), plus "% read" / "Finished ✓" chips on list cards.
+
+### Changed
+- **Full dark-color migration to design tokens**: ~90 hardcoded dark hexes across 12
+  components (cards, dialogs, chips, status colors, timeline, palette, back-to-top
+  ring, print-safe surfaces) replaced with shadcn theme tokens — every surface now
+  adapts to both themes instead of assuming dark.
+- **Theme-aware chrome**: custom scrollbar, text selection, grid-pattern lines and
+  header scroll-shadow now derive from CSS variables; `color-scheme` flips per theme
+  so native inputs/scrollbars match; PWA viewport colors follow the active theme.
+
+### Verified
+- E2E (agent-browser): fresh visitor → dark default (`ls=null`); toggle → light
+  (`html.light`, cream bg, white cards) persisted across reload; toggle back → dark
+  unchanged; palette action switches theme. Reading history: 0% at top, 51% mid-scroll
+  → stored 51% → strip 51% → resume lands exactly 51% (no inflation); full scroll →
+  100% → "Finished" chip, strip hidden. Founder email `muchiri.collin@aol.com` still
+  featured first in Contact. Mobile 390 light render clean; zero console errors on a
+  fresh session; ESLint clean, `tsc --noEmit` clean (src).
+
 ## [1.6.0] — 2026-09-16
 
 ### Added
@@ -210,7 +247,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.7.0
 [1.6.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.6.0
 [1.5.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.5.0
 [1.4.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.4.0

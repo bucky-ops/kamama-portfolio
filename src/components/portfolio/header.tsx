@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { nav, profile } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./theme-toggle";
 import type { TabId } from "./shared";
 
 interface HeaderProps {
@@ -41,8 +42,9 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b border-border bg-[#0D1117]/80 backdrop-blur-md transition-shadow duration-300",
-        scrolled && "shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+        "sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md transition-shadow duration-300",
+        scrolled &&
+          "shadow-[0_8px_24px_rgba(31,35,40,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
@@ -95,6 +97,9 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Light/dark theme switch — visible on every breakpoint */}
+          <ThemeToggle />
+
           {/* Command palette trigger — full pill on desktop, icon on mobile */}
           {onOpenPalette ? (
             <>
@@ -126,7 +131,7 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
           <Button
             type="button"
             onClick={() => go("contact")}
-            className="hidden min-h-11 rounded-full bg-primary px-5 font-semibold text-primary-foreground hover:bg-[#F0B232] md:inline-flex"
+            className="hidden min-h-11 rounded-full bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 md:inline-flex"
           >
             Hire Me
           </Button>
@@ -145,7 +150,7 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-72 border-l border-border bg-[#161B22]"
+              className="w-72 border-l border-border bg-card"
             >
               <SheetHeader>
                 <SheetTitle className="flex items-baseline font-mono text-sm font-bold tracking-[0.25em]">
@@ -180,7 +185,7 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
                 <Button
                   type="button"
                   onClick={() => go("contact")}
-                  className="min-h-11 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-[#F0B232]"
+                  className="min-h-11 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90"
                 >
                   Hire Me
                 </Button>

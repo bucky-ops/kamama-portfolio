@@ -68,12 +68,12 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
       {/* ── Hero bento ─────────────────────────────────────────────── */}
       <section aria-label="Introduction" className="grid gap-4 lg:grid-cols-5">
         {/* Left — headline + CTAs + philosophy flow */}
-        <Card className="rounded-2xl border-border bg-[#161B22] lg:col-span-3">
+        <Card className="rounded-2xl border-border bg-card lg:col-span-3">
           <CardContent className="flex h-full flex-col gap-6 p-6 md:p-8">
-            <p className="flex items-center gap-2 font-mono text-xs text-[#3FB950]">
+            <p className="flex items-center gap-2 font-mono text-xs text-success">
               <span className="relative flex size-2.5" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3FB950] opacity-60" />
-                <span className="relative inline-flex size-2.5 rounded-full bg-[#3FB950]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+                <span className="relative inline-flex size-2.5 rounded-full bg-success" />
               </span>
               Open for ICA contracts · Nairobi (UTC+3)
             </p>
@@ -93,7 +93,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
               <Button
                 type="button"
                 onClick={() => onNavigate("projects")}
-                className="min-h-11 rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-[#F0B232]"
+                className="min-h-11 rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
               >
                 View Systems
                 <ArrowRight className="size-4" aria-hidden="true" />
@@ -147,7 +147,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
         </Card>
 
         {/* Right — photo placeholder + stats */}
-        <Card className="overflow-hidden rounded-2xl border-border bg-[#161B22] lg:col-span-2">
+        <Card className="overflow-hidden rounded-2xl border-border bg-card lg:col-span-2">
           <CardContent className="flex h-full flex-col p-6 md:p-8">
             <div className="grid-pattern relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-xl border border-border/60 bg-secondary/20 py-8">
               {/* soft amber glow behind avatar */}
@@ -195,7 +195,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
       <Reveal>
         <section
           aria-label="Trusted by"
-          className="rounded-2xl border border-border bg-[#161B22] px-5 py-4 md:px-6"
+          className="rounded-2xl border border-border bg-card px-5 py-4 md:px-6"
         >
           <div className="flex flex-wrap items-center gap-3">
             <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
@@ -230,7 +230,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
             return (
               <Reveal key={skill.title} delay={i * 0.07} className="h-full">
                 <Card
-                  className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]"
+                  className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] dark:hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] shadow-[0_8px_32px_rgba(31,35,40,0.06)]"
                   onMouseMove={(e) => {
                     // Cursor spotlight — CSS vars drive the radial overlay
                     // (direct DOM write, no re-render, touch-safe: overlay is
@@ -339,14 +339,14 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
         <div className="grid gap-4 md:grid-cols-3">
           {testimonials.map((t, i) => (
             <Reveal key={t.name} delay={i * 0.07} className="h-full">
-              <figure className="group flex h-full flex-col rounded-2xl border border-border bg-[#161B22] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
+              <figure className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] shadow-[0_8px_32px_rgba(31,35,40,0.06)]">
                 <div className="flex items-start justify-between gap-2">
                   <Quote
                     className="size-4 shrink-0 text-primary/70 transition-colors group-hover:text-primary"
                     aria-hidden="true"
                   />
                   <span
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#3FB950]/30 bg-[#3FB950]/10 px-2 py-0.5 font-mono text-[10px] text-[#3FB950]"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success"
                     title="Professional reference held on file"
                   >
                     <ShieldCheck className="size-3" aria-hidden="true" />
@@ -376,7 +376,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
           <button
             type="button"
             onClick={() => onNavigate("about")}
-            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-medium text-primary transition-colors hover:text-[#F0B232] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+            className="group inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-medium text-primary transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
           >
             Read full references in About
             <ArrowRight

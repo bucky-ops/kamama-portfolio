@@ -5,7 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   CalendarDays,
+  CircleCheck,
   Clock,
   FileText,
   ListTree,
@@ -14,6 +16,11 @@ import {
   SearchX,
 } from "lucide-react";
 import { formatDateLong, notes, type Note } from "@/lib/notes-data";
+import {
+  getReadingHistory,
+  recordReadingProgress,
+  type ReadingEntry,
+} from "@/lib/reading-history";
 import { Reveal } from "./reveal";
 import { SectionHeading, TagChip } from "./shared";
 import { ShareButton } from "./share-button";
@@ -28,8 +35,27 @@ export function NotesView() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [history, setHistory] = useState<ReadingEntry[]>([]);
+  const [resumePercent, setResumePercent] = useState(0);
   const searchRef = useRef<HTMLInputElement>(null);
   const current = notes.find((n) => n.slug === openSlug) ?? null;
+
+  // Reading history lives in localStorage — load after mount (SSR-safe) and
+  // refresh whenever the reader closes, so the list reflects the latest read.
+  useEffect(() => {
+    if (current) return;
+    const id = window.setTimeout(() => setHistory(getReadingHistory()), 0);
+    return () => window.clearTimeout(id);
+  }, [current]);
+
+  // Notes the visitor has started but not finished — powers Continue reading.
+  const continueEntries = history
+    .filter((e) => e.percent >= 4 && e.percent < 100)
+    .map((e) => ({ entry: e, note: notes.find((n) => n.slug === e.slug) }))
+    .filter((x): x is { entry: ReadingEntry; note: Note } => !!x.note)
+    .slice(0, 2);
+
+  const readPercentBySlug = new Map(history.map((e) => [e.slug, e.percent]));
 
   // All tags across notes, alphabetically — powers the filter chips.
   const allTags = [...new Set(notes.flatMap((n) => n.tags))].sort();
@@ -84,13 +110,20 @@ export function NotesView() {
     window.history.replaceState(null, "", url);
   }, [openSlug]);
 
-  const open = (slug: string) => {
+  const open = (slug: string, resume = 0) => {
+    setResumePercent(resume);
     setOpenSlug(slug);
+  };
+
+  const closeReader = () => {
+    setOpenSlug(null);
+    setResumePercent(0);
   };
 
   const goNext = (note: Note) => {
     const idx = notes.findIndex((n) => n.slug === note.slug);
     const next = notes[(idx + 1) % notes.length];
+    setResumePercent(0);
     setOpenSlug(next.slug);
   };
 
@@ -101,7 +134,8 @@ export function NotesView() {
           <NoteReader
             key={current.slug}
             note={current}
-            onBack={() => setOpenSlug(null)}
+            initialPercent={resumePercent}
+            onBack={closeReader}
             onNext={() => goNext(current)}
             nextTitle={nextTitle(current)}
           />
@@ -120,6 +154,51 @@ export function NotesView() {
               title="Notes"
               subtitle="Short, practical write-ups from systems I actually ship — databases, RAG, and data-for-development pipelines."
             />
+
+            {/* Continue reading — from local reading history (never leaves the browser) */}
+            {continueEntries.length > 0 ? (
+              <section
+                aria-label="Continue reading"
+                className="rounded-2xl border border-primary/25 bg-primary/[0.06] p-4"
+              >
+                <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-primary">
+                  <BookOpen className="size-3.5" aria-hidden="true" />
+                  Continue reading
+                </p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {continueEntries.map(({ entry, note }) => (
+                    <button
+                      key={entry.slug}
+                      type="button"
+                      onClick={() => open(entry.slug, entry.percent)}
+                      className="group rounded-xl border border-border bg-card p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                    >
+                      <span className="line-clamp-1 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                        {note.title}
+                      </span>
+                      <span className="mt-2 flex items-center gap-2">
+                        <span
+                          className="h-1 flex-1 overflow-hidden rounded-full bg-secondary"
+                          role="progressbar"
+                          aria-label={`Reading progress for ${note.title}`}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={entry.percent}
+                        >
+                          <span
+                            className="block h-full rounded-full bg-primary transition-[width]"
+                            style={{ width: `${entry.percent}%` }}
+                          />
+                        </span>
+                        <span className="shrink-0 font-mono text-[10px] tabular-nums text-primary">
+                          {entry.percent}%
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             {/* Search + tag filters */}
             <div className="space-y-3">
@@ -219,6 +298,23 @@ export function NotesView() {
                         <Clock className="size-3 text-primary/70" aria-hidden="true" />
                         {note.readingMinutes} min
                       </span>
+                      {(() => {
+                        const readPct = readPercentBySlug.get(note.slug);
+                        if (readPct === undefined || readPct < 4) return null;
+                        if (readPct >= 100) {
+                          return (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+                              <CircleCheck className="size-3" aria-hidden="true" />
+                              Finished
+                            </span>
+                          );
+                        }
+                        return (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary tabular-nums">
+                            {readPct}% read
+                          </span>
+                        );
+                      })()}
                     </div>
                     <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight text-foreground transition-colors group-hover:text-primary md:text-xl">
                       {note.title}
@@ -249,7 +345,13 @@ export function NotesView() {
   );
 }
 
-/** Tracks reading progress (0..1) of a scrollable article element. */
+/**
+ * Tracks reading progress (0..1) of an article element using a "reading line"
+ * anchored at 35% of the viewport height: 0% until the line crosses the prose
+ * top, 100% once it passes the prose bottom. The same anchor drives the
+ * resume-scroll, so the stored percent and the on-screen percent agree and
+ * repeated resume cycles never inflate the saved value.
+ */
 function useReadingProgress(ref: React.RefObject<HTMLElement | null>) {
   const [progress, setProgress] = useState(0);
 
@@ -260,10 +362,18 @@ function useReadingProgress(ref: React.RefObject<HTMLElement | null>) {
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
+      // Article fully on screen (bottom edge above the fold) → finished,
+      // even if the reading-line anchor hasn't crossed the prose end
+      // (trailing content like the next-note card extends the page).
+      if (rect.bottom <= window.innerHeight) {
+        setProgress(1);
+        return;
+      }
+      const topAbs = rect.top + window.scrollY;
+      const anchor = window.innerHeight * 0.35;
       const denom = rect.height || 1;
-      const value = Math.min(1, Math.max(0, (vh - rect.top) / denom));
-      setProgress(value);
+      const value = (window.scrollY + anchor - topAbs) / denom;
+      setProgress(Math.min(1, Math.max(0, value)));
     };
     const onScroll = () => {
       if (!raf) raf = window.requestAnimationFrame(update);
@@ -307,20 +417,60 @@ function useScrollSpy(count: number) {
 
 interface NoteReaderProps {
   note: Note;
+  /** Resume position (0–100) when reopened from "Continue reading". */
+  initialPercent?: number;
   onBack: () => void;
   onNext: () => void;
   nextTitle: string;
 }
 
-function NoteReader({ note, onBack, onNext, nextTitle }: NoteReaderProps) {
+function NoteReader({
+  note,
+  initialPercent = 0,
+  onBack,
+  onNext,
+  nextTitle,
+}: NoteReaderProps) {
   const proseRef = useRef<HTMLDivElement>(null);
   const progress = useReadingProgress(proseRef);
   const active = useScrollSpy(note.sections.length);
+  const lastRecorded = useRef(0);
 
-  // Fresh note → start at the top.
+  // Fresh note → start at the top, or resume where the visitor left off.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (initialPercent >= 4 && proseRef.current) {
+      const rect = proseRef.current.getBoundingClientRect();
+      const target =
+        rect.top +
+        window.scrollY +
+        rect.height * (initialPercent / 100) -
+        window.innerHeight * 0.35;
+      window.scrollTo({
+        top: Math.max(0, target),
+        behavior: "instant" as ScrollBehavior,
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    }
   }, []);
+
+  // Persist reading progress locally: write on ~7% milestones so the
+  // "Continue reading" strip is accurate without hammering localStorage.
+  useEffect(() => {
+    const pct = Math.round(progress * 100);
+    const value = pct >= 96 ? 100 : pct;
+    if (Math.abs(value - lastRecorded.current) >= 7) {
+      lastRecorded.current = value;
+      recordReadingProgress(note.slug, value);
+    }
+  }, [progress, note.slug]);
+
+  // Closing/unmounting the reader always records the final position.
+  useEffect(() => {
+    return () => {
+      recordReadingProgress(note.slug, lastRecorded.current);
+    };
+  }, [note.slug]);
 
   const jumpTo = (index: number) => {
     const el = document.querySelector(`[data-section-index="${index}"]`);
@@ -393,7 +543,9 @@ function NoteReader({ note, onBack, onNext, nextTitle }: NoteReaderProps) {
             <PenLine className="size-3.5 text-primary/70" aria-hidden="true" />
             Collins Kamama
           </span>
-          <span className="ml-auto tabular-nums text-primary/80">{percent}%</span>
+          <span className="ml-auto tabular-nums text-primary/80">
+            {percent}%{percent >= 96 ? " · done" : ""}
+          </span>
         </p>
       </div>
 
@@ -428,7 +580,7 @@ function NoteReader({ note, onBack, onNext, nextTitle }: NoteReaderProps) {
       </nav>
 
       {/* Prose */}
-      <div ref={proseRef} className="space-y-8 rounded-2xl border border-border bg-[#161B22] p-6 md:p-9">
+      <div ref={proseRef} className="space-y-8 rounded-2xl border border-border bg-card p-6 md:p-9">
         {note.sections.map((section, i) => (
           <section
             key={section.heading}
