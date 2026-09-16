@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProjectCluster } from "@/lib/profile-data";
 
-export type TabId = "home" | "projects" | "about" | "contact";
+export type TabId = "home" | "projects" | "about" | "contact" | "changelog" | "admin";
 
 /** Amber → dark gradient initials block used as the photo placeholder. */
 export function InitialsAvatar() {
@@ -82,12 +82,19 @@ export function StarsChip({
 export function SectionHeading({
   title,
   subtitle,
+  kicker,
 }: {
   title: string;
   subtitle?: string;
+  kicker?: string;
 }) {
   return (
     <div className="space-y-1.5">
+      {kicker ? (
+        <p className="font-mono text-[11px] uppercase tracking-widest text-primary/80">
+          {kicker}
+        </p>
+      ) : null}
       <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
         {title}
       </h2>

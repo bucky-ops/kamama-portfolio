@@ -7,6 +7,37 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-09-16
+
+### Added
+- **Admin Lead Inbox** (`/?tab=admin`, lock icon in footer): private, key-gated view of
+  every contact-form submission. New API `GET/PATCH/DELETE /api/admin/leads` guarded by an
+  `ADMIN_KEY` env var (server-side only, never shipped to the client). Includes lead stats
+  (total / new / replied / this week), status filters, lead detail dialog with one-click
+  "Reply by email", status workflow (new → read → replied), delete-with-confirmation, and
+  CSV export. Key is stored in sessionStorage and cleared on lock.
+- **Architecture diagrams for flagship systems**: the three ★ Flagship cards (Blockchain
+  Inventory, SDG RAG, Climate & Food Security Intelligence) now carry an expandable
+  stage-by-stage architecture flow (Trust & Ingestion → Core/Intelligence → Decision → Ops)
+  rendered inline in the project card — replaces the Excalidraw placeholder note.
+- **On-site Changelog view** (`/?tab=changelog`, footer link): live GitHub Releases feed
+  rendered as a version timeline with cleaned release-note excerpts and links to GitHub.
+- **SEO / Open Graph**: branded OG banner (1344×768) wired into `openGraph` + `twitter`
+  metadata, `metadataBase` + canonical URL, robots directives, and JSON-LD `Person`
+  structured data (name, role, emails, socials, expertise). Amber "K" favicon via
+  `src/app/icon.svg`.
+
+### Changed
+- Styling polish: soft amber radial glow behind the hero avatar, "NBO · UTC+3" geo badge,
+  header elevation shadow on scroll, section-heading kickers, card hover lift + amber glow,
+  ★ Flagship markers on featured project cards, `text-wrap: balance` for headings,
+  `scrollbar-gutter: stable` to stop layout shift, skip-to-content link.
+
+### Deployment note
+- For the hosted admin inbox, set `ADMIN_KEY` in Vercel → Project → Settings → Environment
+  Variables (local dev uses `.env.local`). Without it the inbox stays locked and shows a
+  clear "not configured" message.
+
 ## [1.0.1] — 2026-09-16
 
 ### Changed
@@ -15,14 +46,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.1.0
 [1.0.1]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.1
 
 ## [Unreleased]
 
 ### Planned
-- Architecture diagram (SVG) per flagship system
-- Real recommendation quotes replacing placeholder testimonials
+- Real recommendation quotes replacing placeholder testimonials (Alice Ndungu, James Ndegwa, Victor Rotich)
 - LinkedIn URL refresh
 
 ## [1.0.0] — 2026-09-16

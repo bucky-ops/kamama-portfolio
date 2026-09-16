@@ -13,7 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://kamama-portfolio.vercel.app";
+const OG_IMAGE = "/og-banner.png";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Collins Kamama — Production-Grade Systems | Kamama Portfolio",
   description:
     "Portfolio of Muchiri Collins Kamama — Solution Architect, Full Stack Developer & Data Scientist. Production-grade blockchain, AI and data platforms for the UN system, NGOs, government and enterprise across East Africa.",
@@ -28,19 +32,67 @@ export const metadata: Metadata = {
     "Nairobi",
   ],
   authors: [{ name: "Muchiri Collins Kamama" }],
+  alternates: { canonical: SITE_URL },
   openGraph: {
     title: "Collins Kamama — Production-Grade Systems",
     description:
       "I build production-grade systems that operate, not just demo. Blockchain, AI/RAG and data platforms for UN, NGO, government and enterprise.",
+    url: SITE_URL,
     siteName: "Kamama Portfolio",
     type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1344,
+        height: 768,
+        alt: "KAMAMA — Production-grade systems portfolio banner",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Collins Kamama — Production-Grade Systems",
     description:
       "Solution Architect · Full Stack Developer · Data Scientist — Nairobi (UTC+3), remote ICA contracts globally.",
+    images: [OG_IMAGE],
+    creator: "@blurred_cmk",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+};
+
+/** Structured data — helps employers/search engines parse the profile correctly. */
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Muchiri Collins Kamama",
+  alternateName: "Collins Kamama",
+  jobTitle: "Solution Architect · Full Stack Developer · Data Scientist",
+  email: "mailto:muchiri.collin@aol.com",
+  telephone: "+254 700 845 084",
+  url: SITE_URL,
+  sameAs: [
+    "https://github.com/bucky-ops",
+    "https://www.linkedin.com/in/collins-kamama",
+    "https://twitter.com/blurred_cmk",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Nairobi",
+    addressCountry: "KE",
+  },
+  knowsAbout: [
+    "Enterprise Blockchain",
+    "AI & Analytics",
+    "RAG / LangChain",
+    "PostgreSQL HA",
+    "Cloud & DevOps",
+    "M&E Dashboards",
+  ],
 };
 
 export default function RootLayout({
@@ -53,6 +105,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
+        <script
+          type="application/ld+json"
+          // Static, developer-authored JSON — no user input is interpolated.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         {children}
         <Toaster />
       </body>

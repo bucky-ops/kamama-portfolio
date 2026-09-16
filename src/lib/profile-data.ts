@@ -129,6 +129,16 @@ export interface Project {
   metric: string;
   caseStudy: string;
   featured: boolean;
+  diagram?: DiagramSpec; // flagship systems ship with a stage-by-stage architecture
+}
+
+/** Left → right architecture flow rendered under flagship project cards. */
+export interface DiagramStage {
+  label: string; // stage name, e.g. "Trust & Ingestion"
+  items: string[]; // components in this stage
+}
+export interface DiagramSpec {
+  stages: DiagramStage[];
 }
 
 export const projects: Project[] = [
@@ -144,6 +154,14 @@ export const projects: Project[] = [
     caseStudy:
       "Enterprise-grade inventory system leveraging blockchain for immutable auditing and AI forecasting.",
     featured: true,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["POS / scan events", "Supplier GRNs & docs"] },
+        { label: "Ledger Core", items: ["Ethereum smart contract", "Immutable audit trail"] },
+        { label: "Intelligence", items: ["AI demand forecasting", "Reorder triggers"] },
+        { label: "Decision & Ops", items: ["React ops console", "PostgreSQL reporting DB"] },
+      ],
+    },
   },
   {
     repo: "sdg-rag-system",
@@ -157,6 +175,14 @@ export const projects: Project[] = [
     caseStudy:
       "Academic capstone turned production RAG: vector search over UN-Habitat SDG 11 corpus with RESTful querying APIs.",
     featured: true,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["SDG 11 corpus", "UN-Habitat documents"] },
+        { label: "Indexing", items: ["Vector embeddings", "LangChain retrieval index"] },
+        { label: "Intelligence", items: ["Llama 3.1 + RAG chain", "Cited, grounded answers"] },
+        { label: "Serving & Ops", items: ["REST API · AWS Lambda", "GDPR-aligned access control"] },
+      ],
+    },
   },
   {
     repo: "Global-Climate-Food-Security-Intelligence-Platform-GCF-SIP-",
@@ -170,6 +196,14 @@ export const projects: Project[] = [
     caseStudy:
       "Production-grade, end-to-end AI platform predicting food insecurity for climate adaptation planning.",
     featured: true,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["Climate & crop data feeds", "ODK field surveys"] },
+        { label: "Intelligence", items: ["scikit-learn models", "Hotspot probability scores"] },
+        { label: "Decision & Action", items: ["Risk dashboards", "Alert thresholds"] },
+        { label: "Deployment & Ops", items: ["PostgreSQL + geospatial", "Donor & county reporting"] },
+      ],
+    },
   },
   {
     repo: "Kenya-Childhood-Malnutrition-Risk-Prediction-System",

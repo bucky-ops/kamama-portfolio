@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ImagePlus } from "lucide-react";
+import { Network } from "lucide-react";
 import { projectFilters, projects, type ProjectCluster } from "@/lib/profile-data";
 import { ProjectCard } from "./project-card";
 import { SectionHeading } from "./shared";
@@ -38,6 +38,7 @@ export function WorkView() {
     <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6 md:py-12">
       <section aria-label="Systems and solutions" className="space-y-6">
         <SectionHeading
+          kicker="Portfolio · 8 production systems"
           title="Systems & Solutions"
           subtitle="Grouped by solution cluster — not chronology. Every system ships with architecture, metric, and source."
         />
@@ -100,11 +101,12 @@ export function WorkView() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Architecture diagram placeholder */}
-        <div className="grid-pattern flex items-center gap-3 rounded-2xl border border-dashed border-border px-5 py-6 text-muted-foreground">
-          <ImagePlus className="size-5 shrink-0 text-primary/70" aria-hidden="true" />
+        {/* Architecture note */}
+        <div className="grid-pattern flex items-center gap-3 rounded-2xl border border-border bg-secondary/20 px-5 py-4 text-muted-foreground">
+          <Network className="size-5 shrink-0 text-primary/80" aria-hidden="true" />
           <p className="text-sm">
-            Architecture diagrams — one per flagship system (Excalidraw SVG export)
+            <span className="font-medium text-foreground">Flagship systems ship with architecture diagrams</span>{" "}
+            — expand <span className="font-mono text-xs text-primary">Architecture</span> on any ★ Flagship card.
           </p>
         </div>
       </section>

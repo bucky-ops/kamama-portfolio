@@ -9,9 +9,11 @@ import { HomeView } from "@/components/portfolio/home-view";
 import { WorkView } from "@/components/portfolio/work-view";
 import { AboutView } from "@/components/portfolio/about-view";
 import { ContactView } from "@/components/portfolio/contact-view";
+import { ChangelogView } from "@/components/portfolio/changelog-view";
+import { AdminView } from "@/components/portfolio/admin-view";
 import type { TabId } from "@/components/portfolio/shared";
 
-const VALID_TABS: TabId[] = ["home", "projects", "about", "contact"];
+const VALID_TABS: TabId[] = ["home", "projects", "about", "contact", "changelog", "admin"];
 
 function readTabFromUrl(): TabId | null {
   if (typeof window === "undefined") return null;
@@ -48,8 +50,14 @@ export default function Page() {
     <MotionConfig reducedMotion="user">
       <GithubDataProvider>
         <div className="flex min-h-screen flex-col bg-[#0D1117] text-[#E6EDF3]">
+          <a
+            href="#main-content"
+            className="skip-link rounded-full border border-primary/50 bg-[#161B22] px-4 py-2 text-xs font-medium text-primary shadow-lg focus-visible:outline-none"
+          >
+            Skip to content
+          </a>
           <Header active={tab} onNavigate={navigate} />
-          <main className="flex-1">
+          <main className="flex-1" id="main-content">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={tab}
@@ -62,10 +70,12 @@ export default function Page() {
                 {tab === "projects" && <WorkView />}
                 {tab === "about" && <AboutView />}
                 {tab === "contact" && <ContactView />}
+                {tab === "changelog" && <ChangelogView />}
+                {tab === "admin" && <AdminView />}
               </motion.div>
             </AnimatePresence>
           </main>
-          <Footer />
+          <Footer onNavigate={navigate} />
         </div>
       </GithubDataProvider>
     </MotionConfig>

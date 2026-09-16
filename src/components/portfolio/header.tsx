@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,15 @@ interface HeaderProps {
 
 export function Header({ active, onNavigate }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Elevation shadow once the page scrolls — gives the glass bar depth.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const go = (tab: TabId) => {
     setOpen(false);
@@ -29,7 +38,12 @@ export function Header({ active, onNavigate }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-[#0D1117]/80 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b border-border bg-[#0D1117]/80 backdrop-blur-md transition-shadow duration-300",
+        scrolled && "shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+      )}
+    >
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo */}
         <button

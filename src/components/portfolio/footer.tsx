@@ -1,14 +1,14 @@
 "use client";
 
-import { Github, Linkedin, Tag, Twitter } from "lucide-react";
+import { Github, Linkedin, Lock, Tag, Twitter } from "lucide-react";
 import { profile } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
+import type { TabId } from "./shared";
 
-export function Footer() {
+export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
   const { release } = useGithubData();
 
   const tag = release?.tag || "v1.0.0";
-  const changelogUrl = "https://github.com/bucky-ops/kamama-portfolio/releases";
 
   const socials = [
     { href: profile.socials.github, label: `GitHub — ${profile.socials.githubHandle}`, Icon: Github },
@@ -30,20 +30,41 @@ export function Footer() {
             <Tag className="size-3 text-primary" aria-hidden="true" />
             {tag}
           </span>
-          <a
-            href={changelogUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline"
-          >
-            Changelog
-          </a>
+          {onNavigate ? (
+            <button
+              type="button"
+              onClick={() => onNavigate("changelog")}
+              className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+            >
+              Changelog
+            </button>
+          ) : (
+            <a
+              href="https://github.com/bucky-ops/kamama-portfolio/releases"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline"
+            >
+              Changelog
+            </a>
+          )}
         </div>
 
         {/* Zone 3 — stack + socials */}
         <div className="flex items-center gap-3">
           <p className="hidden sm:block">Built with Next.js 16 · Deployed on Vercel</p>
           <div className="flex items-center gap-1.5">
+            {onNavigate ? (
+              <button
+                type="button"
+                onClick={() => onNavigate("admin")}
+                aria-label="Admin lead inbox"
+                title="Admin lead inbox"
+                className="inline-flex size-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-border hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+              >
+                <Lock className="size-4" aria-hidden="true" />
+              </button>
+            ) : null}
             {socials.map(({ href, label, Icon }) => (
               <a
                 key={label}
@@ -51,7 +72,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
-                className="inline-flex size-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-border hover:text-primary"
+                className="inline-flex size-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-border hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
               >
                 <Icon className="size-4" aria-hidden="true" />
               </a>

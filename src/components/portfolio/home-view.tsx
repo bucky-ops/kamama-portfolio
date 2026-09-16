@@ -134,9 +134,14 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
         {/* Right — photo placeholder + stats */}
         <Card className="overflow-hidden rounded-2xl border-border bg-[#161B22] lg:col-span-2">
           <CardContent className="flex h-full flex-col p-6 md:p-8">
-            <div className="grid-pattern relative flex flex-1 flex-col items-center justify-center gap-4 rounded-xl border border-border/60 bg-secondary/20 py-8">
+            <div className="grid-pattern relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-xl border border-border/60 bg-secondary/20 py-8">
+              {/* soft amber glow behind avatar */}
+              <div
+                className="glow-amber pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                aria-hidden="true"
+              />
               <InitialsAvatar />
-              <div className="text-center">
+              <div className="relative text-center">
                 <p className="font-mono text-sm font-semibold tracking-wide text-foreground">
                   {profile.shortName}
                 </p>
@@ -144,6 +149,14 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
                   {profile.role}
                 </p>
               </div>
+              {/* corner geo badge */}
+              <span
+                className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground backdrop-blur-sm"
+                aria-hidden="true"
+              >
+                <Globe className="size-3 text-primary/70" />
+                NBO · UTC+3
+              </span>
             </div>
 
             <dl className="mt-6 grid grid-cols-2 gap-4">
@@ -192,6 +205,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
       {/* ── Skills bento ───────────────────────────────────────────── */}
       <section aria-label="Skills" className="space-y-4">
         <SectionHeading
+          kicker="Capabilities"
           title="What I bring"
           subtitle="Four pillars, each backed by a production metric — not a bullet point."
         />
@@ -236,6 +250,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
       {/* ── Featured systems ───────────────────────────────────────── */}
       <section aria-label="Featured systems" className="space-y-4">
         <SectionHeading
+          kicker="Selected work"
           title="Featured Systems"
           subtitle="Flagship builds — every one ships with architecture, a metric, and source."
         />

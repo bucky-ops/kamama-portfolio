@@ -4,6 +4,7 @@ import { ExternalLink, FileText, Github, Layers, Lock, TrendingUp } from "lucide
 import { Card, CardContent } from "@/components/ui/card";
 import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
+import { ArchitectureDiagram } from "./architecture-diagram";
 import { ClusterBadge, StarsChip, TagChip } from "./shared";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
@@ -16,11 +17,22 @@ export function ProjectCard({ project }: { project: Project }) {
   const hasCaseStudy = Boolean(project.caseStudy) && hasRepo;
 
   return (
-    <Card className="flex h-full flex-col rounded-2xl border-border bg-[#161B22] transition-colors duration-200 hover:border-primary/40">
+    <Card className="flex h-full flex-col rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
       <CardContent className="flex h-full flex-col gap-3.5 p-5 md:p-6">
-        {/* Top row: cluster + stars */}
+        {/* Top row: cluster + flagship + stars */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <ClusterBadge cluster={project.cluster} />
+          <div className="flex flex-wrap items-center gap-1.5">
+            <ClusterBadge cluster={project.cluster} />
+            {project.featured ? (
+              <span
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
+                title="Flagship system"
+              >
+                <span aria-hidden="true" className="text-primary">★</span>
+                Flagship
+              </span>
+            ) : null}
+          </div>
           <StarsChip stars={hasRepo && stat?.live ? stat.stars : undefined} />
         </div>
 
@@ -58,6 +70,9 @@ export function ProjectCard({ project }: { project: Project }) {
             {project.metric}
           </span>
         </div>
+
+        {/* Expandable architecture diagram (flagship systems) */}
+        {project.diagram ? <ArchitectureDiagram spec={project.diagram} title={project.title} /> : null}
 
         {/* Links */}
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
