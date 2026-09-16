@@ -1,7 +1,7 @@
 import { notes } from "@/lib/notes-data";
 
 /**
- * RSS 2.0 feed for the Notes engineering blog — statically generated at build
+ * RSS 2.0 feed for the Notes engineering blog - statically generated at build
  * time from notes-data.ts (single source of truth).
  */
 
@@ -48,10 +48,10 @@ export function GET(): Response {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Collins Kamama — Notes</title>
+    <title>Collins Kamama - Notes</title>
     <link>${SITE_URL}/?tab=notes</link>
     <atom:link href="${FEED_URL}" rel="self" type="application/rss+xml" />
-    <description>Short, practical engineering write-ups from production systems — PostgreSQL HA, RAG, and data-for-development pipelines.</description>
+    <description>Short, practical engineering write-ups from production systems - PostgreSQL HA, RAG, and data-for-development pipelines.</description>
     <language>en</language>
     <lastBuildDate>${new Date(
       `${notes[0]?.date ?? "2026-01-01"}T09:00:00+03:00`

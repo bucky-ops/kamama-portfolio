@@ -41,9 +41,9 @@ export function ShareButton({
     if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
       try {
         await navigator.share({ title, text: text ?? title, url: shareUrl });
-        return; // user completed (or cancelled) the native sheet — nothing else to do
+        return; // user completed (or cancelled) the native sheet - nothing else to do
       } catch {
-        return; // cancelled — treat as no-op, never punish the user
+        return; // cancelled - treat as no-op, never punish the user
       }
     }
     // Clipboard fallback.

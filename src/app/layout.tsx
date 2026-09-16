@@ -19,9 +19,9 @@ const OG_IMAGE = "/og-banner.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Collins Kamama — Production-Grade Systems | Kamama Portfolio",
+  title: "Collins Kamama - Production-Grade Systems | Kamama Portfolio",
   description:
-    "Portfolio of Muchiri Collins Kamama — Solution Architect, Full Stack Developer & Data Scientist. Production-grade blockchain, AI and data platforms for the UN system, NGOs, government and enterprise across East Africa.",
+    "Portfolio of Muchiri Collins Kamama - Solution Architect, Full Stack Developer & Data Scientist. Production-grade blockchain, AI and data platforms for the UN system, NGOs, government and enterprise across East Africa.",
   keywords: [
     "Collins Kamama",
     "Kamama Consulting Solutions",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
   },
   openGraph: {
-    title: "Collins Kamama — Production-Grade Systems",
+    title: "Collins Kamama - Production-Grade Systems",
     description:
       "I build production-grade systems that operate, not just demo. Blockchain, AI/RAG and data platforms for UN, NGO, government and enterprise.",
     url: SITE_URL,
@@ -50,15 +50,15 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1344,
         height: 768,
-        alt: "KAMAMA — Production-grade systems portfolio banner",
+        alt: "KAMAMA - Production-grade systems portfolio banner",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Collins Kamama — Production-Grade Systems",
+    title: "Collins Kamama - Production-Grade Systems",
     description:
-      "Solution Architect · Full Stack Developer · Data Scientist — Nairobi (UTC+3), remote ICA contracts globally.",
+      "Solution Architect · Full Stack Developer · Data Scientist - Nairobi (UTC+3), remote ICA contracts globally.",
     images: [OG_IMAGE],
     creator: "@blurred_cmk",
   },
@@ -77,7 +77,7 @@ export const viewport: Viewport = {
   ],
 };
 
-/** Structured data — helps employers/search engines parse the profile correctly. */
+/** Structured data - helps employers/search engines parse the profile correctly. */
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -120,7 +120,7 @@ export default function RootLayout({
         <ThemeProvider>
           <script
             type="application/ld+json"
-            // Static, developer-authored JSON — no user input is interpolated.
+            // Static, developer-authored JSON - no user input is interpolated.
             dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
           />
           {children}

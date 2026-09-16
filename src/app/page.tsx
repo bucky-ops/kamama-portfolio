@@ -31,7 +31,7 @@ const VALID_TABS: TabId[] = [
 /**
  * Friendly aliases for links shared out-of-band (the nav label says "Work",
  * so people naturally copy /?tab=work). Unknown aliases must never strand a
- * visitor on a mismatched URL — they resolve here or the param is cleaned up.
+ * visitor on a mismatched URL - they resolve here or the param is cleaned up.
  */
 const TAB_ALIASES: Record<string, TabId> = {
   work: "projects",

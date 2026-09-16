@@ -14,6 +14,7 @@ import {
   Globe,
   Landmark,
   type LucideIcon,
+  MapPin,
   Quote,
   ShieldCheck,
 } from "lucide-react";
@@ -64,18 +65,15 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
   );
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 md:py-12">
+    <div className="mx-auto w-full max-w-[1280px] space-y-10 px-5 py-8 md:px-8 md:py-12">
       {/* ── Hero bento ─────────────────────────────────────────────── */}
       <section aria-label="Introduction" className="grid gap-4 lg:grid-cols-5">
-        {/* Left — headline + CTAs + philosophy flow */}
+        {/* Left - headline + CTAs + philosophy flow */}
         <Card className="rounded-2xl border-border bg-card lg:col-span-3">
           <CardContent className="flex h-full flex-col gap-6 p-6 md:p-8">
-            <p className="flex items-center gap-2 font-mono text-xs text-success">
-              <span className="relative flex size-2.5" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
-                <span className="relative inline-flex size-2.5 rounded-full bg-success" />
-              </span>
-              Open for ICA contracts · Nairobi (UTC+3)
+            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              <MapPin className="size-3.5 text-primary" aria-hidden="true" />
+              Solution Architect • Nairobi, Kenya • UTC+3
             </p>
 
             <div className="space-y-4">
@@ -104,7 +102,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                 className="min-h-11 rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-secondary/50"
               >
                 <a
-                  href="/resume/Collins_Kamama_Master_Resume_2026_Updated.pdf"
+                  href="/resume/Kamama_Curriculum_Vitae_2025.pdf"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -112,9 +110,13 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                   Download Resume
                 </a>
               </Button>
+              <p className="flex min-h-11 items-center gap-1.5 pl-1 text-xs text-muted-foreground">
+                <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+                Nairobi • Remote / Hybrid • Kenyan eligible for ICA globally
+              </p>
             </div>
 
-            {/* Architecture philosophy — 4-step mini flow */}
+            {/* Architecture philosophy - 4-step mini flow */}
             <div aria-label="Architecture philosophy" className="mt-auto pt-2">
               <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
                 Architecture philosophy
@@ -146,7 +148,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
           </CardContent>
         </Card>
 
-        {/* Right — photo placeholder + stats */}
+        {/* Right - photo placeholder + stats */}
         <Card className="overflow-hidden rounded-2xl border-border bg-card lg:col-span-2">
           <CardContent className="flex h-full flex-col p-6 md:p-8">
             <div className="grid-pattern relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-xl border border-border/60 bg-secondary/20 py-8">
@@ -222,7 +224,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
         <SectionHeading
           kicker="Capabilities"
           title="What I bring"
-          subtitle="Four pillars, each backed by a production metric — not a bullet point."
+          subtitle="Four pillars, each backed by a production metric - not a bullet point."
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {skillCards.map((skill, i) => {
@@ -232,7 +234,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                 <Card
                   className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] dark:hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] shadow-[0_8px_32px_rgba(31,35,40,0.06)]"
                   onMouseMove={(e) => {
-                    // Cursor spotlight — CSS vars drive the radial overlay
+                    // Cursor spotlight - CSS vars drive the radial overlay
                     // (direct DOM write, no re-render, touch-safe: overlay is
                     // hover-only).
                     const rect = e.currentTarget.getBoundingClientRect();
@@ -240,7 +242,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                     e.currentTarget.style.setProperty("--spot-y", `${e.clientY - rect.top}px`);
                   }}
                 >
-                  {/* Spotlight overlay — lights up under the cursor on hover */}
+                  {/* Spotlight overlay - lights up under the cursor on hover */}
                   <span
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/skill:opacity-100"
@@ -264,14 +266,14 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                         {skill.metricNote}
                       </p>
                     </div>
-                    {/* Depth meter — animated amber fill on scroll into view */}
+                    {/* Depth meter - animated amber fill on scroll into view */}
                     <div
                       role="img"
                       aria-label={`${skill.title} depth: ${skill.depth} out of 100`}
                     >
                       <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
                         <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F0B232]"
+                          className="h-full rounded-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F9B872]"
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.depth}%` }}
                           viewport={{ once: true, margin: "0px 0px -32px 0px" }}
@@ -305,7 +307,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
         <SectionHeading
           kicker="Selected work"
           title="Featured Systems"
-          subtitle="Flagship builds — every one ships with architecture, a metric, and source."
+          subtitle="Flagship builds - every one ships with architecture, a metric, and source."
         />
         <div className="grid gap-4 md:grid-cols-3">
           {featured.map((project, i) => (
@@ -334,7 +336,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
         <SectionHeading
           kicker="Social proof"
           title="What partners say"
-          subtitle="Abridged from written professional references — originals available on request."
+          subtitle="Abridged from written professional references - originals available on request."
         />
         <div className="grid gap-4 md:grid-cols-3">
           {testimonials.map((t, i) => (
@@ -346,7 +348,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                     aria-hidden="true"
                   />
                   <span
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success-fg"
                     title="Professional reference held on file"
                   >
                     <ShieldCheck className="size-3" aria-hidden="true" />
@@ -358,7 +360,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                 </blockquote>
                 <figcaption className="mt-auto flex items-center gap-3 border-t border-border/60 pt-3">
                   <span
-                    className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F0B232]/40"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F9B872] via-[#F9B872] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F9B872]/40"
                     aria-hidden="true"
                   >
                     {t.initials}

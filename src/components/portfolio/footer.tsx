@@ -11,20 +11,20 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
   const tag = release?.tag || "v1.0.0";
 
   const socials = [
-    { href: profile.socials.github, label: `GitHub — ${profile.socials.githubHandle}`, Icon: Github },
-    { href: profile.socials.linkedin, label: "LinkedIn — collins-kamama", Icon: Linkedin },
-    { href: profile.socials.twitter, label: `Twitter — ${profile.socials.twitterHandle}`, Icon: Twitter },
+    { href: profile.socials.github, label: `GitHub - ${profile.socials.githubHandle}`, Icon: Github },
+    { href: profile.socials.linkedin, label: "LinkedIn - collins-kamama", Icon: Linkedin },
+    { href: profile.socials.twitter, label: `Twitter - ${profile.socials.twitterHandle}`, Icon: Twitter },
   ];
 
   return (
     <footer className="mt-auto border-t border-border bg-background pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-muted-foreground sm:px-6 md:flex-row">
-        {/* Zone 1 — copyright */}
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center justify-between gap-4 px-5 py-6 text-xs text-muted-foreground md:px-8 md:flex-row">
+        {/* Zone 1 - copyright */}
         <p>
           © 2026 Collins Kamama · Kamama Consulting Solutions
         </p>
 
-        {/* Zone 2 — release badge */}
+        {/* Zone 2 - release badge */}
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/50 px-2.5 py-1 font-mono text-[11px] text-foreground">
             <Tag className="size-3 text-primary" aria-hidden="true" />
@@ -50,7 +50,7 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
           )}
         </div>
 
-        {/* Zone 3 — stack + socials */}
+        {/* Zone 3 - stack + socials */}
         <div className="flex items-center gap-3">
           <p className="hidden items-center gap-1.5 sm:flex">
             <kbd className="rounded border border-border bg-secondary/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground" aria-hidden="true">1–5</kbd>

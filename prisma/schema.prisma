@@ -22,7 +22,7 @@ model ContactMessage {
   @@index([createdAt])
 }
 
-// Release log — mirrors git tags + GitHub Releases so every update is accounted for
+// Release log - mirrors git tags + GitHub Releases so every update is accounted for
 model ReleaseLog {
   id          String   @id @default(cuid())
   version     String   @unique // e.g. v1.0.0

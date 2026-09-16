@@ -29,17 +29,32 @@ export interface GithubRelease {
   prerelease: boolean;
 }
 
+export interface GithubPublicRepo {
+  name: string;
+  description: string | null;
+  language: string | null;
+  stars: number;
+  forks: number;
+  topics: string[];
+  homepage: string | null;
+  pushedAt: string | null;
+  url: string;
+}
+
 interface GithubData {
   /** repo slug → live stats; only repos that responded with live=true are useful */
   repoStats: Record<string, GithubRepoStat>;
   release: GithubRelease | null;
-  /** True until the first repos fetch settles — drives chip shimmer skeletons. */
+  /** Every public, non-fork repo under bucky-ops (sorted by recent push). */
+  publicRepos: GithubPublicRepo[];
+  /** True until the first repos fetch settles - drives chip shimmer skeletons. */
   loading: boolean;
 }
 
 const GithubDataContext = createContext<GithubData>({
   repoStats: {},
   release: null,
+  publicRepos: [],
   loading: true,
 });
 
@@ -53,6 +68,7 @@ interface RawReposResponse {
     pushedAt?: string | null;
     forks?: number;
   }[];
+  publicRepos?: GithubPublicRepo[];
 }
 
 interface RawReleasesResponse {
@@ -69,11 +85,12 @@ interface RawReleasesResponse {
 /**
  * Fetches /api/github/repos and /api/releases exactly once for the whole app
  * (provider is mounted at the SPA root). Every fetch is wrapped in try/catch
- * and defaults to empty/neutral — no broken states when the API is cold.
+ * and defaults to empty/neutral - no broken states when the API is cold.
  */
 export function GithubDataProvider({ children }: { children: ReactNode }) {
   const [repoStats, setRepoStats] = useState<Record<string, GithubRepoStat>>({});
   const [release, setRelease] = useState<GithubRelease | null>(null);
+  const [publicRepos, setPublicRepos] = useState<GithubPublicRepo[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -101,8 +118,11 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
           };
         }
         setRepoStats(map);
+        if (Array.isArray(json.publicRepos) && !cancelled) {
+          setPublicRepos(json.publicRepos);
+        }
       } catch {
-        /* neutral — stars simply stay hidden */
+        /* neutral - stars simply stay hidden */
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -124,7 +144,7 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
           prerelease: Boolean(latest.prerelease),
         });
       } catch {
-        /* neutral — footer falls back to v1.0.0 */
+        /* neutral - footer falls back to v1.0.0 */
       }
     })();
 
@@ -133,7 +153,10 @@ export function GithubDataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo(() => ({ repoStats, release, loading }), [repoStats, release, loading]);
+  const value = useMemo(
+    () => ({ repoStats, release, publicRepos, loading }),
+    [repoStats, release, publicRepos, loading]
+  );
 
   return (
     <GithubDataContext.Provider value={value}>

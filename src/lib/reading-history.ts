@@ -1,5 +1,5 @@
 /**
- * Kamama Portfolio — Notes reading history (localStorage-backed).
+ * Kamama Portfolio - Notes reading history (localStorage-backed).
  * Tracks how far a visitor has read each note so the Notes list can offer
  * "Continue reading" and mark finished notes. Purely local, no tracking:
  * data never leaves the browser and is trivially clearable.
@@ -76,7 +76,7 @@ export function recordReadingProgress(slug: string, percent: number): void {
       .slice(0, MAX_ENTRIES);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(pruned));
   } catch {
-    // Private mode / storage full — reading history is best-effort.
+    // Private mode / storage full - reading history is best-effort.
   }
 }
 
@@ -89,7 +89,7 @@ export function removeReadingEntry(slug: string): void {
     );
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   } catch {
-    // Private mode / storage full — reading history is best-effort.
+    // Private mode / storage full - reading history is best-effort.
   }
 }
 

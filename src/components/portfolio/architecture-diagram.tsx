@@ -9,7 +9,7 @@ import type { DiagramSpec, DiagramStage } from "@/lib/profile-data";
 /**
  * Expandable stage-by-stage architecture flow for flagship systems.
  *
- * Desktop (md+): a themed SVG pipeline — stage cards laid out serpentine
+ * Desktop (md+): a themed SVG pipeline - stage cards laid out serpentine
  * (2 per row, S-flow) with animated dashed connectors and arrowheads, so the
  * diagram stays large and readable inside the case-study dialog.
  * Mobile: the same stages as a vertical HTML list.
@@ -58,7 +58,7 @@ function layoutCards(stages: DiagramStage[]): CardLayout[] {
     const cardH = HEADER_H + PAD + maxItems * ITEM_LINE;
     const y =
       MARGIN + rows.reduce((acc, prev) => acc + prev[0].h + GAP_Y, 0);
-    // Even rows place cards at slots 0,1 — odd rows at slots 1,0.
+    // Even rows place cards at slots 0,1 - odd rows at slots 1,0.
     const slots: (0 | 1)[] = r % 2 === 0 ? [0, 1] : [1, 0];
     rows.push(
       rowStages.map((stage, i) => ({
@@ -108,7 +108,7 @@ export function ArchitectureDiagram({
         className="flex w-full min-h-11 items-center gap-2 px-3.5 py-2.5 text-left text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
       >
         <Network className="size-3.5 text-primary" aria-hidden="true" />
-        <span>Architecture — {title}</span>
+        <span>Architecture - {title}</span>
         <ChevronDown
           className={cn("ml-auto size-3.5 transition-transform duration-200", open && "rotate-180")}
           aria-hidden="true"
@@ -122,7 +122,7 @@ export function ArchitectureDiagram({
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           <div className="border-t border-border/70 p-3 md:p-4">
-            {/* SVG pipeline — desktop */}
+            {/* SVG pipeline - desktop */}
             <div className="hidden rounded-lg border border-border/60 bg-secondary/20 p-2 md:block">
               <svg
                 viewBox={`0 0 ${vbW} ${vbH}`}
@@ -130,7 +130,7 @@ export function ArchitectureDiagram({
                 role="img"
                 aria-label={`Architecture flow for ${title}: ${flowLabel}`}
               >
-                {/* connectors first — cards paint above them; fade in last
+                {/* connectors first - cards paint above them; fade in last
                     so the flow appears to animate out of the stages */}
                 <motion.g
                   initial={{ opacity: 0 }}
@@ -143,7 +143,7 @@ export function ArchitectureDiagram({
                     if (!next) return null;
                     const midY = c.y + c.h / 2;
                     if (next.row === c.row) {
-                      // horizontal arrow — direction follows the serpentine row
+                      // horizontal arrow - direction follows the serpentine row
                       const even = c.row % 2 === 0;
                       // line runs source-edge → target-side so the dash
                       // animation flows with the data; head touches the target.
@@ -168,7 +168,7 @@ export function ArchitectureDiagram({
                         </g>
                       );
                     }
-                    // row change — vertical connector down the shared column
+                    // row change - vertical connector down the shared column
                     const x = c.x + c.w / 2;
                     const y1 = c.y + c.h + 6;
                     const y2 = next.y - 10;
@@ -257,7 +257,7 @@ export function ArchitectureDiagram({
               </p>
             </div>
 
-            {/* Vertical stage list — mobile, sr-only on desktop */}
+            {/* Vertical stage list - mobile, sr-only on desktop */}
             <div className="space-y-2 md:sr-only">
               {stages.map((stage, i) => (
                 <div

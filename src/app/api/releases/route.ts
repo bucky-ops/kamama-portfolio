@@ -5,7 +5,7 @@ export const revalidate = 300;
 export const GITHUB_REPO = "bucky-ops/kamama-portfolio";
 
 /**
- * Release log — the public answer to "is every update logged and tagged?".
+ * Release log - the public answer to "is every update logged and tagged?".
  * Reads GitHub Releases for the repo; the local DB mirrors them (see ReleaseLog model).
  */
 export async function GET() {

@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
 
 /**
- * Admin leads inbox API — key-gated.
+ * Admin leads inbox API - key-gated.
  * Auth: every request must carry `x-admin-key` matching the ADMIN_KEY env var.
  * The key lives server-side only (Vercel env + local .env.local); never shipped to the client bundle.
  * Abuse protection: per-IP sliding window (blocks ADMIN_KEY brute force).
@@ -12,7 +12,7 @@ import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
 
 export const ADMIN_KEY_HEADER = "x-admin-key";
 
-/** 40 requests / 10 min per IP — far above real admin usage, far below brute-force viable. */
+/** 40 requests / 10 min per IP - far above real admin usage, far below brute-force viable. */
 const RATE_MAX = 40;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 
@@ -27,14 +27,14 @@ function isAuthorized(req: NextRequest): boolean {
 
 function unauthorized() {
   return NextResponse.json(
-    { ok: false, error: "Unauthorized — valid admin key required." },
+    { ok: false, error: "Unauthorized - valid admin key required." },
     { status: 401 }
   );
 }
 
 function rateLimited(retryAfterSec: number) {
   return NextResponse.json(
-    { ok: false, error: "Too many requests — slow down and try again shortly." },
+    { ok: false, error: "Too many requests - slow down and try again shortly." },
     { status: 429, headers: { "Retry-After": String(retryAfterSec) } }
   );
 }
@@ -97,7 +97,7 @@ export async function PATCH(req: NextRequest) {
     const parsed = patchSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json(
-        { ok: false, error: "Invalid payload — id + status required." },
+        { ok: false, error: "Invalid payload - id + status required." },
         { status: 400 }
       );
     }
@@ -110,7 +110,7 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("[admin/leads] PATCH failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Could not update lead — is persistent storage available?" },
+      { ok: false, error: "Could not update lead - is persistent storage available?" },
       { status: 500 }
     );
   }

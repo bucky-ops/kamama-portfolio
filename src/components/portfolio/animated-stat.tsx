@@ -28,7 +28,7 @@ function parseStat(value: string): {
 
 const DURATION_MS = 1100;
 
-/** Ease-out cubic — fast start, gentle landing. */
+/** Ease-out cubic - fast start, gentle landing. */
 function easeOut(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
@@ -60,7 +60,7 @@ export function AnimatedStat({
     const tick = (now: number) => {
       const progress = duration === 0 ? 1 : Math.min(1, (now - start) / duration);
       const current = parsed.target * easeOut(progress);
-      // Render only the numeric part — prefix/suffix are added by the markup.
+      // Render only the numeric part - prefix/suffix are added by the markup.
       setDisplay(current.toFixed(parsed.decimals));
       if (progress < 1) {
         raf = requestAnimationFrame(tick);

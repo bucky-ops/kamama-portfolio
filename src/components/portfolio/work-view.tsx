@@ -6,13 +6,14 @@ import { Network } from "lucide-react";
 import { projectFilters, projects, type Project, type ProjectCluster } from "@/lib/profile-data";
 import { ProjectCard } from "./project-card";
 import { ProjectDialog } from "./project-dialog";
+import { RepositoriesSection } from "./repositories-section";
 import { SectionHeading } from "./shared";
 import { cn } from "@/lib/utils";
 
 type Filter = "All" | ProjectCluster;
 
 interface WorkViewProps {
-  /** Project (by title) to auto-open as a case study — used by the command palette. */
+  /** Project (by title) to auto-open as a case study - used by the command palette. */
   focusProjectTitle?: string | null;
   /** Clears the focus request after it has been consumed. */
   onConsumeFocus?: () => void;
@@ -38,7 +39,7 @@ export function WorkView({ focusProjectTitle, onConsumeFocus, onDiscuss }: WorkV
   }, []);
 
   // Auto-open a case study requested externally (command palette, home links).
-  // Deferred one tick — palette closes first, then the dialog opens.
+  // Deferred one tick - palette closes first, then the dialog opens.
   useEffect(() => {
     if (!focusProjectTitle) return;
     const id = window.setTimeout(() => {
@@ -58,12 +59,12 @@ export function WorkView({ focusProjectTitle, onConsumeFocus, onDiscuss }: WorkV
   );
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6 md:py-12">
+    <div className="mx-auto w-full max-w-[1280px] space-y-8 px-5 py-8 md:px-8 md:py-12">
       <section aria-label="Systems and solutions" className="space-y-6">
         <SectionHeading
           kicker="Portfolio · 8 production systems"
           title="Systems & Solutions"
-          subtitle="Grouped by solution cluster — not chronology. Every system ships with architecture, metric, and source."
+          subtitle="Grouped by solution cluster - not chronology. Every system ships with architecture, metric, and source."
         />
 
         {/* Filter pills */}
@@ -129,10 +130,13 @@ export function WorkView({ focusProjectTitle, onConsumeFocus, onDiscuss }: WorkV
           <Network className="size-5 shrink-0 text-primary/80" aria-hidden="true" />
           <p className="text-sm">
             <span className="font-medium text-foreground">Flagship systems ship with architecture diagrams</span>{" "}
-            — expand <span className="font-mono text-xs text-primary">Architecture</span> on any ★ Flagship card, or open{" "}
+            - expand <span className="font-mono text-xs text-primary">Architecture</span> on any ★ Flagship card, or open{" "}
             <span className="font-mono text-xs text-primary">Case Study</span> for the full breakdown.
           </p>
         </div>
+
+        {/* Every public repo under github.com/bucky-ops, live from the GitHub API */}
+        <RepositoriesSection />
       </section>
 
       {/* In-app case study dialog */}

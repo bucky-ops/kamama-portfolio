@@ -179,30 +179,30 @@ export function ProjectDialog({
           ) : (
             <span
               className="inline-flex min-h-11 cursor-not-allowed items-center gap-1.5 rounded-full border border-dashed border-border px-4 font-mono text-xs text-muted-foreground/70"
-              title="Private client deployment — source not public"
+              title="Private client deployment - source not public"
             >
               <Lock className="size-3.5" aria-hidden="true" />
               Private client deployment
             </span>
           )}
 
-          {/* Print / Save as PDF — renders the branded one-pager via print CSS */}
+          {/* Print / Save as PDF - renders the branded one-pager via print CSS */}
           <Button
             type="button"
             variant="outline"
             onClick={() => window.print()}
             aria-label={`Print or save ${project.title} case study as PDF`}
-            title="Opens the print dialog — save as PDF to share a one-pager"
+            title="Opens the print dialog - save as PDF to share a one-pager"
             className="min-h-11 flex-1 rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-secondary/50 sm:flex-none sm:px-6"
           >
             <Printer className="size-4" aria-hidden="true" />
             Print / PDF
           </Button>
 
-          {/* Share — Web Share API with clipboard fallback */}
+          {/* Share - Web Share API with clipboard fallback */}
           <ShareButton
-            title={`${project.title} — Collins Kamama`}
-            text={`${project.title} — case study by Collins Kamama (Kamama Consulting Solutions)`}
+            title={`${project.title} - Collins Kamama`}
+            text={`${project.title} - case study by Collins Kamama (Kamama Consulting Solutions)`}
             path="/?tab=projects"
             label="Share"
             className="min-h-11 flex-1 rounded-full border border-border bg-transparent text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-secondary/50 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 sm:flex-none sm:px-6 print:hidden"

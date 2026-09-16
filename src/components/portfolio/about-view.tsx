@@ -25,7 +25,7 @@ function CertChip({ status }: { status: string }) {
       className={cn(
         "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium",
         complete
-          ? "border-success/40 bg-success/10 text-success"
+          ? "border-success/40 bg-success/10 text-success-fg"
           : "border-primary/40 bg-primary/10 text-primary"
       )}
     >
@@ -60,7 +60,7 @@ function AboutCard({
 
 export function AboutView() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 md:py-12">
+    <div className="mx-auto w-full max-w-[1280px] px-5 py-8 md:px-8 md:py-12">
       <div className="grid gap-6 lg:grid-cols-5">
         {/* ── Career timeline ──────────────────────────────────────── */}
         <Reveal className="lg:col-span-3">
@@ -206,7 +206,7 @@ export function AboutView() {
                         aria-hidden="true"
                       />
                       <span
-                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 font-mono text-[10px] text-success-fg"
                         title="Professional reference held on file"
                       >
                         <ShieldCheck className="size-3" aria-hidden="true" />
@@ -218,7 +218,7 @@ export function AboutView() {
                     </blockquote>
                     <figcaption className="mt-4 flex items-center gap-3 border-t border-border/60 pt-3">
                       <span
-                        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F0B232]/40"
+                        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F9B872] via-[#F9B872] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F9B872]/40"
                         aria-hidden="true"
                       >
                         {t.initials}
@@ -235,7 +235,7 @@ export function AboutView() {
                   </figure>
                 ))}
                 <p className="text-[11px] italic text-muted-foreground/70">
-                  Quotes abridged from written professional references — original letters &amp; LinkedIn recommendations available on request.
+                  Quotes abridged from written professional references - original letters &amp; LinkedIn recommendations available on request.
                 </p>
               </div>
             </AboutCard>

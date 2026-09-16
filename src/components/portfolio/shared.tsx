@@ -23,7 +23,7 @@ function relativeShort(iso: string | null): string | null {
 export function InitialsAvatar() {
   return (
     <div
-      className="flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] shadow-lg shadow-primary/20 ring-1 ring-[#F0B232]/40 md:h-28 md:w-28"
+      className="flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F9B872] via-[#F9B872] to-[#7a5c14] shadow-lg shadow-primary/20 ring-1 ring-[#F9B872]/40 md:h-28 md:w-28"
       aria-hidden="true"
     >
       <span className="font-mono text-4xl font-bold tracking-tight text-[#161206] md:text-5xl">
@@ -36,7 +36,7 @@ export function InitialsAvatar() {
 const clusterStyles: Record<ProjectCluster, string> = {
   "Enterprise Blockchain":
     "border-primary/40 bg-primary/10 text-primary",
-  "AI & Analytics": "border-success/40 bg-success/10 text-success",
+  "AI & Analytics": "border-success/40 bg-success/10 text-success-fg",
   "Climate & Civic": "border-warn/40 bg-warn/10 text-warn",
   Infrastructure: "border-border bg-secondary/60 text-muted-foreground",
 };
@@ -71,7 +71,7 @@ export function TagChip({ tag }: { tag: string }) {
 
 /**
  * Shimmer placeholder for the live GitHub chips while the repos API is in
- * flight — renders in exactly the slot the real chips will occupy, so the
+ * flight - renders in exactly the slot the real chips will occupy, so the
  * card doesn't jump when data lands.
  */
 export function RepoChipsSkeleton() {
@@ -83,7 +83,7 @@ export function RepoChipsSkeleton() {
   );
 }
 
-/** Live GitHub stars chip — renders only when the repo responded (live=true). */
+/** Live GitHub stars chip - renders only when the repo responded (live=true). */
 export function StarsChip({
   stars,
   className,
@@ -107,7 +107,7 @@ export function StarsChip({
 }
 
 /**
- * Live repo meta chip — primary language + last push, rendered only when the
+ * Live repo meta chip - primary language + last push, rendered only when the
  * GitHub API responded. Answers the employer question "is this maintained?".
  */
 export function RepoMetaChip({

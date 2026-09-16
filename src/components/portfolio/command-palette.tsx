@@ -38,12 +38,12 @@ import type { TabId } from "./shared";
 
 const NAV_ITEMS: { tab: TabId; label: string; icon: typeof Home; shortcut: string }[] = [
   { tab: "home", label: "Home", icon: Home, shortcut: "1" },
-  { tab: "projects", label: "Work — systems & solutions", icon: Layers, shortcut: "2" },
-  { tab: "notes", label: "Notes — engineering blog", icon: NotebookPen, shortcut: "3" },
-  { tab: "about", label: "About — timeline & references", icon: User, shortcut: "4" },
-  { tab: "contact", label: "Contact — start a project", icon: Mail, shortcut: "5" },
-  { tab: "changelog", label: "Changelog — release history", icon: FileText, shortcut: "" },
-  { tab: "admin", label: "Admin — lead inbox", icon: Lock, shortcut: "" },
+  { tab: "projects", label: "Work - systems & solutions", icon: Layers, shortcut: "2" },
+  { tab: "notes", label: "Notes - engineering blog", icon: NotebookPen, shortcut: "3" },
+  { tab: "about", label: "About - timeline & references", icon: User, shortcut: "4" },
+  { tab: "contact", label: "Contact - start a project", icon: Mail, shortcut: "5" },
+  { tab: "changelog", label: "Changelog - release history", icon: FileText, shortcut: "" },
+  { tab: "admin", label: "Admin - lead inbox", icon: Lock, shortcut: "" },
 ];
 
 interface CommandPaletteProps {
@@ -67,7 +67,7 @@ export function CommandPalette({
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme !== "light";
 
-  // Global shortcut — toggle with ⌘K / Ctrl+K.
+  // Global shortcut - toggle with ⌘K / Ctrl+K.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -94,7 +94,7 @@ export function CommandPalette({
         await navigator.clipboard.writeText(profile.emails.founder);
         toast({ description: `Copied ${profile.emails.founder} to clipboard` });
       } catch {
-        toast({ description: "Clipboard unavailable — email is on the Contact view" });
+        toast({ description: "Clipboard unavailable - email is on the Contact view" });
       }
     });
   }, [run, toast]);
@@ -209,7 +209,7 @@ export function CommandPalette({
             onSelect={() =>
               run(() => {
                 window.open(
-                  "/resume/Collins_Kamama_Master_Resume_2026_Updated.pdf",
+                  "/resume/Kamama_Curriculum_Vitae_2025.pdf",
                   "_blank",
                   "noreferrer"
                 );
@@ -230,7 +230,7 @@ export function CommandPalette({
             className="gap-2.5 rounded-lg data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary"
           >
             <Github className="size-4" aria-hidden="true" />
-            GitHub profile — {profile.socials.githubHandle}
+            GitHub profile - {profile.socials.githubHandle}
           </CommandItem>
           <CommandItem
             value="linkedin profile collins kamama"
@@ -242,7 +242,7 @@ export function CommandPalette({
             className="gap-2.5 rounded-lg data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary"
           >
             <Linkedin className="size-4" aria-hidden="true" />
-            LinkedIn — {profile.socials.linkedinHandle}
+            LinkedIn - {profile.socials.linkedinHandle}
           </CommandItem>
         </CommandGroup>
       </CommandList>

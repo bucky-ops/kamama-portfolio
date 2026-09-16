@@ -53,7 +53,7 @@ export function BackToTop() {
       type="button"
       onClick={toTop}
       tabIndex={visible ? 0 : -1}
-      aria-label={`Back to top — page ${Math.round(progress * 100)}% scrolled`}
+      aria-label={`Back to top - page ${Math.round(progress * 100)}% scrolled`}
       className={cnPrint(visible)}
       aria-hidden={!visible}
     >

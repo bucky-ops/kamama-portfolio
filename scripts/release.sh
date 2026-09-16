@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Kamama Portfolio release script — every update is logged and tagged on GitHub.
+# Kamama Portfolio release script - every update is logged and tagged on GitHub.
 #
 # Usage:
 #   bash scripts/release.sh [patch|minor|major] "One-line release summary"
@@ -8,7 +8,7 @@
 # What it does:
 #   1. Bumps the version in VERSION (semver)
 #   2. Verifies CHANGELOG.md contains an entry for the new version
-#   3. Commits all pending changes ("release vX.Y.Z — summary")
+#   3. Commits all pending changes ("release vX.Y.Z - summary")
 #   4. Creates an annotated git tag vX.Y.Z
 #   5. Pushes main + tag to origin
 #   6. Publishes a GitHub Release (notes pulled from CHANGELOG.md)
@@ -40,19 +40,19 @@ case "$BUMP" in
 esac
 TAG="v$NEW"
 
-# 2. Changelog guard — refuse to release unlogged changes
+# 2. Changelog guard - refuse to release unlogged changes
 if ! grep -qE "^## \[$NEW\]" CHANGELOG.md; then
   echo "✗ CHANGELOG.md has no '## [$NEW]' section."
-  echo "  Add release notes first — every update must be logged."
+  echo "  Add release notes first - every update must be logged."
   exit 1
 fi
 
 # 3. Commit
 git add -A
-git commit -m "release $TAG — $SUMMARY" || echo "• nothing new to commit"
+git commit -m "release $TAG - $SUMMARY" || echo "• nothing new to commit"
 
 # 4. Tag (annotated, always)
-git tag -a "$TAG" -m "$TAG — $SUMMARY"
+git tag -a "$TAG" -m "$TAG - $SUMMARY"
 
 # 5. Push branch + tag
 git push origin HEAD --follow-tags
@@ -73,7 +73,7 @@ for line in open("CHANGELOG.md"):
     if capture: notes.append(line)
 body = "".join(notes).strip() or summary
 payload = json.dumps({
-    "tag_name": tag, "name": f"{tag} — {summary}",
+    "tag_name": tag, "name": f"{tag} - {summary}",
     "body": body + "\n\nAuto-published by scripts/release.sh",
     "draft": False, "prerelease": False,
 }).encode()
@@ -88,8 +88,8 @@ with urllib.request.urlopen(req) as res:
     print(f"GitHub Release published: {rel['html_url']}")
 PY
 else
-  echo "GITHUB_TOKEN not set — create the Release manually from tag $TAG"
+  echo "GITHUB_TOKEN not set - create the Release manually from tag $TAG"
 fi
 
 echo "$NEW" > VERSION
-echo "OK: $TAG released — logged in CHANGELOG.md, tagged on GitHub, deployed via Vercel."
+echo "OK: $TAG released - logged in CHANGELOG.md, tagged on GitHub, deployed via Vercel."

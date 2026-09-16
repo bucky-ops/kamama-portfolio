@@ -6,7 +6,7 @@ import { profile } from "@/lib/profile-data";
  *
  * Rendered inside the case-study dialog but invisible on screen
  * (`hidden`); the @media print rules in globals.css hide every other
- * element and reveal only this subtree — producing a clean, black-on-white
+ * element and reveal only this subtree - producing a clean, black-on-white
  * branded one-pager when the visitor hits "Print / Save PDF" (or Ctrl/Cmd+P).
  */
 export function CaseStudyPrint({ project }: { project: Project }) {

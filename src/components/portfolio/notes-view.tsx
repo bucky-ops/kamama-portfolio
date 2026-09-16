@@ -43,7 +43,7 @@ import { SectionHeading, TagChip } from "./shared";
 import { ShareButton } from "./share-button";
 import { cn } from "@/lib/utils";
 
-/** Compact relative time for history rows — "just now", "5m ago", "2h ago", "3d ago". */
+/** Compact relative time for history rows - "just now", "5m ago", "2h ago", "3d ago". */
 function readAgo(epochMs: number): string {
   const mins = Math.max(0, Math.round((Date.now() - epochMs) / 60000));
   if (mins < 1) return "just now";
@@ -56,7 +56,7 @@ function readAgo(epochMs: number): string {
 }
 
 /**
- * Notes — short engineering write-ups. List → article reader, both in-view
+ * Notes - short engineering write-ups. List → article reader, both in-view
  * (no route change): consistent with the SPA tab pattern.
  * Reader adds a reading-progress bar and a scroll-spy "On this page" TOC.
  */
@@ -71,7 +71,7 @@ export function NotesView() {
   const searchRef = useRef<HTMLInputElement>(null);
   const current = notes.find((n) => n.slug === openSlug) ?? null;
 
-  // Reading history lives in localStorage — load after mount (SSR-safe) and
+  // Reading history lives in localStorage - load after mount (SSR-safe) and
   // refresh whenever the reader closes, so the list reflects the latest read.
   useEffect(() => {
     if (current) return;
@@ -79,7 +79,7 @@ export function NotesView() {
     return () => window.clearTimeout(id);
   }, [current]);
 
-  // Notes the visitor has started but not finished — powers Continue reading.
+  // Notes the visitor has started but not finished - powers Continue reading.
   const continueEntries = history
     .filter((e) => e.percent >= 4 && e.percent < 100)
     .map((e) => ({ entry: e, note: notes.find((n) => n.slug === e.slug) }))
@@ -88,7 +88,7 @@ export function NotesView() {
 
   const readPercentBySlug = new Map(history.map((e) => [e.slug, e.percent]));
 
-  // All tags across notes, alphabetically — powers the filter chips.
+  // All tags across notes, alphabetically - powers the filter chips.
   const allTags = [...new Set(notes.flatMap((n) => n.tags))].sort();
 
   const filtered = notes.filter((note) => {
@@ -104,7 +104,7 @@ export function NotesView() {
 
   // Press "/" to jump into search (ignored while typing in any field).
   useEffect(() => {
-    if (current) return; // reader open — no list search visible
+    if (current) return; // reader open - no list search visible
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement | null;
@@ -183,10 +183,10 @@ export function NotesView() {
             <SectionHeading
               kicker="Field notes · Engineering write-ups"
               title="Notes"
-              subtitle="Short, practical write-ups from systems I actually ship — databases, RAG, and data-for-development pipelines."
+              subtitle="Short, practical write-ups from systems I actually ship - databases, RAG, and data-for-development pipelines."
             />
 
-            {/* Continue reading — from local reading history (never leaves the browser) */}
+            {/* Continue reading - from local reading history (never leaves the browser) */}
             {continueEntries.length > 0 ? (
               <section
                 aria-label="Continue reading"
@@ -214,7 +214,7 @@ export function NotesView() {
                         <AlertDialogDescription>
                           This removes all "Continue reading" positions and
                           "% read" marks stored in this browser. The notes
-                          themselves are untouched — you can always start fresh.
+                          themselves are untouched - you can always start fresh.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -284,7 +284,7 @@ export function NotesView() {
               </section>
             ) : null}
 
-            {/* Full reading history — every stored entry, not just the two
+            {/* Full reading history - every stored entry, not just the two
                 resume cards above. Local-only data, trivially clearable. */}
             {history.length > 0 ? (
               <section aria-label="Reading history" className="mt-2">
@@ -362,7 +362,7 @@ export function NotesView() {
                             <span
                               className={cn(
                                 "w-12 shrink-0 text-right font-mono text-[10px] tabular-nums",
-                                finished ? "text-success" : "text-primary"
+                                finished ? "text-success-fg" : "text-primary"
                               )}
                             >
                               {finished ? "✓ done" : `${entry.percent}%`}
@@ -399,7 +399,7 @@ export function NotesView() {
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search notes — try “PostgreSQL” or “RAG”…"
+                  placeholder="Search notes - try “PostgreSQL” or “RAG”…"
                   aria-label="Search notes by title, excerpt, or tag"
                   className="min-h-11 w-full rounded-xl border border-border bg-card pl-10 pr-14 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/40"
                 />
@@ -490,7 +490,7 @@ export function NotesView() {
                         if (readPct === undefined || readPct < 4) return null;
                         if (readPct >= 100) {
                           return (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+                            <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success-fg">
                               <CircleCheck className="size-3" aria-hidden="true" />
                               Finished
                             </span>
@@ -675,7 +675,7 @@ function NoteReader({
       aria-label={`Note: ${note.title}`}
       className="space-y-6"
     >
-      {/* Reading progress — sits just below the sticky header */}
+      {/* Reading progress - sits just below the sticky header */}
       <div
         className="fixed inset-x-0 top-16 z-30 h-0.5 bg-transparent"
         role="progressbar"
@@ -685,7 +685,7 @@ function NoteReader({
         aria-valuenow={percent}
       >
         <div
-          className="h-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F0B232] transition-[width] duration-150 ease-out"
+          className="h-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F9B872] transition-[width] duration-150 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -702,8 +702,8 @@ function NoteReader({
             All notes
           </button>
           <ShareButton
-            title={`${note.title} — Collins Kamama`}
-            text={`${note.title} — field note by Collins Kamama`}
+            title={`${note.title} - Collins Kamama`}
+            text={`${note.title} - field note by Collins Kamama`}
             path={`/?tab=notes&n=${note.slug}`}
             label="Share note"
             className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 print:hidden"
@@ -736,7 +736,7 @@ function NoteReader({
         </p>
       </div>
 
-      {/* On this page — scroll-spy chips */}
+      {/* On this page - scroll-spy chips */}
       <nav
         aria-label="On this page"
         className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3"

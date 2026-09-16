@@ -66,7 +66,7 @@ type StatusFilter = "all" | "new" | "read" | "replied";
 const STORAGE_KEY = "kamama.admin.key";
 
 const STATUS_STYLES: Record<string, string> = {
-  new: "border-success/40 bg-success/10 text-success",
+  new: "border-success/40 bg-success/10 text-success-fg",
   read: "border-border bg-secondary/60 text-muted-foreground",
   replied: "border-primary/40 bg-primary/10 text-primary",
 };
@@ -148,7 +148,7 @@ export function AdminView() {
           if (res.status === 401) {
             window.sessionStorage.removeItem(STORAGE_KEY);
             setAdminKey(null);
-            setUnlockError("Key rejected — session cleared.");
+            setUnlockError("Key rejected - session cleared.");
           }
           return;
         }
@@ -191,7 +191,7 @@ export function AdminView() {
       setKeyInput("");
       toast({ title: "Inbox unlocked", description: "Admin session active for this tab." });
     } catch {
-      setUnlockError("Network error — is the server running?");
+      setUnlockError("Network error - is the server running?");
     } finally {
       setUnlocking(false);
     }
@@ -311,7 +311,7 @@ export function AdminView() {
             </Button>
           </form>
           <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-            Key is checked server-side and kept in sessionStorage — it never leaves this browser tab.
+            Key is checked server-side and kept in sessionStorage - it never leaves this browser tab.
           </p>
         </motion.div>
       </div>
@@ -320,18 +320,18 @@ export function AdminView() {
 
   const statCards: { label: string; value: number; accent?: string }[] = [
     { label: "Total leads", value: stats?.total ?? 0 },
-    { label: "New", value: stats?.new ?? 0, accent: "text-success" },
+    { label: "New", value: stats?.new ?? 0, accent: "text-success-fg" },
     { label: "Replied", value: stats?.replied ?? 0, accent: "text-primary" },
     { label: "This week", value: stats?.last7Days ?? 0 },
   ];
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8 sm:px-6 md:py-12">
+    <div className="mx-auto w-full max-w-[1280px] space-y-6 px-5 py-8 md:px-8 md:py-12">
       <section aria-label="Admin lead inbox" className="space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
             title="Lead Inbox"
-            subtitle="Contact-form submissions — qualify, reply, and track status."
+            subtitle="Contact-form submissions - qualify, reply, and track status."
           />
           <div className="flex items-center gap-2">
             <Button
@@ -358,7 +358,7 @@ export function AdminView() {
         {warning ? (
           <div className="flex items-start gap-2.5 rounded-xl border border-warn/40 bg-warn/10 px-4 py-3 text-sm text-warn">
             <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <p>{warning} Leads submitted on serverless are not persisted — check the deployment logs / email fallback.</p>
+            <p>{warning} Leads submitted on serverless are not persisted - check the deployment logs / email fallback.</p>
           </div>
         ) : null}
 
@@ -386,7 +386,7 @@ export function AdminView() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search leads — name, email, org, message…"
+              placeholder="Search leads - name, email, org, message…"
               aria-label="Search leads"
               className="min-h-9 w-full rounded-full border border-border bg-card py-1.5 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground/70 transition-colors hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/40"
             />
@@ -471,7 +471,7 @@ export function AdminView() {
               <Inbox className="size-8 text-primary/60" aria-hidden="true" />
               <p className="text-sm text-muted-foreground">
                 {leads.length === 0
-                  ? "No leads yet — the inbox fills up as people submit the contact form."
+                  ? "No leads yet - the inbox fills up as people submit the contact form."
                   : search.trim()
                     ? "No leads match your search or filter."
                     : "No leads match this status filter."}

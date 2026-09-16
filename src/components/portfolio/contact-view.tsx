@@ -54,7 +54,7 @@ const contactSchema = z.object({
   projectType: z.string().min(1, "Select a project type").max(80),
   budgetRange: z.string().max(80),
   message: z.string().min(10, "Tell me a bit more (10+ characters)").max(5000),
-  // Honeypot — humans never see or fill this field.
+  // Honeypot - humans never see or fill this field.
   website: z.string().max(200),
 });
 
@@ -63,7 +63,7 @@ type SubmitStatus = "idle" | "sending" | "success" | "error";
 
 /**
  * Builds a vCard 3.0 string so prospects can save Collins to their address
- * book with one tap. Pure client-side — no dependencies, no network call.
+ * book with one tap. Pure client-side - no dependencies, no network call.
  */
 function buildVCard(): string {
   const lines = [
@@ -143,7 +143,7 @@ function CopyButton({ value }: { value: string }) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      /* clipboard unavailable — no-op */
+      /* clipboard unavailable - no-op */
     }
   };
 
@@ -157,7 +157,7 @@ function CopyButton({ value }: { value: string }) {
       className="size-9 shrink-0 text-muted-foreground hover:text-primary"
     >
       {copied ? (
-        <Check className="size-4 text-success" aria-hidden="true" />
+        <Check className="size-4 text-success-fg" aria-hidden="true" />
       ) : (
         <Copy className="size-4" aria-hidden="true" />
       )}
@@ -179,7 +179,7 @@ function projectTypeForCluster(cluster?: string): string {
 }
 
 function prefillMessage(title: string): string {
-  return `Hi Collins — I'd like to discuss your work on "${title}". We have a similar challenge and would like to scope a solution.`;
+  return `Hi Collins - I'd like to discuss your work on "${title}". We have a similar challenge and would like to scope a solution.`;
 }
 
 export function ContactView() {
@@ -187,7 +187,7 @@ export function ContactView() {
   const [status, setStatus] = useState<SubmitStatus>("idle");
   /** Server-provided error detail (e.g. rate-limit copy) shown in the error panel. */
   const [errorHint, setErrorHint] = useState<string | null>(null);
-  // Anti-spam: form mount timestamp — submissions faster than human speed are dropped server-side.
+  // Anti-spam: form mount timestamp - submissions faster than human speed are dropped server-side.
   const startedAtRef = useRef<number>(Date.now());
 
   const form = useForm<ContactValues>({
@@ -204,7 +204,7 @@ export function ContactView() {
   });
 
   // ── Prefill funnel: /?tab=contact&topic=<system title> ─────────
-  // Set by the "Discuss this system" CTA in case-study dialogs — seeds the
+  // Set by the "Discuss this system" CTA in case-study dialogs - seeds the
   // message + project type so the visitor starts from context, not a blank form.
   const [topic, setTopic] = useState<string | null>(null);
   useEffect(() => {
@@ -256,14 +256,14 @@ export function ContactView() {
         setStatus("success");
         setErrorHint(null);
         form.reset();
-        // Funnel complete — drop the topic param so a refresh starts clean.
+        // Funnel complete - drop the topic param so a refresh starts clean.
         setTopic(null);
         if (typeof window !== "undefined") {
           window.history.replaceState(null, "", "/?tab=contact");
         }
         toast({
           title: "Message sent",
-          description: "Thanks — expect a scoped reply within 24 hours.",
+          description: "Thanks - expect a scoped reply within 24 hours.",
         });
       } else {
         setErrorHint(
@@ -278,13 +278,13 @@ export function ContactView() {
   };
 
   const socials = [
-    { href: profile.socials.github, label: `GitHub — ${profile.socials.githubHandle}`, Icon: Github },
-    { href: profile.socials.twitter, label: `Twitter — ${profile.socials.twitterHandle}`, Icon: Twitter },
-    { href: profile.socials.linkedin, label: "LinkedIn — collins-kamama", Icon: Linkedin },
+    { href: profile.socials.github, label: `GitHub - ${profile.socials.githubHandle}`, Icon: Github },
+    { href: profile.socials.twitter, label: `Twitter - ${profile.socials.twitterHandle}`, Icon: Twitter },
+    { href: profile.socials.linkedin, label: "LinkedIn - collins-kamama", Icon: Linkedin },
   ];
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 md:py-12">
+    <div className="mx-auto w-full max-w-[1280px] px-5 py-8 md:px-8 md:py-12">
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Left: conversation form ──────────────────────────────── */}
         <Reveal>
@@ -294,7 +294,7 @@ export function ContactView() {
               Start a conversation
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Tell me about the system you need — I reply with architecture, not
+              Tell me about the system you need - I reply with architecture, not
               a sales pitch.
             </p>
 
@@ -306,7 +306,7 @@ export function ContactView() {
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
                 <p className="text-xs leading-relaxed text-foreground/90">
                   Pre-filled from{" "}
-                  <span className="font-semibold text-primary">{topic}</span> —
+                  <span className="font-semibold text-primary">{topic}</span> -
                   tweak the message below as you like.
                 </p>
                 <button
@@ -323,11 +323,11 @@ export function ContactView() {
             {status === "success" ? (
               <div className="mt-6 rounded-xl border border-success/40 bg-success/10 p-5 text-center">
                 <CheckCircle2
-                  className="mx-auto size-10 text-success"
+                  className="mx-auto size-10 text-success-fg"
                   aria-hidden="true"
                 />
                 <p className="mt-3 font-semibold text-foreground">
-                  Message received — thank you.
+                  Message received - thank you.
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   I read every message personally and reply within 24 hours.
@@ -479,7 +479,7 @@ export function ContactView() {
                     )}
                   />
 
-                  {/* Honeypot — visually hidden, ignored by humans, catnip for bots */}
+                  {/* Honeypot - visually hidden, ignored by humans, catnip for bots */}
                   <div aria-hidden="true" className="absolute -left-[9999px] size-px overflow-hidden">
                     <label htmlFor="contact-website">Website</label>
                     <input
@@ -538,7 +538,7 @@ export function ContactView() {
 
                   <p className="text-xs italic text-muted-foreground/80">
                     Your project type &amp; budget help me reply with a scoped
-                    answer — not a template.
+                    answer - not a template.
                   </p>
                 </form>
               </Form>
@@ -556,7 +556,7 @@ export function ContactView() {
                 Direct lines
               </h2>
 
-              {/* Founder email FIRST — client requirement */}
+              {/* Founder email FIRST - client requirement */}
               <div className="flex items-center justify-between gap-2 rounded-xl border border-primary/40 bg-primary/10 p-3">
                 <div className="flex min-w-0 items-center gap-2.5">
                   <Mail className="size-4 shrink-0 text-primary" aria-hidden="true" />
@@ -636,7 +636,7 @@ export function ContactView() {
                   >
                     <Icon className="size-4" aria-hidden="true" />
                     <span className="font-mono">
-                      {label.split(" — ")[1]}
+                      {label.split(" - ")[1]}
                     </span>
                   </a>
                 ))}
@@ -644,7 +644,7 @@ export function ContactView() {
 
               <Separator className="bg-border" />
 
-              {/* Save contact — one-tap vCard download */}
+              {/* Save contact - one-tap vCard download */}
               <Button
                 type="button"
                 variant="outline"
@@ -653,7 +653,7 @@ export function ContactView() {
                   toast({
                     title: "Contact card downloaded",
                     description:
-                      "Collins-Kamama.vcf — open it to add all direct lines to your address book.",
+                      "Collins-Kamama.vcf - open it to add all direct lines to your address book.",
                   });
                 }}
                 className="min-h-11 w-full rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-secondary/50"
@@ -704,7 +704,7 @@ export function ContactView() {
             <MapPin className="size-5 shrink-0 text-primary" aria-hidden="true" />
             <div className="min-w-0 flex-1">
               <p className="font-mono text-sm text-foreground">
-                Nairobi, Kenya — UTC+3 · EAT
+                Nairobi, Kenya - UTC+3 · EAT
               </p>
               <p className="text-xs text-muted-foreground">
                 Working across UN, NGO, government &amp; enterprise timezones

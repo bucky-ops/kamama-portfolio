@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * Light/dark switch for the header. Crossfades a Sun/Moon glyph and, when the
  * browser supports it, wraps the swap in a View Transition so the whole page
  * crossfades instead of snapping. Pre-mount it renders the dark (brand
- * default) glyph, which matches the SSR markup — no hydration mismatch.
+ * default) glyph, which matches the SSR markup - no hydration mismatch.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();

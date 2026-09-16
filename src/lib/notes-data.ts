@@ -1,5 +1,5 @@
 /**
- * Kamama Portfolio — Notes (engineering blog).
+ * Kamama Portfolio - Notes (engineering blog).
  * Short first-person write-ups grounded in Collins Kamama's real project work
  * (resume 2026). Content is hand-authored here so it stays editable in one place.
  */
@@ -27,19 +27,19 @@ export const notes: Note[] = [
     readingMinutes: 4,
     tags: ["PostgreSQL", "HA", "DevOps"],
     excerpt:
-      "Streaming replication, TLS everywhere and a rehearsed failover runbook — the checklist I use to keep merchant-facing databases at 99.9% uptime.",
+      "Streaming replication, TLS everywhere and a rehearsed failover runbook - the checklist I use to keep merchant-facing databases at 99.9% uptime.",
     sections: [
       {
         heading: "Why HA is a design decision, not a product",
         paragraphs: [
-          "Most outages I have been called into were not caused by the database engine — they were caused by a single-node design that was never asked the hard questions. Before writing a line of application code, I now agree on three numbers with the client: recovery point objective (how much data can we lose), recovery time objective (how long can we be down), and the maintenance window they can actually live with.",
+          "Most outages I have been called into were not caused by the database engine - they were caused by a single-node design that was never asked the hard questions. Before writing a line of application code, I now agree on three numbers with the client: recovery point objective (how much data can we lose), recovery time objective (how long can we be down), and the maintenance window they can actually live with.",
           "For a retail group processing 500,000+ transactions a day, those numbers translated into a Tier 3 setup: a primary, at least one streaming replica in a second availability zone, and an application tier that connects through a health-aware proxy rather than hard-coded hosts.",
         ],
       },
       {
         heading: "The boring things that prevent the loud incidents",
         paragraphs: [
-          "TLS on every hop, including replica traffic. pg_hba rules reviewed as code, not clicked together in a console. Backups that are restored — verified monthly, not assumed. WAL archiving shipped off-host so a corrupted primary does not take the backups with it.",
+          "TLS on every hop, including replica traffic. pg_hba rules reviewed as code, not clicked together in a console. Backups that are restored - verified monthly, not assumed. WAL archiving shipped off-host so a corrupted primary does not take the backups with it.",
           "The other half is observability. Replication lag, connection saturation, cache hit ratio and long-running transactions go onto the same dashboard the operations team already watches. An alert nobody sees is the same as no alert.",
         ],
       },
@@ -47,7 +47,7 @@ export const notes: Note[] = [
         heading: "Failover is a rehearsal, not an improvisation",
         paragraphs: [
           "We run failover drills quarterly. The first drill always exposes the same surprises: apps holding pooled connections to a dead primary, monitoring that keeps paging the wrong channel, and runbooks that say \"promote the replica\" without saying who is allowed to press the button.",
-          "After each drill the runbook gets shorter and the recovery gets faster. Uptime is not a feature you ship once — it is a muscle you keep training.",
+          "After each drill the runbook gets shorter and the recovery gets faster. Uptime is not a feature you ship once - it is a muscle you keep training.",
         ],
       },
     ],
@@ -72,7 +72,7 @@ export const notes: Note[] = [
         heading: "Chunking for policy text is not chunking for chat logs",
         paragraphs: [
           "Policy documents argue in long, structured arcs. Cutting on fixed token counts shredded tables and broke cross-references between indicators. What finally worked: split on document structure first (sections, annexes, tables kept whole), then on token budget, with generous overlap and section titles carried into every chunk's metadata.",
-          "That metadata earns its keep twice — it improves retrieval recall, and it makes the citation layer possible.",
+          "That metadata earns its keep twice - it improves retrieval recall, and it makes the citation layer possible.",
         ],
       },
       {
@@ -91,26 +91,26 @@ export const notes: Note[] = [
     readingMinutes: 4,
     tags: ["M&E", "KoboToolbox", "Power BI"],
     excerpt:
-      "Four thematic pillars, PEPFAR-funded reporting deadlines and patchy field connectivity — the data pipeline design decisions that kept numbers trustworthy.",
+      "Four thematic pillars, PEPFAR-funded reporting deadlines and patchy field connectivity - the data pipeline design decisions that kept numbers trustworthy.",
     sections: [
       {
         heading: "Design for the field first",
         paragraphs: [
           "Digital data collection fails in the field before it fails in the cloud. Forms are versioned like code, every revision is backwards-compatible with in-flight submissions, and enumerators can export and re-import when connectivity drops. Once that discipline exists in ODK/KoboToolbox, everything downstream gets easier.",
-          "Validation happens at the form level — constraints, skip logic and required fields — because fixing nonsense at the point of capture is ten times cheaper than cleaning it in a dashboard.",
+          "Validation happens at the form level - constraints, skip logic and required fields - because fixing nonsense at the point of capture is ten times cheaper than cleaning it in a dashboard.",
         ],
       },
       {
         heading: "One transformation layer, not ten spreadsheets",
         paragraphs: [
           "Submissions flow into a staging store, then through a single, documented transformation step into the reporting model that Power BI reads. The discipline that matters: no analyst-ever-edited copies. When a donor asks how a number was produced, the answer is a pipeline, not a person's memory.",
-          "For the SSK programme across four thematic pillars, that meant milestone indicators refresh automatically instead of via a fortnightly spreadsheet merge — and the field teams I trained now trust the dashboard enough to argue with it, which is exactly the point.",
+          "For the SSK programme across four thematic pillars, that meant milestone indicators refresh automatically instead of via a fortnightly spreadsheet merge - and the field teams I trained now trust the dashboard enough to argue with it, which is exactly the point.",
         ],
       },
       {
         heading: "Accuracy is a training outcome",
         paragraphs: [
-          "Tooling aside, the measurable gain came from training field teams on digital reporting discipline — data accuracy rose by about 30% once enumerators understood how their entries became reports. People maintain data quality; pipelines just preserve it.",
+          "Tooling aside, the measurable gain came from training field teams on digital reporting discipline - data accuracy rose by about 30% once enumerators understood how their entries became reports. People maintain data quality; pipelines just preserve it.",
         ],
       },
     ],

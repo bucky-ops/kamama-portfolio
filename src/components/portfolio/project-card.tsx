@@ -61,7 +61,7 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
 
         {/* Problem */}
         <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground/70">Problem — </span>
+          <span className="font-medium text-foreground/70">Problem - </span>
           {project.problem}
         </p>
 
@@ -109,7 +109,7 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
           ) : (
             <span
               className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-md border border-dashed border-border px-3 py-1.5 font-mono text-xs text-muted-foreground/70"
-              title="Private client deployment — source not public"
+              title="Private client deployment - source not public"
             >
               <Lock className="size-3.5" aria-hidden="true" />
               Private client deployment

@@ -20,16 +20,16 @@ interface ReleaseEntry {
 const FALLBACK_RELEASES: ReleaseEntry[] = [
   {
     tag: "v1.0.1",
-    title: "v1.0.1 — Vercel git integration",
+    title: "v1.0.1 - Vercel git integration",
     publishedAt: "2026-09-16T00:00:00Z",
     url: "https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.1",
     prerelease: false,
     excerpt:
-      "Vercel project pinned to the nextjs framework and connected to bucky-ops/kamama-portfolio — every push to main now auto-deploys to production.",
+      "Vercel project pinned to the nextjs framework and connected to bucky-ops/kamama-portfolio - every push to main now auto-deploys to production.",
   },
   {
     tag: "v1.0.0",
-    title: "v1.0.0 — Kamama Portfolio Launch",
+    title: "v1.0.0 - Kamama Portfolio Launch",
     publishedAt: "2026-09-16T00:00:00Z",
     url: "https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.0",
     prerelease: false,
@@ -39,11 +39,11 @@ const FALLBACK_RELEASES: ReleaseEntry[] = [
 ];
 
 function formatDate(iso: string | null): string {
-  if (!iso) return "—";
+  if (!iso) return "-";
   try {
     return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   } catch {
-    return "—";
+    return "-";
   }
 }
 
@@ -95,7 +95,7 @@ export function ChangelogView() {
           <SectionHeading
             kicker="Release engineering"
             title="Changelog"
-            subtitle="Every update to this site is tagged and published as a GitHub Release — this feed is the live proof."
+            subtitle="Every update to this site is tagged and published as a GitHub Release - this feed is the live proof."
           />
           <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/50 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
             <Tag className="size-3 text-primary" aria-hidden="true" />

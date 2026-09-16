@@ -38,6 +38,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-success: var(--success);
+  --color-success-fg: var(--success-fg);
   --color-warn: var(--warn);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -46,11 +47,13 @@
 }
 
 /*
- * Kamama Portfolio — dual theme (gruvbox identity in both modes).
+ * Kamama Portfolio - dual theme (gruvbox identity in both modes).
  * :root = light "warm paper" (cream bg, ink text, amber darkened to #A16207
- * for AA contrast on white cards). .dark = the original GitHub-dark gruvbox
- * (brand default — next-themes applies .dark on first visit).
- * Amber #E3B341 / #F0B232 primary, green #3FB950 success, orange #F0883E warn.
+ * for AA contrast on white cards). .dark = the GitHub-dark gruvbox
+ * (brand default - next-themes applies .dark on first visit).
+ * Dark tokens mirror the production wireframe exactly:
+ *   bg #0D1117 · card #161B22 · border #21262D · text #C9D1D9 ·
+ *   muted #8B949E · accent #F9B872 (hover #FFC985) · success badge #238636.
  */
 :root {
   --radius: 0.625rem;
@@ -90,45 +93,47 @@
   --grid-line: rgba(31, 35, 40, 0.055);
   --scrollbar-thumb: #d8cfba;
   --scrollbar-thumb-hover: #c3b89e;
+  --success-fg: #1a7f37;
   color-scheme: light;
 }
 
 .dark {
   --background: #0d1117;
-  --foreground: #e6edf3;
+  --foreground: #c9d1d9;
   --card: #161b22;
-  --card-foreground: #e6edf3;
+  --card-foreground: #c9d1d9;
   --popover: #161b22;
-  --popover-foreground: #e6edf3;
-  --primary: #e3b341;
-  --primary-foreground: #161206;
+  --popover-foreground: #c9d1d9;
+  --primary: #f9b872;
+  --primary-foreground: #0d1117;
   --secondary: #21262d;
-  --secondary-foreground: #e6edf3;
+  --secondary-foreground: #c9d1d9;
   --muted: #21262d;
   --muted-foreground: #8b949e;
   --accent: #21262d;
-  --accent-foreground: #e6edf3;
+  --accent-foreground: #c9d1d9;
   --destructive: #f85149;
-  --success: #3fb950;
+  --success: #238636;
+  --success-fg: #3fb950;
   --warn: #f0883e;
-  --border: #30363d;
-  --input: #30363d;
-  --ring: #e3b341;
-  --chart-1: #e3b341;
-  --chart-2: #3fb950;
+  --border: #21262d;
+  --input: #21262d;
+  --ring: #f9b872;
+  --chart-1: #f9b872;
+  --chart-2: #34d399;
   --chart-3: #f0883e;
   --chart-4: #d29922;
   --chart-5: #bc4c00;
   --sidebar: #161b22;
-  --sidebar-foreground: #e6edf3;
-  --sidebar-primary: #e3b341;
-  --sidebar-primary-foreground: #161206;
+  --sidebar-foreground: #c9d1d9;
+  --sidebar-primary: #f9b872;
+  --sidebar-primary-foreground: #0d1117;
   --sidebar-accent: #21262d;
-  --sidebar-accent-foreground: #e6edf3;
-  --sidebar-border: #30363d;
-  --sidebar-ring: #e3b341;
-  --grid-line: rgba(230, 237, 243, 0.045);
-  --scrollbar-thumb: #30363d;
+  --sidebar-accent-foreground: #c9d1d9;
+  --sidebar-border: #21262d;
+  --sidebar-ring: #f9b872;
+  --grid-line: rgba(201, 209, 217, 0.05);
+  --scrollbar-thumb: #21262d;
   --scrollbar-thumb-hover: #3d444d;
   color-scheme: dark;
 }
@@ -149,12 +154,12 @@
     text-wrap: balance;
   }
   ::selection {
-    background: rgba(224, 161, 32, 0.3);
+    background: rgba(249, 184, 114, 0.28);
     color: inherit;
   }
 }
 
-/* Slim custom scrollbar — 6px, thumb #30363D rounded */
+/* Slim custom scrollbar - 6px, theme thumb rounded */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -174,7 +179,7 @@
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-/* Architecture diagram — animated data-flow dashes on connector lines */
+/* Architecture diagram - animated data-flow dashes on connector lines */
 @keyframes diagram-dash {
   to {
     stroke-dashoffset: -22;
@@ -198,19 +203,19 @@
   background-size: 28px 28px;
 }
 
-/* Soft amber radial glow — used behind avatar/hero art */
+/* Soft amber radial glow - used behind avatar/hero art */
 .glow-amber {
   background: radial-gradient(
     closest-side,
-    rgba(227, 179, 65, 0.16),
-    rgba(227, 179, 65, 0.05) 55%,
+    rgba(249, 184, 114, 0.16),
+    rgba(249, 184, 114, 0.05) 55%,
     transparent 75%
   );
   animation: glow-breathe 6s ease-in-out infinite;
   will-change: opacity, scale;
 }
 
-/* Ambient breathing for the hero glow — animates only opacity/scale (standalone
+/* Ambient breathing for the hero glow - animates only opacity/scale (standalone
    CSS properties, so Tailwind's translate utilities stay untouched);
    reduced-motion visitors get the static glow. */
 @keyframes glow-breathe {
@@ -230,7 +235,7 @@
   }
 }
 
-/* Skip link — visually hidden until keyboard-focused */
+/* Skip link - visually hidden until keyboard-focused */
 .skip-link {
   position: fixed;
   top: 0.75rem;
@@ -330,7 +335,7 @@
     justify-content: space-between !important;
     align-items: flex-end !important;
     gap: 12pt;
-    border-bottom: 2pt solid #E3B341 !important;
+    border-bottom: 2pt solid #F9B872 !important;
     padding-bottom: 8pt;
     margin-bottom: 14pt;
   }
@@ -342,7 +347,7 @@
   }
 
   .print-sheet-dot {
-    color: #E3B341 !important;
+    color: #F9B872 !important;
     margin-left: 3pt;
   }
 
@@ -376,7 +381,7 @@
     text-transform: uppercase !important;
     letter-spacing: 0.14em !important;
     color: #8a6d1d !important;
-    border-left: 3pt solid #E3B341 !important;
+    border-left: 3pt solid #F9B872 !important;
     padding-left: 6pt !important;
     margin: 0 0 5pt !important;
     font-weight: 700 !important;
@@ -413,7 +418,7 @@
   .print-sheet-metric {
     font-family: ui-monospace, "SF Mono", Menlo, monospace !important;
     font-weight: 700 !important;
-    border-left: 3pt solid #E3B341 !important;
+    border-left: 3pt solid #F9B872 !important;
     padding-left: 8pt !important;
     background: #faf3dd !important;
     padding-top: 5pt !important;

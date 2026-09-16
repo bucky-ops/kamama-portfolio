@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 interface RevealProps {
   children: ReactNode;
-  /** Seconds to wait before animating — use for stagger effects. */
+  /** Seconds to wait before animating - use for stagger effects. */
   delay?: number;
   /** Slide distance in px. */
   y?: number;
@@ -13,7 +13,7 @@ interface RevealProps {
 }
 
 /**
- * Scroll-reveal wrapper — fades + rises content into view the first time it
+ * Scroll-reveal wrapper - fades + rises content into view the first time it
  * enters the viewport. Respects prefers-reduced-motion (content appears
  * instantly). Used across views for consistent entrance choreography.
  */

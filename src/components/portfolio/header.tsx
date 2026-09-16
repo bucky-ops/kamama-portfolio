@@ -1,16 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Menu, Search } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
+import { ArrowUpRight, Github, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { nav, profile } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
@@ -22,11 +16,16 @@ interface HeaderProps {
   onOpenPalette?: () => void;
 }
 
-export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+/* Brand wordmarks - light version on the dark header (primary), dark version on light */
+const LOGO_LIGHT = "/brand/kamama-wordmark-light-horizontal.png";
+const LOGO_DARK = "/brand/kamama-logo-dark-horizontal.png";
 
-  // Elevation shadow once the page scrolls — gives the glass bar depth.
+export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
+  const [scrolled, setScrolled] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const logoSrc = resolvedTheme === "light" ? LOGO_DARK : LOGO_LIGHT;
+
+  // Elevation shadow once the page scrolls - gives the glass bar depth.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -34,73 +33,89 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const go = (tab: TabId) => {
-    setOpen(false);
-    onNavigate(tab);
+  const go = (tab: TabId) => onNavigate(tab);
+
+  const navPill = (item: (typeof nav)[number], extra?: string) => {
+    const isActive = active === item.id;
+    return (
+      <button
+        key={item.id}
+        type="button"
+        onClick={() => go(item.id)}
+        aria-current={isActive ? "page" : undefined}
+        className={cn(
+          "whitespace-nowrap rounded-full px-4 py-1.5 text-[13px] font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+          extra,
+          isActive
+            ? "bg-primary font-semibold text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+        )}
+      >
+        {item.label}
+      </button>
+    );
   };
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md transition-shadow duration-300",
+        "sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl transition-shadow duration-300",
         scrolled &&
           "shadow-[0_8px_24px_rgba(31,35,40,0.08)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-        {/* Logo */}
-        <button
-          type="button"
-          onClick={() => go("home")}
-          className="group flex min-h-11 items-center gap-2.5 rounded-md text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-          aria-label="Kamama Portfolio — go to Home"
-        >
-          <span className="flex items-baseline">
-            <span className="font-mono text-sm font-bold tracking-[0.25em] text-foreground">
-              {profile.logo}
-            </span>
-            <span className="ml-1 inline-block size-1.5 rounded-full bg-primary" />
+      <div className="mx-auto flex h-16 w-full max-w-[1280px] items-center justify-between gap-3 px-5 md:px-8">
+        {/* Brand: real KAMAMA wordmark + systems tagline pill */}
+        <div className="flex min-w-0 items-center gap-3">
+          <button
+            type="button"
+            onClick={() => go("home")}
+            className="flex min-h-11 shrink-0 items-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+            aria-label="Kamama Portfolio - go to Home"
+          >
+            <Image
+              src={logoSrc}
+              alt="KAMAMA logo"
+              width={1064}
+              height={128}
+              priority
+              className="h-6 w-auto shrink-0 md:h-8"
+            />
+          </button>
+          <span className="hidden whitespace-nowrap rounded-full border border-border px-2.5 py-1 font-mono text-[11px] tracking-widest text-muted-foreground xl:inline">
+            SYSTEMS • BLOCKCHAIN • AI
           </span>
-          <span className="hidden text-xs text-muted-foreground sm:block">
-            Kamama Consulting Solutions
-          </span>
-        </button>
+        </div>
 
-        {/* Desktop nav */}
-        <nav aria-label="Primary" className="hidden items-center md:flex">
-          {nav.map((item) => {
-            const isActive = active === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => go(item.id)}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "relative min-h-11 px-3.5 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/60 lg:px-4",
-                  isActive
-                    ? "font-medium text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {item.label}
-                {isActive ? (
-                  <motion.span
-                    layoutId="nav-underline"
-                    className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-primary lg:inset-x-4"
-                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  />
-                ) : null}
-              </button>
-            );
-          })}
+        {/* Desktop pill nav */}
+        <nav
+          aria-label="Primary"
+          className="hidden items-center gap-1 rounded-full border border-border bg-card p-1 md:flex"
+        >
+          {nav.map((item) => navPill(item))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          {/* Light/dark theme switch — visible on every breakpoint */}
-          <ThemeToggle />
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Availability status - emerald pulse, wireframe spec */}
+          <span className="hidden items-center gap-2 whitespace-nowrap text-[11px] text-muted-foreground xl:flex">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success-fg opacity-60" />
+              <span className="relative inline-flex size-2 rounded-full bg-success-fg" />
+            </span>
+            Available for ICA &amp; remote
+          </span>
 
-          {/* Command palette trigger — full pill on desktop, icon on mobile */}
+          <a
+            href={profile.socials.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub - bucky-ops"
+            className="hidden size-9 place-items-center rounded-full border border-border bg-card transition-colors hover:bg-secondary sm:grid"
+          >
+            <Github className="size-4" aria-hidden="true" />
+          </a>
+
+          {/* Command palette trigger - full pill on desktop, icon on mobile */}
           {onOpenPalette ? (
             <>
               <button
@@ -128,72 +143,44 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
             </>
           ) : null}
 
+          <ThemeToggle />
+
           <Button
             type="button"
             onClick={() => go("contact")}
-            className="hidden min-h-11 rounded-full bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/90 md:inline-flex"
+            className="hidden h-9 rounded-full bg-primary px-4 text-[13px] font-bold text-primary-foreground hover:bg-primary/90 sm:inline-flex"
           >
             Hire Me
+            <ArrowUpRight className="size-4" aria-hidden="true" />
           </Button>
-
-          {/* Mobile menu */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="size-11 border-border bg-transparent md:hidden"
-                aria-label="Open navigation menu"
-              >
-                <Menu className="size-5" aria-hidden="true" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-72 border-l border-border bg-card"
-            >
-              <SheetHeader>
-                <SheetTitle className="flex items-baseline font-mono text-sm font-bold tracking-[0.25em]">
-                  {profile.logo}
-                  <span className="ml-1 inline-block size-1.5 rounded-full bg-primary" />
-                </SheetTitle>
-                <p className="text-xs text-muted-foreground">
-                  Kamama Consulting Solutions
-                </p>
-              </SheetHeader>
-              <nav
-                aria-label="Mobile"
-                className="flex flex-col gap-1 px-4"
-              >
-                {nav.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => go(item.id)}
-                    className={cn(
-                      "flex min-h-11 items-center rounded-lg px-3 text-left text-sm transition-colors",
-                      active === item.id
-                        ? "bg-primary/10 font-medium text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </nav>
-              <div className="mt-auto p-4">
-                <Button
-                  type="button"
-                  onClick={() => go("contact")}
-                  className="min-h-11 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90"
-                >
-                  Hire Me
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
+
+      {/* Mobile tab strip - horizontally scrollable pill row (wireframe pattern) */}
+      <nav
+        aria-label="Mobile"
+        className="flex gap-2 overflow-x-auto border-t border-border bg-background px-3 py-2 md:hidden"
+      >
+        {nav.map((item) => {
+          const isActive = active === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => go(item.id)}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "h-9 whitespace-nowrap rounded-full border px-4 text-[13px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+                isActive
+                  ? "border-primary bg-primary font-semibold text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {item.label}
+            </button>
+          );
+        })}
+      </nav>
     </header>
   );
 }

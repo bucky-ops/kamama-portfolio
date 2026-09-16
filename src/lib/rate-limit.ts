@@ -2,7 +2,7 @@
  * Minimal in-memory sliding-window rate limiter.
  *
  * Scope & limitations (documented deliberately):
- * - State lives per server instance — correct for the single-node dev setup
+ * - State lives per server instance - correct for the single-node dev setup
  *   and per-warm-lambda on Vercel. A distributed limiter would need Redis.
  * - Buckets self-clean lazily on every check, so memory stays bounded even
  *   with many unique IPs.
