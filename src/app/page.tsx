@@ -12,6 +12,8 @@ import { ContactView } from "@/components/portfolio/contact-view";
 import { ChangelogView } from "@/components/portfolio/changelog-view";
 import { NotesView } from "@/components/portfolio/notes-view";
 import { AdminView } from "@/components/portfolio/admin-view";
+import { CommandPalette } from "@/components/portfolio/command-palette";
+import type { Project } from "@/lib/profile-data";
 import type { TabId } from "@/components/portfolio/shared";
 
 const VALID_TABS: TabId[] = [
@@ -32,6 +34,8 @@ function readTabFromUrl(): TabId | null {
 
 export default function Page() {
   const [tab, setTab] = useState<TabId>("home");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [focusProjectTitle, setFocusProjectTitle] = useState<string | null>(null);
 
   // Deep-link support: /?tab=contact opens the Contact view.
   // Deferred one tick so the initial paint matches SSR (no cascading render).
@@ -49,6 +53,20 @@ export default function Page() {
       window.history.replaceState(null, "", url);
     }
   }, []);
+
+  // Open a system case study: switch to Work and auto-open the dialog.
+  const openProject = useCallback(
+    (project: Project) => {
+      setFocusProjectTitle(project.title);
+      setTab("projects");
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", "/?tab=projects");
+      }
+    },
+    []
+  );
+
+  const consumeFocus = useCallback(() => setFocusProjectTitle(null), []);
 
   // Scroll to top on every tab switch.
   useEffect(() => {
@@ -91,7 +109,11 @@ export default function Page() {
           >
             Skip to content
           </a>
-          <Header active={tab} onNavigate={navigate} />
+          <Header
+            active={tab}
+            onNavigate={navigate}
+            onOpenPalette={() => setPaletteOpen(true)}
+          />
           <main className="flex-1" id="main-content">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -102,7 +124,16 @@ export default function Page() {
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
                 {tab === "home" && <HomeView onNavigate={navigate} />}
-                {tab === "projects" && <WorkView />}
+                {tab === "projects" && (
+                  <WorkView
+                    focusProjectTitle={focusProjectTitle}
+                    onConsumeFocus={consumeFocus}
+                    onDiscuss={(project) => {
+                      void project;
+                      navigate("contact");
+                    }}
+                  />
+                )}
                 {tab === "notes" && <NotesView />}
                 {tab === "about" && <AboutView />}
                 {tab === "contact" && <ContactView />}
@@ -112,6 +143,12 @@ export default function Page() {
             </AnimatePresence>
           </main>
           <Footer onNavigate={navigate} />
+          <CommandPalette
+            open={paletteOpen}
+            onOpenChange={setPaletteOpen}
+            onNavigate={navigate}
+            onSelectProject={openProject}
+          />
         </div>
       </GithubDataProvider>
     </MotionConfig>

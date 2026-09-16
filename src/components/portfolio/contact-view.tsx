@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -49,6 +49,8 @@ const contactSchema = z.object({
   projectType: z.string().min(1, "Select a project type").max(80),
   budgetRange: z.string().max(80),
   message: z.string().min(10, "Tell me a bit more (10+ characters)").max(5000),
+  // Honeypot — humans never see or fill this field.
+  website: z.string().max(200),
 });
 
 type ContactValues = z.infer<typeof contactSchema>;
@@ -88,6 +90,8 @@ function CopyButton({ value }: { value: string }) {
 export function ContactView() {
   const { toast } = useToast();
   const [status, setStatus] = useState<SubmitStatus>("idle");
+  // Anti-spam: form mount timestamp — submissions faster than human speed are dropped server-side.
+  const startedAtRef = useRef<number>(Date.now());
 
   const form = useForm<ContactValues>({
     resolver: zodResolver(contactSchema),
@@ -98,6 +102,7 @@ export function ContactView() {
       projectType: "",
       budgetRange: "",
       message: "",
+      website: "",
     },
   });
 
@@ -114,6 +119,8 @@ export function ContactView() {
           projectType: values.projectType,
           budgetRange: values.budgetRange.trim(),
           message: values.message.trim(),
+          website: values.website, // honeypot
+          startedAt: startedAtRef.current, // timing check
         }),
       });
       const json = (await res.json().catch(() => null)) as { ok?: boolean } | null;
@@ -310,6 +317,19 @@ export function ContactView() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Honeypot — visually hidden, ignored by humans, catnip for bots */}
+                  <div aria-hidden="true" className="absolute -left-[9999px] size-px overflow-hidden">
+                    <label htmlFor="contact-website">Website</label>
+                    <input
+                      id="contact-website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      placeholder="Leave this field empty"
+                      {...form.register("website")}
+                    />
+                  </div>
 
                   {status === "error" ? (
                     <div

@@ -7,6 +7,41 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-09-16
+
+### Added
+- **Command palette (⌘K / Ctrl+K)**: fast, searchable launcher in every view. Groups:
+  Navigate (all 7 views with `1–5` shortcuts), Open a system case study (all 8 systems,
+  filterable by title/cluster/stack), Notes, and Quick actions — copy founder email, mailto
+  Collins, download resume, GitHub + LinkedIn profiles. Search pill (`Search ⌘K`) added to
+  the header on desktop, icon button on mobile. Built on cmdk (`ui/command`) themed to the
+  gruvbox tokens.
+- **In-app case study dialogs**: every project card's "Case Study" button now opens a rich
+  dialog — cluster + flagship badges, live repo meta & stars, Problem / Architecture /
+  Stack / Metric sections, the expandable stage diagram for flagships, a "View source"
+  link (or "Private client deployment" chip), and a **"Discuss this system"** CTA that
+  hands off to the Contact view. Wired from Home featured cards, Work cards, and the
+  command palette (palette selection deep-opens the dialog on the Work tab).
+- **Professional references upgraded**: placeholder quotes replaced with abridged reference
+  summaries for the three named referees (Alice Ndungu — UNON records digitization & GDPR
+  migration; James Ndegwa — Nakuru County systems migration & IT support; Victor Rotich —
+  campus IT reliability & mentorship). Redesigned cards: amber gradient initial avatars,
+  green "On file" verified chip, contact proof, and the work each reference covers. Cards
+  state clearly that originals are available on request.
+- **Animated hero stat counters**: `5+ / 10+ / 99.9% / 500K+` count up with an ease-out
+  curve on first view (tabular numbers, honors `prefers-reduced-motion`, renders final
+  value instantly when reduced).
+- **Contact anti-spam**: invisible honeypot field + form-timing check on `POST /api/contact`.
+  Bot-looking submissions get a fake success response (never stored); legacy clients
+  without the fields keep working.
+
+### Changed
+- Skill cards on Home now share the project-card hover treatment (lift + amber glow);
+  case-study buttons render as real buttons with focus rings; dialog content scrolls at
+  `85vh` max for small screens.
+- Fixed the doubled `v1.1.0 — v1.1.0 —` GitHub Release title (API patch, no code change).
+- Fixed a testimonial name typo (`Mr.s` → `Ms.`).
+
 ## [1.2.0] — 2026-09-16
 
 ### Added
@@ -67,7 +102,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.3.0
 [1.2.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.2.0
 [1.1.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.1.0
 [1.0.1]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.0.1
@@ -75,8 +111,9 @@ versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Planned
-- Real recommendation quotes replacing placeholder testimonials (Alice Ndungu, James Ndegwa, Victor Rotich)
+- Replace abridged reference summaries with verbatim LinkedIn recommendations
 - LinkedIn URL refresh
+- Founder-side: set `ADMIN_KEY` in Vercel env to unlock the hosted lead inbox
 
 ## [1.0.0] — 2026-09-16
 

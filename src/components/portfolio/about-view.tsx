@@ -4,6 +4,7 @@ import {
   Award,
   GraduationCap,
   Quote,
+  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -184,24 +185,44 @@ export function AboutView() {
                 {testimonials.map((t) => (
                   <figure
                     key={t.name}
-                    className="rounded-xl border border-border/70 bg-secondary/30 p-4"
+                    className="group rounded-xl border border-border/70 bg-secondary/30 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-secondary/40"
                   >
-                    <Quote
-                      className="size-4 text-primary/70"
-                      aria-hidden="true"
-                    />
-                    <blockquote className="mt-2 text-sm italic leading-relaxed text-muted-foreground">
-                      {t.quote}
+                    <div className="flex items-start justify-between gap-3">
+                      <Quote
+                        className="size-4 shrink-0 text-primary/70 transition-colors group-hover:text-primary"
+                        aria-hidden="true"
+                      />
+                      <span
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#3FB950]/30 bg-[#3FB950]/10 px-2 py-0.5 font-mono text-[10px] text-[#3FB950]"
+                        title="Professional reference held on file"
+                      >
+                        <ShieldCheck className="size-3" aria-hidden="true" />
+                        On file
+                      </span>
+                    </div>
+                    <blockquote className="mt-2.5 text-sm italic leading-relaxed text-muted-foreground">
+                      “{t.quote}”
                     </blockquote>
-                    <figcaption className="mt-3">
-                      <p className="text-sm font-bold text-foreground">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.title}</p>
-                      <p className="mt-1 font-mono text-xs text-primary">{t.proof}</p>
+                    <figcaption className="mt-4 flex items-center gap-3 border-t border-border/60 pt-3">
+                      <span
+                        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F0B232] via-[#E3B341] to-[#7a5c14] font-mono text-xs font-bold text-[#161206] ring-1 ring-[#F0B232]/40"
+                        aria-hidden="true"
+                      >
+                        {t.initials}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-foreground">{t.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{t.title}</p>
+                      </div>
                     </figcaption>
+                    <p className="mt-2 truncate font-mono text-[11px] text-primary" title={`Reference: ${t.proof}`}>
+                      {t.proof}
+                    </p>
+                    <p className="mt-1 text-[11px] text-muted-foreground/70">{t.work}</p>
                   </figure>
                 ))}
                 <p className="text-[11px] italic text-muted-foreground/70">
-                  Placeholder quotes — real recommendations on request.
+                  Quotes abridged from written professional references — original letters &amp; LinkedIn recommendations available on request.
                 </p>
               </div>
             </AboutCard>

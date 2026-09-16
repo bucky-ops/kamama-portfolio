@@ -11,7 +11,22 @@ const contactSchema = z.object({
     .or(z.string().trim().min(1).max(80)),
   budgetRange: z.string().trim().max(80).optional().or(z.literal("")),
   message: z.string().trim().min(10, "Tell me a bit more (10+ characters)").max(5000),
+  // Anti-spam (both optional so legacy clients keep working):
+  website: z.string().max(200).optional(), // honeypot — bots fill it
+  startedAt: z.number().optional(), // form mount timestamp — bots submit instantly
 });
+
+/** Submissions faster than this are treated as bot traffic. */
+const MIN_HUMAN_MS = 2500;
+
+/** Bot-looking submissions get a fake success so they learn nothing. */
+function botSuccess(): NextResponse {
+  return NextResponse.json({
+    ok: true,
+    id: `mem_${Date.now()}`,
+    stored: "memory",
+  });
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,6 +48,22 @@ export async function POST(req: NextRequest) {
     }
 
     const data = parsed.data;
+
+    // ── Anti-spam gate ────────────────────────────────────────────
+    // 1) Honeypot: any value in the invisible "website" field → bot.
+    if (data.website && data.website.trim() !== "") {
+      console.warn("[contact] Honeypot triggered — dropped submission from", data.email);
+      return botSuccess();
+    }
+    // 2) Timing: submitted before a human could realistically finish → bot.
+    if (
+      typeof data.startedAt === "number" &&
+      Number.isFinite(data.startedAt) &&
+      Date.now() - data.startedAt < MIN_HUMAN_MS
+    ) {
+      console.warn("[contact] Timing check failed — dropped submission from", data.email);
+      return botSuccess();
+    }
 
     try {
       const saved = await db.contactMessage.create({

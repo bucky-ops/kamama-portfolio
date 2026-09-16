@@ -9,7 +9,13 @@ import { ClusterBadge, RepoMetaChip, StarsChip, TagChip } from "./shared";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
 
-export function ProjectCard({ project }: { project: Project }) {
+interface ProjectCardProps {
+  project: Project;
+  /** When provided, "Case Study" opens the in-app dialog instead of a dead link. */
+  onCaseStudy?: (project: Project) => void;
+}
+
+export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
   const { repoStats } = useGithubData();
   const stat = repoStats[project.repo];
   const hasRepo = project.repo !== "";
@@ -104,7 +110,17 @@ export function ProjectCard({ project }: { project: Project }) {
             </span>
           )}
 
-          {hasCaseStudy ? (
+          {onCaseStudy ? (
+            <button
+              type="button"
+              onClick={() => onCaseStudy(project)}
+              aria-label={`Read the ${project.title} case study`}
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-md border border-border bg-secondary/50 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+            >
+              <FileText className="size-3.5" aria-hidden="true" />
+              Case Study
+            </button>
+          ) : hasCaseStudy ? (
             <a
               href={repoUrl}
               target="_blank"

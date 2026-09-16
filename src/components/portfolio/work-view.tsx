@@ -1,17 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Network } from "lucide-react";
-import { projectFilters, projects, type ProjectCluster } from "@/lib/profile-data";
+import { projectFilters, projects, type Project, type ProjectCluster } from "@/lib/profile-data";
 import { ProjectCard } from "./project-card";
+import { ProjectDialog } from "./project-dialog";
 import { SectionHeading } from "./shared";
 import { cn } from "@/lib/utils";
 
 type Filter = "All" | ProjectCluster;
 
-export function WorkView() {
+interface WorkViewProps {
+  /** Project (by title) to auto-open as a case study — used by the command palette. */
+  focusProjectTitle?: string | null;
+  /** Clears the focus request after it has been consumed. */
+  onConsumeFocus?: () => void;
+  /** Navigates to Contact (used by the dialog CTA). */
+  onDiscuss?: (project: Project) => void;
+}
+
+export function WorkView({ focusProjectTitle, onConsumeFocus, onDiscuss }: WorkViewProps) {
   const [filter, setFilter] = useState<Filter>("All");
+  const [selected, setSelected] = useState<Project | null>(null);
 
   const counts = useMemo(() => {
     const map = new Map<Filter, number>();
@@ -25,6 +36,18 @@ export function WorkView() {
     }
     return map;
   }, []);
+
+  // Auto-open a case study requested externally (command palette, home links).
+  // Deferred one tick — palette closes first, then the dialog opens.
+  useEffect(() => {
+    if (!focusProjectTitle) return;
+    const id = window.setTimeout(() => {
+      const match = projects.find((p) => p.title === focusProjectTitle);
+      if (match) setSelected(match);
+      onConsumeFocus?.();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [focusProjectTitle, onConsumeFocus]);
 
   const filtered = useMemo(
     () =>
@@ -94,7 +117,7 @@ export function WorkView() {
                 className="flex"
               >
                 <div className="w-full">
-                  <ProjectCard project={project} />
+                  <ProjectCard project={project} onCaseStudy={setSelected} />
                 </div>
               </motion.div>
             ))}
@@ -106,10 +129,21 @@ export function WorkView() {
           <Network className="size-5 shrink-0 text-primary/80" aria-hidden="true" />
           <p className="text-sm">
             <span className="font-medium text-foreground">Flagship systems ship with architecture diagrams</span>{" "}
-            — expand <span className="font-mono text-xs text-primary">Architecture</span> on any ★ Flagship card.
+            — expand <span className="font-mono text-xs text-primary">Architecture</span> on any ★ Flagship card, or open{" "}
+            <span className="font-mono text-xs text-primary">Case Study</span> for the full breakdown.
           </p>
         </div>
       </section>
+
+      {/* In-app case study dialog */}
+      <ProjectDialog
+        project={selected}
+        open={selected !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelected(null);
+        }}
+        onDiscuss={onDiscuss}
+      />
     </div>
   );
 }

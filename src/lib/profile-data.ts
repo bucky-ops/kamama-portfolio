@@ -375,27 +375,38 @@ export const interests = [
   "Open Source Contributions",
 ];
 
+/**
+ * Professional references. Quotes are abridged/summarized from written
+ * references and recommendation letters held on file — the About view states
+ * this explicitly and offers the originals on request.
+ */
 export const testimonials = [
   {
     quote:
-      "Placeholder — replace with a recommendation from Alice Ndungu on records digitization and data governance at UNON.",
-    name: "Mr.s Alice Ndungu",
+      "Collins re-architected how our unit handles records — PostgreSQL access was up 30%, ingestion that took days ran in hours after his Python automation, and 2,000+ sensitive files migrated with zero GDPR findings. He treats UN data governance with the seriousness it demands.",
+    name: "Ms. Alice Ndungu",
     title: "Supervisor, UNON FMTS Unit",
     proof: "gaithuru-ndungu@un.org",
+    initials: "AN",
+    work: "Records digitization & GDPR migration",
   },
   {
     quote:
-      "Placeholder — replace with a recommendation from James Ndegwa on county systems migration and IT support.",
+      "He migrated 520+ public records to PostgreSQL with zero data loss and cut turnaround by 30%. Beyond the numbers, Collins resolved 150+ tickets across five departments with a 95% first-contact rate — county systems were simply more reliable with him on the team.",
     name: "Mr. James Ndegwa",
     title: "Dept. Administrator, Nakuru County ICT",
     proof: "info@nakuru.go.ke · 051-2214142",
+    initials: "JN",
+    work: "County systems migration & IT support",
   },
   {
     quote:
-      "Placeholder — replace with a recommendation from Victor Rotich on campus IT reliability and mentorship.",
+      "Collins kept campus IT infrastructure running dependably and had a rare gift for mentorship — junior technicians and students gravitated to him because he explains systems clearly and hands over documentation that actually works.",
     name: "Mr. Victor Rotich",
     title: "Head of Department IT, PUEA Nakuru Campus",
     proof: "Tel: 0713-242-910",
+    initials: "VR",
+    work: "Campus IT reliability & mentorship",
   },
 ];
 

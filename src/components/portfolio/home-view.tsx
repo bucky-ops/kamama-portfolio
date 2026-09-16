@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -22,8 +23,11 @@ import {
   projects,
   skillCards,
   trustLogos,
+  type Project,
 } from "@/lib/profile-data";
+import { AnimatedStat } from "./animated-stat";
 import { ProjectCard } from "./project-card";
+import { ProjectDialog } from "./project-dialog";
 import { InitialsAvatar, SectionHeading, TagChip, type TabId } from "./shared";
 
 const HEADLINE_HIGHLIGHT = "operate, not just demo";
@@ -44,6 +48,7 @@ const fadeUp = {
 
 export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
   const featured = projects.filter((p) => p.featured);
+  const [caseStudy, setCaseStudy] = useState<Project | null>(null);
   const [headlineBefore, headlineAfter] = profile.headline.split(
     HEADLINE_HIGHLIGHT
   );
@@ -164,7 +169,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
                 <div key={stat.label} className="text-center sm:text-left">
                   <dt className="sr-only">{stat.label}</dt>
                   <dd className="font-mono text-2xl font-bold text-primary md:text-3xl">
-                    {stat.value}
+                    <AnimatedStat value={stat.value} />
                   </dd>
                   <dd className="mt-0.5 text-xs text-muted-foreground">
                     {stat.label}
@@ -218,7 +223,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
                 {...fadeUp}
                 transition={{ duration: 0.3, delay: i * 0.06 }}
               >
-                <Card className="h-full rounded-2xl border-border bg-[#161B22] transition-colors duration-200 hover:border-primary/40">
+                <Card className="h-full rounded-2xl border-border bg-[#161B22] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
                   <CardContent className="flex h-full flex-col gap-3 p-5">
                     <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <Icon className="size-5" aria-hidden="true" />
@@ -263,7 +268,7 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
               className="flex"
             >
               <div className="w-full">
-                <ProjectCard project={project} />
+                <ProjectCard project={project} onCaseStudy={setCaseStudy} />
               </div>
             </motion.div>
           ))}
@@ -280,6 +285,19 @@ export function HomeView({ onNavigate }: { onNavigate: (tab: TabId) => void }) {
           </Button>
         </div>
       </section>
+
+      {/* In-app case study dialog for featured systems */}
+      <ProjectDialog
+        project={caseStudy}
+        open={caseStudy !== null}
+        onOpenChange={(open) => {
+          if (!open) setCaseStudy(null);
+        }}
+        onDiscuss={(project) => {
+          setCaseStudy(null);
+          onNavigate("contact");
+        }}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -18,9 +18,10 @@ import type { TabId } from "./shared";
 interface HeaderProps {
   active: TabId;
   onNavigate: (tab: TabId) => void;
+  onOpenPalette?: () => void;
 }
 
-export function Header({ active, onNavigate }: HeaderProps) {
+export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -94,6 +95,34 @@ export function Header({ active, onNavigate }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Command palette trigger — full pill on desktop, icon on mobile */}
+          {onOpenPalette ? (
+            <>
+              <button
+                type="button"
+                onClick={onOpenPalette}
+                aria-label="Open command palette (Control+K)"
+                className="hidden min-h-9 items-center gap-2 rounded-full border border-border bg-secondary/40 px-3.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 lg:inline-flex"
+              >
+                <Search className="size-3.5" aria-hidden="true" />
+                Search
+                <kbd className="rounded border border-border bg-secondary/70 px-1.5 py-0.5 font-mono text-[10px]" aria-hidden="true">
+                  ⌘K
+                </kbd>
+              </button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={onOpenPalette}
+                aria-label="Open command palette (Control+K)"
+                className="size-11 shrink-0 rounded-full border-border bg-transparent lg:hidden"
+              >
+                <Search className="size-4" aria-hidden="true" />
+              </Button>
+            </>
+          ) : null}
+
           <Button
             type="button"
             onClick={() => go("contact")}
