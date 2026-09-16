@@ -206,6 +206,28 @@
     rgba(227, 179, 65, 0.05) 55%,
     transparent 75%
   );
+  animation: glow-breathe 6s ease-in-out infinite;
+  will-change: opacity, scale;
+}
+
+/* Ambient breathing for the hero glow — animates only opacity/scale (standalone
+   CSS properties, so Tailwind's translate utilities stay untouched);
+   reduced-motion visitors get the static glow. */
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    scale: 1;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glow-amber {
+    animation: none;
+  }
 }
 
 /* Skip link — visually hidden until keyboard-focused */

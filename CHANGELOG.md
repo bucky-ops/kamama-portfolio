@@ -7,6 +7,40 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.9.0] — 2026-09-16
+
+### Added
+- **Full reading-history panel (Notes)**: a collapsible "Reading history (N)"
+  section below the resume strip lists every stored entry — title, relative
+  "last read" time (`just now` → `5m` → `2h` → `3d` → date), progress bar,
+  `%` chip or green `✓ done` (theme `success` token), one-click resume at the
+  stored position, and per-row remove. Count chip updates live; entries
+  persist across sessions (localStorage, local-only as before).
+- **Live Nairobi clock (Contact)**: the location card now shows a real-time
+  EAT clock chip (`role="timer"`, aria-labelled, `tabular-nums`, fixed
+  min-width) next to the static UTC+3 line. Renders nothing until mounted —
+  no hydration mismatch, no placeholder flash — and refreshes every 30s.
+
+### Changed
+- **Architecture diagram choreography**: stage cards now fade/rise in with a
+  per-stage stagger when the panel opens; dashed connectors fade in last so
+  the flow appears to emerge from the stages (all settles to full opacity;
+  reduced-motion users get the instant diagram).
+- **Hero ambient glow**: the static amber radial glow behind the avatar now
+  breathes (6s opacity+scale cycle). Uses standalone `opacity`/`scale`
+  properties so Tailwind's `translate` utilities stay untouched; disabled
+  under `prefers-reduced-motion`.
+
+### Verified
+- E2E (agent-browser): history panel — seed 3 entries → toggle lists all with
+  correct relative times, row remove updates count + storage, resume reopens
+  the reader at position, finished note shows `✓ done` and stays out of the
+  resume strip, data persists across browser sessions; clock renders live EAT
+  time and fits 390px viewport; diagram settles all groups to opacity 1 with
+  zero errors; glow animates (scale/opacity observed changing) after fixing a
+  Turbopack stale-CSS incident (marker-comment recompile trick); dark + light
+  themes; fresh-session console zero errors; ESLint + tsc clean (src).
+
 ## [1.8.0] — 2026-09-16
 
 ### Added
@@ -283,7 +317,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.9.0
 [1.8.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.8.0
 [1.7.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.7.0
 [1.6.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.6.0

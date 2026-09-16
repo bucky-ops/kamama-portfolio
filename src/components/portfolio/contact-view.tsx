@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Check,
   CheckCircle2,
+  Clock,
   Copy,
   Download,
   Github,
@@ -94,6 +95,43 @@ function downloadVCard() {
   a.click();
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/**
+ * Live Nairobi local time chip. Renders nothing until mounted (the SSR
+ * markup has no time at all), so there is no hydration mismatch and no
+ * placeholder flash; updates every 30s. Fixed min-width keeps the layout
+ * steady as digits change.
+ */
+function NairobiClock() {
+  const [time, setTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Africa/Nairobi",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const tick = () => setTime(fmt.format(new Date()));
+    tick();
+    const id = window.setInterval(tick, 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  if (time === null) return null;
+
+  return (
+    <span
+      className="flex shrink-0 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/[0.07] px-2.5 py-1 font-mono text-xs tabular-nums text-primary"
+      role="timer"
+      aria-label={`Current local time in Nairobi: ${time} East Africa Time`}
+    >
+      <Clock className="size-3.5" aria-hidden="true" />
+      <span className="min-w-[3.2rem] text-left">{time}</span>
+      <span className="text-[10px] text-muted-foreground">EAT</span>
+    </span>
+  );
 }
 
 function CopyButton({ value }: { value: string }) {
@@ -664,7 +702,7 @@ export function ContactView() {
             )}
           >
             <MapPin className="size-5 shrink-0 text-primary" aria-hidden="true" />
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="font-mono text-sm text-foreground">
                 Nairobi, Kenya — UTC+3 · EAT
               </p>
@@ -672,6 +710,7 @@ export function ContactView() {
                 Working across UN, NGO, government &amp; enterprise timezones
               </p>
             </div>
+            <NairobiClock />
           </div>
           </Reveal>
         </div>

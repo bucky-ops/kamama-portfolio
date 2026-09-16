@@ -8,6 +8,7 @@ import {
   BookOpen,
   CalendarDays,
   CircleCheck,
+  ChevronDown,
   Clock,
   FileText,
   History,
@@ -42,6 +43,18 @@ import { SectionHeading, TagChip } from "./shared";
 import { ShareButton } from "./share-button";
 import { cn } from "@/lib/utils";
 
+/** Compact relative time for history rows — "just now", "5m ago", "2h ago", "3d ago". */
+function readAgo(epochMs: number): string {
+  const mins = Math.max(0, Math.round((Date.now() - epochMs) / 60000));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(epochMs).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 /**
  * Notes — short engineering write-ups. List → article reader, both in-view
  * (no route change): consistent with the SPA tab pattern.
@@ -52,6 +65,7 @@ export function NotesView() {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [history, setHistory] = useState<ReadingEntry[]>([]);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [resumePercent, setResumePercent] = useState(0);
   const [confirmClear, setConfirmClear] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -267,6 +281,109 @@ export function NotesView() {
                     </div>
                   ))}
                 </div>
+              </section>
+            ) : null}
+
+            {/* Full reading history — every stored entry, not just the two
+                resume cards above. Local-only data, trivially clearable. */}
+            {history.length > 0 ? (
+              <section aria-label="Reading history" className="mt-2">
+                <button
+                  type="button"
+                  onClick={() => setHistoryOpen((v) => !v)}
+                  aria-expanded={historyOpen}
+                  className="flex min-h-11 w-full items-center gap-2 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                >
+                  <History className="size-3.5 text-primary" aria-hidden="true" />
+                  <span>
+                    Reading history
+                    <span className="ml-1.5 rounded-full bg-secondary px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-foreground/80">
+                      {history.length}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "ml-auto size-3.5 transition-transform duration-200",
+                      historyOpen && "rotate-180"
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+                {historyOpen ? (
+                  <motion.ul
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="mt-2 space-y-1.5"
+                  >
+                    {history.map((entry) => {
+                      const note = notes.find((n) => n.slug === entry.slug);
+                      if (!note) return null; // pruned on next write
+                      const finished = entry.percent >= 100;
+                      return (
+                        <li
+                          key={entry.slug}
+                          className="group/row relative flex items-center gap-3 rounded-xl border border-border/60 bg-card/70 py-2 pl-3.5 pr-10 transition-colors hover:border-primary/30"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => open(entry.slug, entry.percent)}
+                            aria-label={
+                              finished
+                                ? `Reread ${note.title}`
+                                : `Continue reading ${note.title} from ${entry.percent}%`
+                            }
+                            className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none"
+                          >
+                            <span className="min-w-0 flex-1">
+                              <span className="line-clamp-1 text-[13px] font-medium text-foreground transition-colors group-hover/row:text-primary">
+                                {note.title}
+                              </span>
+                              <span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">
+                                {finished ? "Finished" : "Last read"} · {readAgo(entry.updatedAt)}
+                              </span>
+                            </span>
+                            <span
+                              className="h-1 w-16 shrink-0 overflow-hidden rounded-full bg-secondary sm:w-24"
+                              role="progressbar"
+                              aria-label={`Reading progress for ${note.title}`}
+                              aria-valuemin={0}
+                              aria-valuemax={100}
+                              aria-valuenow={entry.percent}
+                            >
+                              <span
+                                className={cn(
+                                  "block h-full rounded-full transition-[width]",
+                                  finished ? "bg-success" : "bg-primary"
+                                )}
+                                style={{ width: `${entry.percent}%` }}
+                              />
+                            </span>
+                            <span
+                              className={cn(
+                                "w-12 shrink-0 text-right font-mono text-[10px] tabular-nums",
+                                finished ? "text-success" : "text-primary"
+                              )}
+                            >
+                              {finished ? "✓ done" : `${entry.percent}%`}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              removeReadingEntry(entry.slug);
+                              setHistory((prev) => prev.filter((h) => h.slug !== entry.slug));
+                            }}
+                            aria-label={`Remove ${note.title} from reading history`}
+                            className="absolute right-1.5 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground/60 transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                          >
+                            <X className="size-3.5" aria-hidden="true" />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </motion.ul>
+                ) : null}
               </section>
             ) : null}
 

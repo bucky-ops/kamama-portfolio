@@ -130,8 +130,14 @@ export function ArchitectureDiagram({
                 role="img"
                 aria-label={`Architecture flow for ${title}: ${flowLabel}`}
               >
-                {/* connectors first — cards paint above them */}
-                <g aria-hidden="true">
+                {/* connectors first — cards paint above them; fade in last
+                    so the flow appears to animate out of the stages */}
+                <motion.g
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4, delay: 0.55, ease: "easeOut" }}
+                  aria-hidden="true"
+                >
                   {cards.map((c, i) => {
                     const next = cards[i + 1];
                     if (!next) return null;
@@ -184,10 +190,19 @@ export function ArchitectureDiagram({
                       </g>
                     );
                   })}
-                </g>
+                </motion.g>
 
                 {cards.map((c) => (
-                  <g key={c.stage.label}>
+                  <motion.g
+                    key={c.stage.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.32,
+                      delay: 0.08 + c.index * 0.09,
+                      ease: "easeOut",
+                    }}
+                  >
                     <rect
                       x={c.x}
                       y={c.y}
@@ -234,7 +249,7 @@ export function ArchitectureDiagram({
                         </text>
                       </g>
                     ))}
-                  </g>
+                  </motion.g>
                 ))}
               </svg>
               <p className="mt-1.5 px-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/80">
