@@ -222,6 +222,14 @@ export const projects: Project[] = [
     caseStudy:
       "Digital public good predicting acute childhood malnutrition risk across Kenyan counties.",
     featured: false,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["KDHS & SMART surveys", "County health records"] },
+        { label: "Intelligence", items: ["ML risk stratification", "Age/zone vulnerability scores"] },
+        { label: "Decision & Action", items: ["County risk flags", "Intervention shortlists"] },
+        { label: "Deployment & Ops", items: ["Public dashboards", "Open-data releases"] },
+      ],
+    },
   },
   {
     repo: "Auto-JIPS",
@@ -235,6 +243,14 @@ export const projects: Project[] = [
     caseStudy:
       "Algorithm-driven job intelligence: automated extraction, profiling and matching with NLP.",
     featured: false,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["CV / job feeds", "Document parsing queue"] },
+        { label: "Intelligence", items: ["NLP entity extraction", "Skills inference model"] },
+        { label: "Decision & Action", items: ["Structured profiles", "Role-match ranking"] },
+        { label: "Serving & Ops", items: ["Profiling API", "Batch automation jobs"] },
+      ],
+    },
   },
   {
     repo: "nairobiflow-traffic-management",
@@ -248,6 +264,14 @@ export const projects: Project[] = [
     caseStudy:
       "Comprehensive intelligent traffic management platform for Nairobi's road network.",
     featured: false,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["Signal & sensor feeds", "Live traffic simulation"] },
+        { label: "Intelligence", items: ["Congestion modelling", "Network-state scoring"] },
+        { label: "Decision & Action", items: ["Signal timing control", "Operator overrides"] },
+        { label: "Serving & Ops", items: ["Control APIs", "Real-time dashboards"] },
+      ],
+    },
   },
   {
     repo: "isp-field-ops-automation",
@@ -261,6 +285,14 @@ export const projects: Project[] = [
     caseStudy:
       "Field operations and automation platform for ISPs: dispatch, SLAs, and real-time crew tracking.",
     featured: false,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["Work orders & tickets", "Crew check-ins"] },
+        { label: "Intelligence", items: ["Dispatch prioritisation", "SLA breach forecasting"] },
+        { label: "Decision & Action", items: ["Auto-assign & routing", "Escalation rules"] },
+        { label: "Deployment & Ops", items: ["Crew mobile app", "SLA proof reports"] },
+      ],
+    },
   },
   {
     repo: "", // client deployment — resume project
@@ -274,6 +306,14 @@ export const projects: Project[] = [
     caseStudy:
       "Full-stack blockchain audit system for financial & procurement workflows, aligned with international donor compliance.",
     featured: false,
+    diagram: {
+      stages: [
+        { label: "Trust & Ingestion", items: ["Procurement evidence", "Financial records intake"] },
+        { label: "Ledger Core", items: ["Ethereum audit contracts", "Tamper-proof evidence trail"] },
+        { label: "Intelligence", items: ["Anomaly & compliance checks", "Donor-rule validation"] },
+        { label: "Serving & Ops", items: ["React audit console", "Flask reporting API"] },
+      ],
+    },
   },
 ];
 
