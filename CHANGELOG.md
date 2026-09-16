@@ -7,6 +7,42 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.8.0] — 2026-09-16
+
+### Added
+- **Visual architecture diagrams (serpentine SVG pipeline)**: the expandable
+  "Architecture" panel on flagship systems is now a real diagram — stage cards
+  laid out in a 2-per-row S-flow (01 → 02 ↓ 03 → 04) with amber animated
+  dashed connectors and arrowheads that follow the data direction, mono stage
+  numbering, item bullets and a `DATA FLOW ·` legend. Fully theme-aware
+  (cards/arrows/text via theme tokens — verified in dark and light) and
+  responsive: desktop gets the SVG, mobile keeps the vertical stage list
+  (which stays in the DOM as sr-only text on desktop so screen readers always
+  get the full flow). Applies to all 8 flagship diagrams automatically.
+- **Reading-history management**: the Notes "Continue reading" strip gains a
+  per-card dismiss (×) and a "Clear history" action with an accessible
+  AlertDialog confirmation — clearing wipes resume positions and "% read"
+  marks from the browser only. New `removeReadingEntry()` alongside the
+  existing `clearReadingHistory()` in the (already local-only) history lib.
+- **Deep-link tab aliases**: shared-out-of-band links like `/?tab=work`,
+  `?tab=systems`, `?tab=blog`, `?tab=references` or `?tab=hire` now resolve to
+  their views (Projects / Notes / About / Contact) instead of stranding the
+  visitor on Home with a mismatched URL. Unknown `?tab=` values are stripped
+  from the URL so it always reflects what is on screen.
+
+### Changed
+- Architecture connectors use explicit polygon arrowheads (no SVG markers) so
+  arrow color follows theme tokens in both light and dark mode; dash
+  animation is reduced-motion safe.
+
+### Verified
+- E2E (agent-browser): serpentine flow renders correctly in card + dialog
+  contexts (row-2 arrows point left as designed); dark + light themes; mobile
+  390px shows the vertical list; `/ ?tab=work|hire|bogus123` alias + cleanup
+  behavior; dismiss removes one entry; Clear history wipes localStorage and
+  the strip; founder email `muchiri.collin@aol.com` still first; zero console
+  errors; ESLint + tsc clean (src).
+
 ## [1.7.0] — 2026-09-16
 
 ### Added
@@ -247,7 +283,8 @@ versioning follows [Semantic Versioning](https://semver.org/).
   production, every tag can be traced to a deployment.
 - Old project link to legacy `kamama-digital-canvas` repo detached.
 
-[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/bucky-ops/kamama-portfolio/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.8.0
 [1.7.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.7.0
 [1.6.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.6.0
 [1.5.0]: https://github.com/bucky-ops/kamama-portfolio/releases/tag/v1.5.0

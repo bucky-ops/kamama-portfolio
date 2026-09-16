@@ -28,10 +28,26 @@ const VALID_TABS: TabId[] = [
   "admin",
 ];
 
+/**
+ * Friendly aliases for links shared out-of-band (the nav label says "Work",
+ * so people naturally copy /?tab=work). Unknown aliases must never strand a
+ * visitor on a mismatched URL — they resolve here or the param is cleaned up.
+ */
+const TAB_ALIASES: Record<string, TabId> = {
+  work: "projects",
+  systems: "projects",
+  projects: "projects",
+  blog: "notes",
+  references: "about",
+  hire: "contact",
+};
+
 function readTabFromUrl(): TabId | null {
   if (typeof window === "undefined") return null;
   const tab = new URLSearchParams(window.location.search).get("tab");
-  return VALID_TABS.includes(tab as TabId) ? (tab as TabId) : null;
+  if (!tab) return null;
+  if (VALID_TABS.includes(tab as TabId)) return tab as TabId;
+  return TAB_ALIASES[tab] ?? null;
 }
 
 export default function Page() {
@@ -41,9 +57,16 @@ export default function Page() {
 
   // Deep-link support: /?tab=contact opens the Contact view.
   // Deferred one tick so the initial paint matches SSR (no cascading render).
+  // A tab param that neither matches a view nor an alias is stripped so the
+  // URL always reflects what the visitor actually sees.
   useEffect(() => {
     const fromUrl = readTabFromUrl();
-    if (!fromUrl) return;
+    if (!fromUrl) {
+      if (new URLSearchParams(window.location.search).has("tab")) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      return;
+    }
     const id = window.setTimeout(() => setTab(fromUrl), 0);
     return () => window.clearTimeout(id);
   }, []);

@@ -80,6 +80,19 @@ export function recordReadingProgress(slug: string, percent: number): void {
   }
 }
 
+/** Removes a single note from the history (per-card dismiss control). */
+export function removeReadingEntry(slug: string): void {
+  if (!isBrowser() || !slug) return;
+  try {
+    const entries = safeParse(window.localStorage.getItem(STORAGE_KEY)).filter(
+      (e) => e.slug !== slug
+    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  } catch {
+    // Private mode / storage full — reading history is best-effort.
+  }
+}
+
 /** Wipes the reading history (exposed for an explicit clear control). */
 export function clearReadingHistory(): void {
   if (!isBrowser()) return;

@@ -10,15 +10,31 @@ import {
   CircleCheck,
   Clock,
   FileText,
+  History,
   ListTree,
   PenLine,
   Search,
   SearchX,
+  X,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { formatDateLong, notes, type Note } from "@/lib/notes-data";
 import {
+  clearReadingHistory,
   getReadingHistory,
   recordReadingProgress,
+  removeReadingEntry,
   type ReadingEntry,
 } from "@/lib/reading-history";
 import { Reveal } from "./reveal";
@@ -37,6 +53,7 @@ export function NotesView() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [history, setHistory] = useState<ReadingEntry[]>([]);
   const [resumePercent, setResumePercent] = useState(0);
+  const [confirmClear, setConfirmClear] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const current = notes.find((n) => n.slug === openSlug) ?? null;
 
@@ -161,40 +178,93 @@ export function NotesView() {
                 aria-label="Continue reading"
                 className="rounded-2xl border border-primary/25 bg-primary/[0.06] p-4"
               >
-                <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-primary">
-                  <BookOpen className="size-3.5" aria-hidden="true" />
-                  Continue reading
-                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-primary">
+                    <BookOpen className="size-3.5" aria-hidden="true" />
+                    Continue reading
+                  </p>
+                  <AlertDialog open={confirmClear} onOpenChange={setConfirmClear}>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 gap-1.5 px-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-destructive focus-visible:ring-destructive/40"
+                      >
+                        <History className="size-3" aria-hidden="true" />
+                        Clear history
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Clear reading history?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This removes all "Continue reading" positions and
+                          "% read" marks stored in this browser. The notes
+                          themselves are untouched — you can always start fresh.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Keep history</AlertDialogCancel>
+                        <AlertDialogAction
+                          className="bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/40"
+                          onClick={() => {
+                            clearReadingHistory();
+                            setHistory([]);
+                          }}
+                        >
+                          Clear history
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   {continueEntries.map(({ entry, note }) => (
-                    <button
+                    <div
                       key={entry.slug}
-                      type="button"
-                      onClick={() => open(entry.slug, entry.percent)}
-                      className="group rounded-xl border border-border bg-card p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                      className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 focus-within:ring-2 focus-within:ring-ring/60"
                     >
-                      <span className="line-clamp-1 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                        {note.title}
-                      </span>
-                      <span className="mt-2 flex items-center gap-2">
-                        <span
-                          className="h-1 flex-1 overflow-hidden rounded-full bg-secondary"
-                          role="progressbar"
-                          aria-label={`Reading progress for ${note.title}`}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-valuenow={entry.percent}
-                        >
+                      <button
+                        type="button"
+                        onClick={() => open(entry.slug, entry.percent)}
+                        aria-label={`Continue reading ${note.title} from ${entry.percent}%`}
+                        className="block w-full rounded-xl p-3.5 pr-9 text-left focus-visible:outline-none"
+                      >
+                        <span className="line-clamp-1 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                          {note.title}
+                        </span>
+                        <span className="mt-2 flex items-center gap-2">
                           <span
-                            className="block h-full rounded-full bg-primary transition-[width]"
-                            style={{ width: `${entry.percent}%` }}
-                          />
+                            className="h-1 flex-1 overflow-hidden rounded-full bg-secondary"
+                            role="progressbar"
+                            aria-label={`Reading progress for ${note.title}`}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuenow={entry.percent}
+                          >
+                            <span
+                              className="block h-full rounded-full bg-primary transition-[width]"
+                              style={{ width: `${entry.percent}%` }}
+                            />
+                          </span>
+                          <span className="shrink-0 font-mono text-[10px] tabular-nums text-primary">
+                            {entry.percent}%
+                          </span>
                         </span>
-                        <span className="shrink-0 font-mono text-[10px] tabular-nums text-primary">
-                          {entry.percent}%
-                        </span>
-                      </span>
-                    </button>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeReadingEntry(entry.slug);
+                          setHistory((prev) => prev.filter((h) => h.slug !== entry.slug));
+                        }}
+                        aria-label={`Remove ${note.title} from reading history`}
+                        className="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-lg text-muted-foreground/60 transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                      >
+                        <X className="size-3.5" aria-hidden="true" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </section>
