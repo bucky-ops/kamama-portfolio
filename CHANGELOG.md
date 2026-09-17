@@ -7,50 +7,6 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
-## [1.12.0] - 2026-09-17
-
-### Added
-- **Email sending for contact leads**: every accepted contact-form submission
-  now triggers two transactional emails automatically - a founder notification
-  (full lead details, Reply-To set to the visitor so replies go straight to
-  the lead) and a visitor auto-reply (branded acknowledgment with a copy of
-  the submitted message and the 24-hour response expectation).
-- **Multi-provider mail layer (`src/lib/mail.ts`)**: Resend (plain fetch, zero
-  dependencies, Vercel-friendly), SMTP via nodemailer (Gmail app password,
-  Zoho, Mailgun), a `log` transport for local QA and a graceful `none`
-  fallback that still stores the lead when nothing is configured. Credentials
-  stay in server-side env vars (`RESEND_API_KEY` / `SMTP_*`, documented in
-  `.env.example`); mail failures never fail an accepted lead - the API
-  response reports `emailed` and `autoReplied` honestly.
-- **Confirmation chip on the contact success panel**: when the server
-  confirms the auto-reply was dispatched, visitors see "A confirmation copy
-  is on its way to your inbox."
-- **README security + email documentation**: setup guide for both mail
-  transports and the full security posture.
-
-### Security
-- **Security response headers on every route**: Content-Security-Policy
-  (self-only scripts and connections, no framing, object-src none,
-  upgrade-insecure-requests), `X-Frame-Options: DENY`,
-  `X-Content-Type-Options: nosniff`,
-  `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`
-  (camera/microphone/geolocation/payment off, opt out of FLoC) and HSTS
-  (`max-age=63072000; includeSubDomains; preload`).
-- **`X-Powered-By` disabled** - the framework version is no longer disclosed.
-- **Email-injection hardening**: all user input is HTML-escaped before it
-  enters outbound email markup.
-
-### Verified
-- Local E2E via the `log` transport: founder notification and visitor
-  auto-reply rendered with correct recipients, Reply-To and full lead fields;
-  browser-level form submission shows the success panel plus the confirmation
-  chip; zero console errors.
-- Admin leads API still rejects missing and wrong keys (401) and contact
-  validation returns field-level zod errors.
-- Responsive sweep at 360 / 390 / 768 / 1024 / 1280 / 1920 px: zero
-  horizontal overflow, mobile pill nav intact, footer flow correct on short
-  and long pages, light and dark themes verified.
-
 ## [1.11.0] - 2026-09-16
 
 ### Added
