@@ -16,16 +16,15 @@ versioning follows [Semantic Versioning](https://semver.org/).
   the lead) and a visitor auto-reply (branded acknowledgment with a copy of
   the submitted message and the 24-hour response expectation).
 - **Multi-provider mail layer (`src/lib/mail.ts`)**: Resend (plain fetch, zero
-  dependencies, Vercel-friendly), SMTP via nodemailer (Gmail app password,
-  Zoho, Mailgun), a `log` transport for local QA and a graceful `none`
-  fallback that still stores the lead when nothing is configured. Credentials
-  stay in server-side env vars (`RESEND_API_KEY` / `SMTP_*`, documented in
+  dependencies, Vercel-friendly), a `log` transport for local QA and a graceful
+  `none` fallback that still stores the lead when nothing is configured.
+  Credentials stay in server-side env vars (`RESEND_API_KEY`, documented in
   `.env.example`); mail failures never fail an accepted lead - the API
   response reports `emailed` and `autoReplied` honestly.
 - **Confirmation chip on the contact success panel**: when the server
   confirms the auto-reply was dispatched, visitors see "A confirmation copy
   is on its way to your inbox."
-- **README security + email documentation**: setup guide for both mail
+- **README security + email documentation**: setup guide for the mail
   transports and the full security posture.
 
 ### Security

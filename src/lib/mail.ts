@@ -2,24 +2,21 @@
  * Kamama portfolio mail layer.
  *
  * Provider-agnostic transactional email for contact-form leads:
- *  1. Resend  - RESEND_API_KEY + MAIL_FROM (plain fetch, zero deps, works on Vercel)
- *  2. SMTP    - SMTP_HOST (+ optional SMTP_PORT/SMTP_USER/SMTP_PASS) via nodemailer
- *  3. log     - MAIL_TRANSPORT=log renders the full email into the server log (local QA)
- *  4. none    - nothing configured: the lead is still stored in the DB, email skipped
+ *  1. Resend  - RESEND_API_KEY + MAIL_FROM (plain fetch, zero dependencies, works on Vercel)
+ *  2. log     - MAIL_TRANSPORT=log renders the full email into the server log (local QA)
+ *  3. none    - nothing configured: the lead is still stored in the DB, email skipped
  *
- * Resolution order: explicit MAIL_TRANSPORT override > Resend > SMTP > none.
+ * Resolution order: explicit MAIL_TRANSPORT override > Resend > none.
  *
  * Security notes:
  * - Every user-supplied value is HTML-escaped before it enters email markup.
  * - Credentials are read from server-side env vars only; nothing client-shipped.
  * - sendMail never throws: mail failures must not fail an accepted contact lead.
+ *
+ * Note: SMTP support (nodemailer) is intentionally not bundled - the extra
+ * dependency broke Vercel's install step. Add it back deliberately if SMTP
+ * becomes a hard requirement; Resend's free tier covers transactional needs.
  */
-
-export interface MailAttachment {
-  filename: string;
-  /** Base64-encoded content. */
-  content: string;
-}
 
 export interface MailMessage {
   to: string;
@@ -27,10 +24,9 @@ export interface MailMessage {
   subject: string;
   html: string;
   text: string;
-  attachments?: MailAttachment[];
 }
 
-export type MailTransport = "resend" | "smtp" | "log" | "none";
+export type MailTransport = "resend" | "log" | "none";
 
 export interface MailSendResult {
   sent: boolean;
@@ -46,13 +42,8 @@ export function resolveTransport(): MailTransport {
   const override = process.env.MAIL_TRANSPORT?.trim().toLowerCase();
   if (override === "none") return "none";
   if (override === "log") return "log";
-  if (override === "resend" || override === "smtp") {
-    // Explicit override, but only honored if its credentials exist (falls through otherwise).
-    if (override === "resend" && process.env.RESEND_API_KEY) return "resend";
-    if (override === "smtp" && process.env.SMTP_HOST) return "smtp";
-  }
+  if (override === "resend" && process.env.RESEND_API_KEY) return "resend";
   if (process.env.RESEND_API_KEY) return "resend";
-  if (process.env.SMTP_HOST) return "smtp";
   return "none";
 }
 
@@ -89,10 +80,6 @@ async function sendViaResend(msg: MailMessage): Promise<MailSendResult> {
       html: msg.html,
       text: msg.text,
       reply_to: msg.replyTo,
-      attachments: msg.attachments?.map((a) => ({
-        filename: a.filename,
-        content: a.content,
-      })),
     }),
   });
 
@@ -101,35 +88,6 @@ async function sendViaResend(msg: MailMessage): Promise<MailSendResult> {
     return { sent: false, transport: "resend", reason: `Resend ${res.status}: ${body.slice(0, 200)}` };
   }
   return { sent: true, transport: "resend" };
-}
-
-/** ── SMTP (nodemailer, lazy-imported so builds never require it) ───── */
-async function sendViaSmtp(msg: MailMessage): Promise<MailSendResult> {
-  try {
-    const nodemailer = (await import("nodemailer")).default;
-    const transport = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: Number(process.env.SMTP_PORT || 587) === 465,
-      auth:
-        process.env.SMTP_USER && process.env.SMTP_PASS
-          ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-          : undefined,
-    });
-    await transport.sendMail({
-      from: mailFrom(),
-      to: msg.to,
-      subject: msg.subject,
-      html: msg.html,
-      text: msg.text,
-      replyTo: msg.replyTo,
-      attachments: msg.attachments,
-    });
-    return { sent: true, transport: "smtp" };
-  } catch (error) {
-    const reason = error instanceof Error ? error.message.slice(0, 200) : "SMTP failure";
-    return { sent: false, transport: "smtp", reason };
-  }
 }
 
 /** ── Log transport (local QA: render the email into the server log) ── */
@@ -147,8 +105,6 @@ export async function sendMail(msg: MailMessage): Promise<MailSendResult> {
     switch (transport) {
       case "resend":
         return await sendViaResend(msg);
-      case "smtp":
-        return await sendViaSmtp(msg);
       case "log":
         return sendViaLog(msg);
       default:

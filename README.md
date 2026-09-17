@@ -50,10 +50,14 @@ Transport is chosen automatically from environment variables (see `.env.example`
 
 | Transport | When | Setup |
 |---|---|---|
-| Resend | `RESEND_API_KEY` set | Create a free API key at resend.com - recommended on Vercel |
-| SMTP | `SMTP_HOST` set | Any SMTP account (Gmail app password, Zoho, Mailgun) |
+| Resend | `RESEND_API_KEY` set | Create a free API key at resend.com - recommended on Vercel, zero dependencies |
 | Log | `MAIL_TRANSPORT=log` | Local QA: renders the full email into the server log |
 | None | nothing configured | Leads are still stored; emails are skipped gracefully |
+
+> SMTP (Gmail app password, Zoho, Mailgun) via nodemailer was evaluated but
+> deliberately left out: the extra dependency broke the Vercel install step.
+> Resend's free tier (100 emails/day) covers the contact funnel; set
+> `RESEND_API_KEY` and optionally `MAIL_FROM` once a domain is verified.
 
 All user input is HTML-escaped before it enters email markup, and mail failures
 never fail an accepted lead (the response reports `emailed: true/false`).
@@ -104,7 +108,7 @@ Environment variables (never committed):
 - `DATABASE_URL` - SQLite file path (required)
 - `GITHUB_TOKEN` - GitHub PAT (optional; powers live repo stats + releases feed)
 - `ADMIN_KEY` - admin inbox key (optional; enables the leads API)
-- `RESEND_API_KEY` / `SMTP_HOST` - email transports (optional; see Email section)
+- `RESEND_API_KEY` - email transport (optional; see Email section)
 - `MAIL_FROM`, `MAIL_TO` - sender identity and founder notification inbox
 
 ## License
