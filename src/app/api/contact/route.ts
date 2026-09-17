@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { checkRateLimit, clientIpFrom } from "@/lib/rate-limit";
+import {
+  autoReplyEmail,
+  leadNotificationEmail,
+  sendMail,
+  type MailSendResult,
+} from "@/lib/mail";
 
 /** Per-IP sliding window: 5 messages per 10 minutes is generous for humans. */
 const RATE_MAX = 5;
@@ -31,6 +37,34 @@ function botSuccess(): NextResponse {
     id: `mem_${Date.now()}`,
     stored: "memory",
   });
+}
+
+/** Fire founder notification + visitor auto-reply. Never throws. */
+async function dispatchEmails(data: {
+  name: string;
+  email: string;
+  organization?: string | null;
+  projectType: string;
+  budgetRange?: string | null;
+  message: string;
+}): Promise<{ founder: MailSendResult; visitor: MailSendResult }> {
+  const lead = {
+    ...data,
+    receivedAt: new Date().toLocaleString("en-GB", {
+      timeZone: "Africa/Nairobi",
+      dateStyle: "medium",
+      timeStyle: "short",
+    }),
+  };
+  const founder = await sendMail(leadNotificationEmail(lead));
+  const visitor = await sendMail(autoReplyEmail(lead));
+  if (!founder.sent) {
+    console.warn("[contact] Founder notification not sent:", founder.reason);
+  }
+  if (!visitor.sent) {
+    console.warn("[contact] Visitor auto-reply not sent:", visitor.reason);
+  }
+  return { founder, visitor };
 }
 
 export async function POST(req: NextRequest) {
@@ -84,25 +118,35 @@ export async function POST(req: NextRequest) {
       return botSuccess();
     }
 
+    const lead = {
+      name: data.name,
+      email: data.email,
+      organization: data.organization || null,
+      projectType: data.projectType,
+      budgetRange: data.budgetRange || null,
+      message: data.message,
+    };
+
     try {
-      const saved = await db.contactMessage.create({
-        data: {
-          name: data.name,
-          email: data.email,
-          organization: data.organization || null,
-          projectType: data.projectType,
-          budgetRange: data.budgetRange || null,
-          message: data.message,
-        },
+      const saved = await db.contactMessage.create({ data: lead });
+      const emails = await dispatchEmails(lead);
+      return NextResponse.json({
+        ok: true,
+        id: saved.id,
+        stored: "database",
+        emailed: emails.founder.sent,
+        autoReplied: emails.visitor.sent,
       });
-      return NextResponse.json({ ok: true, id: saved.id, stored: "database" });
     } catch (dbError) {
-      // Graceful fallback (e.g. serverless without persistent disk): accept but flag
+      // Graceful fallback (e.g. serverless without persistent disk): still email the lead
       console.error("[contact] DB unavailable, message accepted in memory:", dbError);
+      const emails = await dispatchEmails(lead);
       return NextResponse.json({
         ok: true,
         id: `mem_${Date.now()}`,
         stored: "memory",
+        emailed: emails.founder.sent,
+        autoReplied: emails.visitor.sent,
         warning: "Persistent storage unavailable - email fallback in effect.",
       });
     }

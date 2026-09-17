@@ -31,9 +31,49 @@ across East Africa.
 
 | Route | Method | Purpose |
 |---|---|---|
-| `/api/contact` | POST | zod-validated lead capture → Prisma (graceful fallback) |
+| `/api/contact` | POST | zod-validated lead capture → Prisma → email notification + visitor auto-reply |
+| `/api/admin/leads` | GET/PATCH/DELETE | Key-gated lead inbox (`x-admin-key` header, rate-limited) |
 | `/api/github/repos` | GET | Live star/fork/push stats for featured repos (10-min cache) |
 | `/api/releases` | GET | GitHub Releases feed powering the footer changelog |
+
+## Email sending (contact form)
+
+Every accepted lead triggers two emails automatically:
+
+1. **Founder notification** - full lead details (name, email, organization, project
+   type, budget, message) sent to `MAIL_TO` (defaults to the founder inbox) with
+   `Reply-To` set to the visitor, so replying goes straight to the lead.
+2. **Visitor auto-reply** - branded acknowledgment with a copy of the submitted
+   message and a 24-hour response expectation.
+
+Transport is chosen automatically from environment variables (see `.env.example`):
+
+| Transport | When | Setup |
+|---|---|---|
+| Resend | `RESEND_API_KEY` set | Create a free API key at resend.com - recommended on Vercel |
+| SMTP | `SMTP_HOST` set | Any SMTP account (Gmail app password, Zoho, Mailgun) |
+| Log | `MAIL_TRANSPORT=log` | Local QA: renders the full email into the server log |
+| None | nothing configured | Leads are still stored; emails are skipped gracefully |
+
+All user input is HTML-escaped before it enters email markup, and mail failures
+never fail an accepted lead (the response reports `emailed: true/false`).
+
+## Security
+
+- **HTTPS** - automatic on Vercel; HSTS is preloaded via response headers
+  (`max-age=63072000; includeSubDomains; preload`).
+- **Headers** - Content-Security-Policy (self-only scripts, no framing),
+  `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`,
+  `Permissions-Policy` (camera/mic/geo off), `poweredByHeader` disabled.
+- **Input validation** - every API body is zod-validated server-side; field
+  lengths, enum whitelist and email format enforced.
+- **Abuse protection** - per-IP sliding-window rate limits (contact: 5 per 10 min,
+  admin: 40 per 10 min) plus honeypot + submit-timing bot traps.
+- **Secrets** - all credentials live in server-side env vars only, never shipped
+  to the client bundle and never committed (`.env*` is gitignored).
+- **Admin inbox** - gated by the `ADMIN_KEY` header check, never authorized when
+  unset; the key is compared server-side only.
+- **Email safety** - user input is HTML-escaped in all outbound mail templates.
 
 ## Release management (logged + tagged)
 
@@ -63,6 +103,9 @@ Environment variables (never committed):
 
 - `DATABASE_URL` - SQLite file path (required)
 - `GITHUB_TOKEN` - GitHub PAT (optional; powers live repo stats + releases feed)
+- `ADMIN_KEY` - admin inbox key (optional; enables the leads API)
+- `RESEND_API_KEY` / `SMTP_HOST` - email transports (optional; see Email section)
+- `MAIL_FROM`, `MAIL_TO` - sender identity and founder notification inbox
 
 ## License
 
