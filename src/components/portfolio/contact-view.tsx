@@ -14,7 +14,6 @@ import {
   Linkedin,
   Loader2,
   Mail,
-  MailCheck,
   MapPin,
   Phone,
   Send,
@@ -208,8 +207,6 @@ export function ContactView() {
   // Set by the "Discuss this system" CTA in case-study dialogs - seeds the
   // message + project type so the visitor starts from context, not a blank form.
   const [topic, setTopic] = useState<string | null>(null);
-  /** Whether the server confirmed a copy of the message was emailed to the visitor. */
-  const [autoReplied, setAutoReplied] = useState(false);
   useEffect(() => {
     const raw = new URLSearchParams(window.location.search).get("topic");
     const title = raw?.trim().slice(0, 120);
@@ -253,11 +250,10 @@ export function ContactView() {
         }),
       });
       const json = (await res.json().catch(() => null)) as
-        | { ok?: boolean; error?: string; autoReplied?: boolean }
+        | { ok?: boolean; error?: string }
         | null;
       if (res.ok && json?.ok) {
         setStatus("success");
-        setAutoReplied(json.autoReplied === true);
         setErrorHint(null);
         form.reset();
         // Funnel complete - drop the topic param so a refresh starts clean.
@@ -336,12 +332,6 @@ export function ContactView() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   I read every message personally and reply within 24 hours.
                 </p>
-                {autoReplied ? (
-                  <p className="mx-auto mt-3 inline-flex max-w-sm items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3.5 py-1.5 text-xs text-success-fg" role="status">
-                    <MailCheck className="size-3.5 shrink-0" aria-hidden="true" />
-                    A confirmation copy is on its way to your inbox.
-                  </p>
-                ) : null}
                 <Button
                   type="button"
                   variant="outline"
