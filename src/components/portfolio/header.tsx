@@ -96,7 +96,7 @@ export function Header({ active, onNavigate, onOpenPalette }: HeaderProps) {
           </span>
         </div>
 
-        {/* Desktop pill nav - xl+ only: 6 pills + brand only fit at the full
+        {/* Desktop pill nav - xl+ only: 5 pills only fit at the full
             1280px grid; smaller widths use the scrollable strip below */}
         <nav
           aria-label="Primary"

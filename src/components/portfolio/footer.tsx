@@ -56,14 +56,6 @@ export function Footer({ onNavigate }: { onNavigate?: (tab: TabId) => void }) {
             <>
               <button
                 type="button"
-                onClick={() => onNavigate("brand")}
-                className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
-              >
-                Brand
-              </button>
-              <span aria-hidden="true" className="opacity-30">·</span>
-              <button
-                type="button"
                 onClick={() => onNavigate("changelog")}
                 className="rounded px-1 underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
               >

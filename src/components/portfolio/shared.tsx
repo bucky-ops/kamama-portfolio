@@ -9,7 +9,6 @@ export type TabId =
   | "projects"
   | "notes"
   | "about"
-  | "brand"
   | "contact"
   | "changelog"
   | "admin";

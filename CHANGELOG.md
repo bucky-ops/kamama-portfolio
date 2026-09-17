@@ -7,6 +7,23 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.13.0] - 2026-09-17
+
+### Removed
+- **Brand page**: the standalone Brand tab (design system & logo usage) is
+  gone. Deleted `src/components/portfolio/brand-view.tsx` (577 lines) and
+  every reference to it - header pill nav, footer link, command palette
+  entry, `TabId` union, valid-tab registry and the `brand`/`design`/
+  `design-system`/`logo` deep-link aliases.
+- Old `/?tab=brand` (and `?tab=design`, `?tab=logo`) links now fall back
+  cleanly to Home with the stale query param stripped from the URL.
+
+### Changed
+- Header desktop pill nav drops from 6 to 5 pills (Home, Work, Notes,
+  About, Contact); keyboard shortcuts 1-5 and all other views unchanged.
+- Brand wordmark assets in the header/footer are unaffected - only the
+  standalone Brand page was removed.
+
 ## [1.12.0] - 2026-09-17
 
 ### Added
