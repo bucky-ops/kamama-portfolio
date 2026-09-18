@@ -7,6 +7,32 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.15.0] - 2026-09-18
+
+### Added
+- **Motion system (Framer Motion, Linear/Vercel feel)** - subtle ease-out
+  [0.16, 1, 0.3, 1] choreography across the site, transform + opacity only:
+  - **Logo assemble (header)**: 4 charcoal ledger blocks fly from center to
+    their slots (800ms total), amber nodes pulse 3x at the joints. Plays once
+    per browser session and never for reduced-motion visitors.
+  - **Architecture philosophy stagger**: the 01-04 steps fade up 24px with a
+    100ms per-step delay on load.
+  - **Stat odometer blur-to-focus**: the count-up (5+, 10+, 99.9%, 500K+) now
+    starts slightly blurred and lands in focus as the number settles.
+  - **Capabilities bento hover**: cards lift 4px with a stronger amber glow
+    (cursor spotlight and animated depth bars already shipped earlier).
+  - **Featured systems hover**: flagship cards (Blockchain Inventory, SDG RAG,
+    Climate Platform) tilt 2 degrees, the brand watermark zooms 110%, and an
+    amber ledger line draws left to right under the title - the line draw
+    mirrors the tamper-proof ledger narrative.
+  - **Header scroll condense**: past 20px of scroll the bar drops 64px to
+    56px, glass blur strengthens and the background gains opacity.
+  - **Theme toggle**: the sun glyph now renders in brand amber #F9B872 (the
+    rotate/scale morph crossfade already existed).
+- **Accessibility**: every motion respects prefers-reduced-motion three ways -
+  Framer MotionConfig, per-component matchMedia checks and the global CSS
+  fallback that collapses all animations/transitions to 0.01ms.
+
 ## [1.14.0] - 2026-09-17
 
 ### Added

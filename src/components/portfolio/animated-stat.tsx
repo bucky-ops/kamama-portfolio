@@ -45,7 +45,10 @@ export function AnimatedStat({
   className?: string;
 }) {
   const parsed = parseStat(value);
+  // `settled` starts true so SSR/no-JS markup is never blurred; the effect
+  // un-settles only when a count-up actually runs (odometer blur -> focus).
   const [display, setDisplay] = useState(() => (parsed ? "0" : value));
+  const [settled, setSettled] = useState(true);
 
   // Runs once per `value` (the parsed object is derived inside the effect so a
   // fresh identity per render can't re-trigger the animation loop).
@@ -57,13 +60,22 @@ export function AnimatedStat({
 
     const start = performance.now();
     let raf = 0;
+    let blurEngaged = false;
     const tick = (now: number) => {
+      // Blur engages on the first frame (inside rAF, never synchronously in
+      // the effect) and releases when the count lands - blur -> focus.
+      if (!blurEngaged) {
+        blurEngaged = true;
+        if (duration > 0) setSettled(false);
+      }
       const progress = duration === 0 ? 1 : Math.min(1, (now - start) / duration);
       const current = parsed.target * easeOut(progress);
       // Render only the numeric part - prefix/suffix are added by the markup.
       setDisplay(current.toFixed(parsed.decimals));
       if (progress < 1) {
         raf = requestAnimationFrame(tick);
+      } else {
+        setSettled(true); // release blur - the number lands in focus
       }
     };
     raf = requestAnimationFrame(tick);
@@ -75,7 +87,13 @@ export function AnimatedStat({
   }
 
   return (
-    <span className={cn("tabular-nums", className)}>
+    <span
+      className={cn(
+        "tabular-nums transition-[filter] duration-300 ease-out",
+        settled ? "blur-0" : "blur-[2px]",
+        className
+      )}
+    >
       {parsed.prefix}
       {display}
       {parsed.suffix}

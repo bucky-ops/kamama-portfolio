@@ -63,7 +63,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           {isDark ? (
             <Moon className="size-4" aria-hidden="true" />
           ) : (
-            <Sun className="size-4" aria-hidden="true" />
+            <Sun className="size-4 text-[#F9B872]" aria-hidden="true" />
           )}
         </motion.span>
       </AnimatePresence>

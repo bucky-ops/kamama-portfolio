@@ -123,7 +123,18 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
               </p>
               <ol className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
                 {philosophy.map((step, i) => (
-                  <li key={step.step} className="flex min-w-0 flex-1 items-center gap-2">
+                  <motion.li
+                    key={step.step}
+                    custom={i}
+                    initial={{ y: 24, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{
+                      delay: i * 0.1,
+                      duration: 0.5,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className="flex min-w-0 flex-1 items-center gap-2"
+                  >
                     <div
                       className="min-w-0 flex-1 rounded-lg border border-border bg-secondary/40 p-3 transition-colors hover:border-primary/40"
                       title={step.text}
@@ -141,7 +152,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                         aria-hidden="true"
                       />
                     ) : null}
-                  </li>
+                  </motion.li>
                 ))}
               </ol>
             </div>
@@ -232,7 +243,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
             return (
               <Reveal key={skill.title} delay={i * 0.07} className="h-full">
                 <Card
-                  className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] dark:hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)] shadow-[0_8px_32px_rgba(31,35,40,0.06)]"
+                  className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-card shadow-[0_8px_32px_rgba(31,35,40,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_36px_rgba(227,179,65,0.12)] dark:hover:shadow-[0_12px_36px_rgba(227,179,65,0.12)]"
                   onMouseMove={(e) => {
                     // Cursor spotlight - CSS vars drive the radial overlay
                     // (direct DOM write, no re-render, touch-safe: overlay is

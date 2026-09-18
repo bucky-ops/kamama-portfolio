@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ExternalLink, FileText, Github, Layers, Lock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/lib/profile-data";
 import { useGithubData } from "./github-data";
 import { ArchitectureDiagram } from "./architecture-diagram";
@@ -24,9 +25,18 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
   const hasCaseStudy = Boolean(project.caseStudy) && hasRepo;
 
   return (
-    <Card className="relative flex h-full flex-col overflow-hidden rounded-2xl border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]">
-      {/* Brand watermark - logo spec: icon at 7% opacity on project cards */}
-      <div aria-hidden="true" className="pointer-events-none absolute -bottom-9 -right-9 z-0 select-none">
+    <Card
+      className={cn(
+        "group/card relative flex h-full flex-col overflow-hidden rounded-2xl border-border bg-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]",
+        // Flagship systems get the subtle ledger tilt (2deg) on hover.
+        project.featured && "motion-safe:hover:rotate-[2deg]"
+      )}
+    >
+      {/* Brand watermark - logo spec: icon at 7% opacity, zooms gently on hover */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-9 -right-9 z-0 select-none transition-transform duration-300 ease-out group-hover/card:scale-110"
+      >
         <Image
           src="/brand/kamama-icon-light.png"
           alt=""
@@ -76,6 +86,15 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
         <h3 className="text-xl font-semibold leading-snug text-foreground">
           {project.title}
         </h3>
+
+        {/* Ledger line - amber rule that draws left to right on hover.
+           Transform-only (scaleX) so it never triggers layout. */}
+        <span
+          aria-hidden="true"
+          className="-mt-2 block h-0.5 w-full origin-left overflow-hidden rounded-full"
+        >
+          <span className="block h-full w-full origin-left scale-x-0 bg-gradient-to-r from-primary to-[#F9B872] transition-transform duration-500 ease-out group-hover/card:scale-x-100" />
+        </span>
 
         {/* Problem */}
         <p className="text-sm text-muted-foreground">
