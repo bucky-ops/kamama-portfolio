@@ -235,6 +235,59 @@
   }
 }
 
+/* ── Cartoon animation layer (v1.16) ────────────────────────────
+   Bounce physics on top of the v1.15 motion base. Everything here is
+   transform/opacity only; the global prefers-reduced-motion net below
+   collapses all durations, so reduced-motion visitors get instant
+   static states. The elastic family curve is cubic-bezier(0.68, -0.55,
+   0.27, 1.55) - framer-driven effects inline it, CSS ones use it here. */
+
+/* Liquid sheen that rides the bento depth bars while they fill. */
+@keyframes kam-liquid-wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.liquid-wave {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  animation: kam-liquid-wave 1.2s linear infinite;
+  will-change: transform;
+}
+
+/* Tag chips bounce in sequence when a system card is hovered
+   (secondary action). --tag-i staggers each chip by 70ms. Uses a plain
+   .kam-card hook (NOT a Tailwind group-hover) so the rule survives the
+   CSS build untouched and stays available to any pointer type. */
+.kam-tag {
+  display: inline-block;
+}
+.kam-card:hover .kam-tag {
+  animation: kam-tag-bounce 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+  animation-delay: calc(var(--tag-i, 0) * 70ms);
+}
+@keyframes kam-tag-bounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-6px) scale(1.08);
+  }
+  70% {
+    transform: translateY(1px) scale(0.98);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* Skip link - visually hidden until keyboard-focused */
 .skip-link {
   position: fixed;

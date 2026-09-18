@@ -52,12 +52,16 @@ export function ThemeToggle({ className }: { className?: string }) {
       )}
     >
       <AnimatePresence mode="wait" initial={false}>
+        {/* Cartoon morph: the glyph spins in a half-turn (180deg) and
+            rubber-bands from scale 0.8 via a spring (300/15/0.8). The sun
+            keeps the brand amber #F9B872. MotionConfig reducedMotion="user"
+            strips the transforms for reduced-motion visitors. */}
         <motion.span
           key={isDark ? "moon" : "sun"}
-          initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+          initial={{ opacity: 0, rotate: -180, scale: 0.8 }}
           animate={{ opacity: 1, rotate: 0, scale: 1 }}
-          exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          exit={{ opacity: 0, rotate: 180, scale: 0.8 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15, mass: 0.8 }}
           className="absolute inset-0 flex items-center justify-center"
         >
           {isDark ? (

@@ -24,15 +24,17 @@ interface HeaderProps {
 const LOGO_LIGHT = "/brand/kamama-wordmark-light-horizontal.png";
 const LOGO_DARK = "/brand/kamama-logo-dark-horizontal.png";
 
-/** Shared ease-out curve for the brand choreography (Linear/Vercel feel). */
-const EASE_BRAND = [0.16, 1, 0.3, 1] as const;
+/** Cartoon bounce curve - elastic overshoot (see the cartoon system spec). */
+const EASE_CARTOON = [0.68, -0.55, 0.27, 1.55] as const;
 
 /**
- * One-time brand assembly: 4 charcoal ledger blocks fly from the center
- * outward to their slots, amber nodes pulse at the joints, then the overlay
- * fades and the real wordmark stands alone. Plays once per browser session
- * (sessionStorage flag) and never when the user prefers reduced motion.
- * Pure transform/opacity - no layout work.
+ * One-time cartoon brand assembly: 4 charcoal ledger blocks rain in from
+ * 220px above their slots, stretched by speed (scaleY 1.4), squash
+ * rubber-style on impact (scaleX 1.35 / scaleY 0.72), rebound and settle
+ * with two shrinking hops. Amber nodes bubble-pop at the joints 120ms
+ * after the blocks land. Plays once per browser session (sessionStorage
+ * flag) and never when the user prefers reduced motion. Pure
+ * transform/opacity - no layout work.
  */
 function LogoAssemble() {
   const [phase, setPhase] = useState<"idle" | "play" | "done">("done");
@@ -40,7 +42,7 @@ function LogoAssemble() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const alreadyPlayed =
-      window.sessionStorage.getItem("kamama-logo-assembled") === "1";
+      window.sessionStorage.getItem("kamama-logo-cartoon") === "1";
     if (reduced || alreadyPlayed) return;
     // Deferred one tick so the header paints first (no blank-brand risk).
     const id = window.setTimeout(() => setPhase("play"), 120);
@@ -56,10 +58,10 @@ function LogoAssemble() {
       className="pointer-events-none absolute inset-0 z-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: [0, 1, 1, 0] }}
-      transition={{ duration: 0.8, times: [0, 0.08, 0.82, 1], ease: EASE_BRAND }}
+      transition={{ duration: 1.25, times: [0, 0.04, 0.9, 1], ease: "linear" }}
       onAnimationComplete={() => {
         try {
-          window.sessionStorage.setItem("kamama-logo-assembled", "1");
+          window.sessionStorage.setItem("kamama-logo-cartoon", "1");
         } catch {
           /* storage unavailable - replaying next load is harmless */
         }
@@ -71,24 +73,35 @@ function LogoAssemble() {
           key={b}
           className="absolute top-0 h-full w-1/4 rounded-[3px] border border-[#30363D] bg-[#161B22]"
           style={{ left: `${b * 25}%` }}
-          initial={{ x: `${(1.5 - b) * 100}%`, opacity: 0.9 }}
-          animate={{ x: 0, opacity: 1 }}
+          initial={{ y: -220, scaleY: 1.4, scaleX: 0.8, opacity: 0 }}
+          animate={{
+            y: [-220, 0, -28, 0, -10, 0],
+            scaleY: [1.4, 0.72, 1.15, 0.85, 1.05, 1],
+            scaleX: [0.8, 1.35, 0.9, 1.15, 0.95, 1],
+            opacity: [0, 1, 1, 1, 1, 1],
+          }}
           transition={{
-            delay: b * 0.06,
-            duration: 0.55,
-            ease: EASE_BRAND,
+            delay: b * 0.08,
+            duration: 0.85,
+            times: [0, 0.35, 0.5, 0.68, 0.82, 1],
+            ease: EASE_CARTOON,
           }}
         />
       ))}
-      {/* Amber nodes at the block joints - pulse exactly 3 times */}
-      {[25, 50, 75].map((left) => (
+      {/* Amber nodes at the block joints - bubble-pop 120ms after the
+          blocks land (first impact is at ~0.3s, pops start at 0.45s). */}
+      {[25, 50, 75].map((left, j) => (
         <motion.span
           key={`node-${left}`}
           className="absolute top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F9B872]"
           style={{ left: `${left}%` }}
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: [0.6, 1.7, 0.6], opacity: [0, 1, 1, 0] }}
-          transition={{ delay: 0.4, duration: 0.4, repeat: 2, ease: "easeOut" }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: [0, 1.6, 1], opacity: [0, 1, 1] }}
+          transition={{
+            delay: 0.45 + j * 0.08,
+            duration: 0.4,
+            ease: EASE_CARTOON,
+          }}
         />
       ))}
     </motion.span>

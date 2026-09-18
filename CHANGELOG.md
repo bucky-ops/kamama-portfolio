@@ -7,6 +7,48 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.16.0] - 2026-09-18
+
+### Changed
+- **Cartoon animation system** - the v1.15 motion base gets bounce physics:
+  elastic ease [0.68, -0.55, 0.27, 1.55] and springs (stiffness 300,
+  damping 15, mass 0.8) replace the corporate ease-out on the five hero
+  surfaces. All effects stay transform + opacity only.
+  - **Logo assemble (header)**: the 4 charcoal ledger blocks now rain in
+    from 220px above, stretched by speed (scaleY 1.4), squash rubber-style
+    on impact (scaleX 1.35 / scaleY 0.72), then rebound and settle with two
+    shrinking hops (850ms per block, 80ms stagger). Amber nodes bubble-pop
+    at the joints 120ms after the blocks land. New session flag, so every
+    visitor sees the new choreography once.
+  - **Architecture philosophy 01-04**: cards inflate like balloons
+    (0.75 -> 1.12 -> 0.96 -> 1) with a 120ms stagger, and hovering plays a
+    3-degree follow-through wobble.
+  - **Stats pop with starburst**: the odometer/blur treatment is replaced -
+    5+, 10+, 99.9% and 500K+ now pop with a balloon overshoot while a
+    4-line amber starburst expands and fades behind them (per-stat 100ms
+    stagger). Reduced-motion visitors get the plain final value, which is
+    now also the SSR markup.
+  - **Capabilities bento**: hover plays the 3-degree wobble on top of the
+    lift, and the depth bars fill with a 300/15/0.8 spring while a liquid
+    wave sheen rides the fill.
+  - **Featured systems (home + work)**: hover squashes the card rubber-style
+    (0.97Y / 1.02X pulse) while keeping the flagship 2-degree tilt and a
+    held lift, stack tags bounce in sequence (70ms apart), and the amber
+    ledger line draws with a cartoon pen stroke that pops a nib dot at the
+    end of the stroke.
+  - **Theme toggle**: the sun/moon morph is now a half-turn (180 degree)
+    spring spin instead of a quick crossfade.
+- **Accessibility**: reduced-motion visitors get instant static states -
+  the logo cartoon and stat pops never mount, framer transforms are
+  stripped by MotionConfig, and the CSS net collapses the tag bounce and
+  liquid wave to 0.01ms. The stat gating reads the media query directly
+  (and live-listens for changes) instead of relying on first paint.
+
+### Fixed
+- The tag-bounce hover rule is wired through a plain `.kam-card` class
+  instead of an escaped Tailwind group selector, so it survives the CSS
+  build untouched.
+
 ## [1.15.0] - 2026-09-18
 
 ### Added

@@ -37,6 +37,9 @@ import { InitialsAvatar, SectionHeading, TagChip, type TabId } from "./shared";
 
 const HEADLINE_HIGHLIGHT = "operate, not just demo";
 
+/** Cartoon bounce curve - elastic overshoot (see the cartoon system spec). */
+const EASE_CARTOON = [0.68, -0.55, 0.27, 1.55] as const;
+
 const skillIcons: Record<string, LucideIcon> = {
   code: Code2,
   brain: BrainCircuit,
@@ -123,19 +126,31 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
               </p>
               <ol className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
                 {philosophy.map((step, i) => (
-                  <motion.li
+                  <li
                     key={step.step}
-                    custom={i}
-                    initial={{ y: 24, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{
-                      delay: i * 0.1,
-                      duration: 0.5,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
                     className="flex min-w-0 flex-1 items-center gap-2"
                   >
-                    <div
+                    {/* Cartoon pop-in: balloon inflate 0.75 -> 1.12 -> 0.96
+                        -> 1, staggered 120ms; hover plays a follow-through
+                        wobble (3deg) like a rubber stamp settling. */}
+                    <motion.div
+                      initial={{ scale: 0.75, y: 18, opacity: 0 }}
+                      animate={{
+                        scale: [0.75, 1.12, 0.96, 1],
+                        y: [18, -4, 2, 0],
+                        opacity: [0, 1, 1, 1],
+                      }}
+                      transition={{
+                        delay: i * 0.12,
+                        duration: 0.5,
+                        times: [0, 0.55, 0.75, 1],
+                        ease: EASE_CARTOON,
+                      }}
+                      whileHover={{
+                        scale: [1, 1.02, 1.02, 1.01, 1],
+                        rotate: [0, 3, -2.2, 1.2, 0],
+                        transition: { duration: 0.45, ease: "easeInOut" },
+                      }}
                       className="min-w-0 flex-1 rounded-lg border border-border bg-secondary/40 p-3 transition-colors hover:border-primary/40"
                       title={step.text}
                     >
@@ -145,14 +160,14 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                       <p className="mt-0.5 truncate text-xs font-medium text-foreground sm:whitespace-normal">
                         {step.title}
                       </p>
-                    </div>
+                    </motion.div>
                     {i < philosophy.length - 1 ? (
                       <ChevronRight
                         className="hidden size-4 shrink-0 text-primary/60 sm:block"
                         aria-hidden="true"
                       />
                     ) : null}
-                  </motion.li>
+                  </li>
                 ))}
               </ol>
             </div>
@@ -188,11 +203,11 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
             </div>
 
             <dl className="mt-6 grid grid-cols-2 gap-4">
-              {profile.stats.map((stat) => (
+              {profile.stats.map((stat, i) => (
                 <div key={stat.label} className="text-center sm:text-left">
                   <dt className="sr-only">{stat.label}</dt>
                   <dd className="font-mono text-2xl font-bold text-primary md:text-3xl">
-                    <AnimatedStat value={stat.value} />
+                    <AnimatedStat value={stat.value} index={i} />
                   </dd>
                   <dd className="mt-0.5 text-xs text-muted-foreground">
                     {stat.label}
@@ -242,6 +257,16 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
             const Icon = skillIcons[skill.icon] ?? Code2;
             return (
               <Reveal key={skill.title} delay={i * 0.07} className="h-full">
+                {/* Follow-through wobble (3deg) when the hover lands - the
+                    card keeps its CSS lift; this wrapper owns the bounce. */}
+                <motion.div
+                  className="h-full"
+                  whileHover={{
+                    scale: [1, 1.02, 1.02, 1.01, 1],
+                    rotate: [0, 3, -2.2, 1.2, 0],
+                    transition: { duration: 0.5, ease: "easeInOut" },
+                  }}
+                >
                 <Card
                   className="group/skill relative h-full overflow-hidden rounded-2xl border-border bg-card shadow-[0_8px_32px_rgba(31,35,40,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_36px_rgba(227,179,65,0.12)] dark:hover:shadow-[0_12px_36px_rgba(227,179,65,0.12)]"
                   onMouseMove={(e) => {
@@ -277,23 +302,31 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                         {skill.metricNote}
                       </p>
                     </div>
-                    {/* Depth meter - animated amber fill on scroll into view */}
+                    {/* Depth meter - fills with a cartoon spring (300/15/0.8)
+                        and carries a liquid wave sheen while it rises. */}
                     <div
                       role="img"
                       aria-label={`${skill.title} depth: ${skill.depth} out of 100`}
                     >
                       <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
                         <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F9B872]"
+                          className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-[#7a5c14] via-primary to-[#F9B872]"
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.depth}%` }}
                           viewport={{ once: true, margin: "0px 0px -32px 0px" }}
                           transition={{
-                            duration: 0.9,
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 15,
+                            mass: 0.8,
                             delay: 0.15 + i * 0.07,
-                            ease: "easeOut",
                           }}
-                        />
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="liquid-wave absolute inset-y-0 left-0 w-1/2"
+                          />
+                        </motion.div>
                       </div>
                       <div className="mt-1 flex items-center justify-between font-mono text-[10px] text-muted-foreground">
                         <span>depth</span>
@@ -307,6 +340,7 @@ export function HomeView({ onNavigate, onDiscuss }: HomeViewProps) {
                     </div>
                   </CardContent>
                 </Card>
+                </motion.div>
               </Reveal>
             );
           })}

@@ -1,6 +1,8 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { ExternalLink, FileText, Github, Layers, Lock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -10,6 +12,9 @@ import { ArchitectureDiagram } from "./architecture-diagram";
 import { ClusterBadge, RepoChipsSkeleton, RepoMetaChip, StarsChip, TagChip } from "./shared";
 
 const GITHUB_BASE = "https://github.com/bucky-ops";
+
+/** Cartoon bounce curve - elastic overshoot (see the cartoon system spec). */
+const EASE_CARTOON = [0.68, -0.55, 0.27, 1.55] as const;
 
 interface ProjectCardProps {
   project: Project;
@@ -25,11 +30,25 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
   const hasCaseStudy = Boolean(project.caseStudy) && hasRepo;
 
   return (
+    /* Cartoon hover physics live on this wrapper: rubber-stamp squash
+       (0.97Y / 1.02X pulse), a held -2px lift, and the flagship 2deg
+       ledger tilt. MotionConfig reducedMotion="user" disables the whole
+       transform set for reduced-motion visitors. */
+    <motion.div
+      className="h-full"
+      whileHover={{
+        y: -2,
+        rotate: project.featured ? 2 : 0,
+        scaleY: [1, 0.97, 1],
+        scaleX: [1, 1.02, 1],
+        transition: { duration: 0.28, ease: EASE_CARTOON },
+      }}
+    >
     <Card
       className={cn(
-        "group/card relative flex h-full flex-col overflow-hidden rounded-2xl border-border bg-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]",
-        // Flagship systems get the subtle ledger tilt (2deg) on hover.
-        project.featured && "motion-safe:hover:rotate-[2deg]"
+        // kam-card: plain CSS hook for the tag-bounce hover rule
+        // (see globals.css). group/card drives the Tailwind hover set.
+        "kam-card group/card relative flex h-full flex-col overflow-hidden rounded-2xl border-border bg-card transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(227,179,65,0.07)]"
       )}
     >
       {/* Brand watermark - logo spec: icon at 7% opacity, zooms gently on hover */}
@@ -87,13 +106,17 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
           {project.title}
         </h3>
 
-        {/* Ledger line - amber rule that draws left to right on hover.
-           Transform-only (scaleX) so it never triggers layout. */}
+        {/* Ledger line - cartoon pen stroke: draws left to right with an
+           elastic flick (the overshoot slams against the overflow clip)
+           and an amber pen-nib dot pops as the stroke completes. */}
         <span
           aria-hidden="true"
-          className="-mt-2 block h-0.5 w-full origin-left overflow-hidden rounded-full"
+          className="relative -mt-2 block h-0.5 w-full"
         >
-          <span className="block h-full w-full origin-left scale-x-0 bg-gradient-to-r from-primary to-[#F9B872] transition-transform duration-500 ease-out group-hover/card:scale-x-100" />
+          <span className="block h-full w-full origin-left overflow-hidden rounded-full">
+            <span className="block h-full w-full origin-left scale-x-0 bg-gradient-to-r from-primary to-[#F9B872] transition-transform duration-[450ms] ease-[cubic-bezier(0.68,-0.55,0.27,1.55)] group-hover/card:scale-x-100" />
+          </span>
+          <span className="absolute right-0 top-1/2 size-2 -translate-y-1/2 scale-0 rounded-full bg-[#F9B872] opacity-0 transition-all duration-200 ease-out group-hover/card:scale-100 group-hover/card:opacity-100 group-hover/card:delay-[400ms]" />
         </span>
 
         {/* Problem */}
@@ -111,10 +134,17 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
           <span>{project.architecture}</span>
         </p>
 
-        {/* Stack */}
+        {/* Stack - each chip is a .kam-tag so the CSS layer bounces them
+            in sequence (70ms apart) as the card is hovered. */}
         <div className="flex flex-wrap gap-1.5">
-          {project.stack.map((tag) => (
-            <TagChip key={tag} tag={tag} />
+          {project.stack.map((tag, ti) => (
+            <span
+              key={tag}
+              className="kam-tag"
+              style={{ "--tag-i": ti } as CSSProperties}
+            >
+              <TagChip tag={tag} />
+            </span>
           ))}
         </div>
 
@@ -183,5 +213,6 @@ export function ProjectCard({ project, onCaseStudy }: ProjectCardProps) {
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 }
