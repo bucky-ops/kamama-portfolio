@@ -38,7 +38,7 @@ export const profile = {
     { value: "500K+", label: "Daily Transactions" },
   ],
   workAuth:
-    "Kenyan national - eligible for remote/home-based ICA contracts globally; hybrid-ready; international travel 1–4×/year.",
+    "Kenyan national - eligible for remote/home-based ICA contracts globally; hybrid-ready; international travel 1-4×/year.",
 } as const;
 
 export const nav = [
@@ -439,13 +439,13 @@ export const education = [
   {
     school: "Jomo Kenyatta University of Agriculture and Technology (JKUAT)",
     degree: "BBIT - Bachelor of Business Information Technology",
-    detail: "Second Class Upper Division (Honours) · 2019–2023",
+    detail: "Second Class Upper Division (Honours) · 2019-2023",
     note: "Capstone: predictive analytics model (85% accuracy) - Python scikit-learn + PostgreSQL",
   },
   {
     school: "Jomo Kenyatta University of Agriculture and Technology (JKUAT)",
     degree: "Diploma in Information Technology",
-    detail: "2017–2019",
+    detail: "2017-2019",
     note: "Database systems, software engineering, web development, statistics",
   },
 ];
@@ -514,8 +514,8 @@ export const projectTypes = [
 
 export const budgetRanges = [
   "Under $1,000",
-  "$1,000 – $5,000",
-  "$5,000 – $15,000",
+  "$1,000 - $5,000",
+  "$5,000 - $15,000",
   "$15,000+",
   "Retainer / Negotiable",
 ] as const;

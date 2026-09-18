@@ -626,7 +626,7 @@ export function ContactView() {
                 <div>
                   <p className="text-sm text-foreground">{profile.location}</p>
                   <p className="text-xs text-muted-foreground">
-                    Remote ICA contracts globally · Hybrid · 1–4× travel/yr
+                    Remote ICA contracts globally · Hybrid · 1-4× travel/yr
                   </p>
                 </div>
               </div>

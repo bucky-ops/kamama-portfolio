@@ -10,7 +10,7 @@ const MAX_ENTRIES = 8;
 
 export interface ReadingEntry {
   slug: string;
-  /** 0–100; 100 means finished. */
+  /** 0-100; 100 means finished. */
   percent: number;
   /** Epoch ms of the last progress write. */
   updatedAt: number;

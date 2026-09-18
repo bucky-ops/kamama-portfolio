@@ -7,6 +7,31 @@ the site footer reads this feed live via `/api/releases`.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.14.0] - 2026-09-17
+
+### Added
+- **Three new engineering notes** grounded in real repository projects, each
+  following a practical structure: overview, challenges and solutions, code
+  examples, and best practices:
+  - "Ingest Twice, Worry Once: Idempotent Field-Data Pipelines" - dedupe keys,
+    upsert-based ingestion and immutable staging for field survey data (GCF-SIP
+    / M&E pipeline work).
+  - "Cache the Expensive Parts: Making RAG Fast and Cheap" - query and
+    embedding caches plus near-duplicate chunk collapse to cut cost and latency
+    on the SDG Knowledge Retrieval System.
+  - "An Inventory Ledger That Cannot Lie" - append-only movement ledgers,
+    computed balances and CHECK constraints from the Blockchain Inventory
+    System, with an honest take on when the chain adds value.
+- **Code snippet support in notes**: the note format now carries language
+  chips, captions and styled code blocks with a one-click copy button
+  (clipboard confirmation state included).
+
+### Changed
+- **Dash hygiene across the whole site and repo**: every em dash / en dash
+  character (including numeric ranges like 1-5, 1-4x and 2019-2023) is now a
+  plain ASCII hyphen. Zero fancy dashes remain in any shipped content, the
+  changelog or GitHub-facing docs.
+
 ## [1.13.0] - 2026-09-17
 
 ### Removed
@@ -392,7 +417,7 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - **Command palette (⌘K / Ctrl+K)**: fast, searchable launcher in every view. Groups:
-  Navigate (all 7 views with `1–5` shortcuts), Open a system case study (all 8 systems,
+  Navigate (all 7 views with `1-5` shortcuts), Open a system case study (all 8 systems,
   filterable by title/cluster/stack), Notes, and Quick actions - copy founder email, mailto
   Collins, download resume, GitHub + LinkedIn profiles. Search pill (`Search ⌘K`) added to
   the header on desktop, icon button on mobile. Built on cmdk (`ui/command`) themed to the
@@ -435,7 +460,7 @@ versioning follows [Semantic Versioning](https://semver.org/).
   surfaced through the client context and rendered as a chip - e.g. `TypeScript · 7mo` - so
   employers can see systems are maintained at a glance. Chips render only when the API
   responds live.
-- **Keyboard navigation**: keys `1–5` switch views (Home, Work, Notes, About, Contact);
+- **Keyboard navigation**: keys `1-5` switch views (Home, Work, Notes, About, Contact);
   ignored while typing in form fields; hint surfaced in the footer.
 - **PWA basics + SEO extras**: `manifest.webmanifest` (dark theme color, amber K icon),
   `theme_color` viewport export, and a generated `sitemap.xml`.

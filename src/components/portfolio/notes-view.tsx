@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
   CalendarDays,
-  CircleCheck,
+  Check,
   ChevronDown,
+  CircleCheck,
   Clock,
+  Copy,
   FileText,
   History,
   ListTree,
@@ -30,7 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { formatDateLong, notes, type Note } from "@/lib/notes-data";
+import { formatDateLong, notes, type Note, type NoteCode } from "@/lib/notes-data";
 import {
   clearReadingHistory,
   getReadingHistory,
@@ -53,6 +55,59 @@ function readAgo(epochMs: number): string {
   const days = Math.round(hours / 24);
   if (days < 30) return `${days}d ago`;
   return new Date(epochMs).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+/** Code example inside a note: language chip, caption and a copy button. */
+function CodeBlock({ code }: { code: NoteCode }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(code.snippet);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard unavailable (permissions/insecure context) - silently ignore.
+    }
+  }, [code.snippet]);
+
+  return (
+    <figure className="overflow-hidden rounded-xl border border-border bg-muted/30">
+      <figcaption className="flex items-center gap-2.5 border-b border-border bg-secondary/40 px-3.5 py-2">
+        <span className="shrink-0 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-primary">
+          {code.language}
+        </span>
+        {code.caption ? (
+          <span className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground" title={code.caption}>
+            {code.caption}
+          </span>
+        ) : (
+          <span className="flex-1" />
+        )}
+        <button
+          type="button"
+          onClick={copy}
+          aria-label={copied ? "Code copied" : "Copy code to clipboard"}
+          className={cn(
+            "inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border px-2.5 font-mono text-[10px] uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+            copied
+              ? "border-primary/50 bg-primary/10 text-primary"
+              : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
+          )}
+        >
+          {copied ? <Check className="size-3" aria-hidden="true" /> : <Copy className="size-3" aria-hidden="true" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </figcaption>
+      <pre
+        className="max-h-96 overflow-auto p-4 font-mono text-xs leading-relaxed text-foreground/90"
+        tabIndex={0}
+        aria-label={`${code.language} code example`}
+      >
+        <code>{code.snippet}</code>
+      </pre>
+    </figure>
+  );
 }
 
 /**
@@ -604,7 +659,7 @@ function useScrollSpy(count: number) {
 
 interface NoteReaderProps {
   note: Note;
-  /** Resume position (0–100) when reopened from "Continue reading". */
+  /** Resume position (0-100) when reopened from "Continue reading". */
   initialPercent?: number;
   onBack: () => void;
   onNext: () => void;
@@ -788,6 +843,7 @@ function NoteReader({
                 {p}
               </p>
             ))}
+            {section.code ? <CodeBlock code={section.code} /> : null}
           </section>
         ))}
       </div>
